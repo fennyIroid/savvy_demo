@@ -94,6 +94,43 @@ class AndroidFlowTest {
         assertTrue(actions.insights().startsWith("streak"))
     }
 
+    /** Device run 1 gaps: card registration in the app, card-protected task, FREE end. */
+    @Test fun appRegistersCardThenTaskNeedsCardAndFreeSessionEndsByTap() {
+        val actions = SavvyActions(app)
+        actions.register("dana@test")
+        val card = backend.newCard()
+        assertTrue(actions.registerCard(card, "qr").contains("registered"))
+        assertEquals(card.substringAfter("/c/1.").substringBefore('.'), app.repo.boundCardCode)
+        app.repo.selectedPackages = setOf(INSTAGRAM)
+
+        assertTrue(actions.addTask("Essay", 30).startsWith("task added"))
+        val taskId = app.repo.tasksJson.getJSONObject(0).getString("id")
+        actions.start(Mode.TASK, 30, UnlockPolicy.CARD_REQUIRED, taskRef = taskId)
+        assertEquals("task completion refused: card_not_owned_by_user", actions.completeTask(taskId, backend.newCard()))
+        assertTrue(actions.completeTask(taskId, card).contains("Released"))
+        assertEquals("completed", app.repo.tasksJson.getJSONObject(0).getString("status"))
+
+        actions.start(Mode.STUDY, 60, UnlockPolicy.CARD_REQUIRED)
+        assertEquals("this session needs the card to end early", actions.endFree())
+        UnlockCoordinator(app).handleCard(card, "nfc")
+        actions.start(Mode.SLEEP, 60, UnlockPolicy.FREE)
+        assertTrue(actions.endFree().contains("Released"))
+        assertEquals(null, app.repo.commitment)
+    }
+
+    /** Device run 1 gap: after reinstall the restored commitment blocked nothing. */
+    @Test fun reinstallRestoresBlockedAppsFromServer() {
+        val actions = SavvyActions(app)
+        actions.register("erin@test")
+        app.repo.selectedPackages = setOf(INSTAGRAM)
+        actions.start(Mode.STUDY, 120, UnlockPolicy.CARD_REQUIRED)
+        // Simulate uninstall: all local state is gone.
+        app.getSharedPreferences("savvy_rd", 0).edit().clear().commit()
+        assertTrue(actions.register("erin@test").contains("1 apps from server"))
+        assertEquals(setOf(INSTAGRAM), app.repo.commitment?.blockedPackages)
+        assertEquals(Decision.BlockApp(INSTAGRAM), app.engine.onForeground(INSTAGRAM, null, BlockingEngine.Source.USAGE_STATS, null))
+    }
+
     @Test fun offlineStartOfflineCardUnlockThenSync() {
         val actions = SavvyActions(app)
         actions.register("bob@test")

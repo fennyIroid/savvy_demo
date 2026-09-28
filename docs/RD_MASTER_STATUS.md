@@ -1,6 +1,6 @@
 # Savvy R&D Master Status
 
-Last updated: 25 September 2026.
+Last updated: 28 September 2026. **Android device run 1** (Pixel 4, Android 13) raised Android to L5 for blocking, card unlock (dispatch intent), offline, commitments, to-do, emergency, reboot, reinstall restore and parent-mode tamper guard. It also found and fixed 8 app bugs; see ANDROID_POC_RESULTS.md.
 
 ## 1. Overall state
 
@@ -38,8 +38,8 @@ Mutation checks were run to prove the end-to-end suites are not vacuous. Disabli
 | iOS app non-UI code + Monitor and ShieldAction extensions | L4 (with our fakes) | 8 end-to-end tests. The code has not been built with the real iOS SDK |
 | iOS SwiftUI views, ShieldConfiguration, Report extension, App Intents | L2 plus syntax check | Needs Xcode |
 | Android core | L4 | 21 tests |
-| Android app | L3 (real Android 16 API) and L4 (Robolectric) | Compile check against android-all 16; 9 end-to-end tests. Not yet an APK |
-| Real-device tests | Not run | No devices, Apple account or cards in the R&D environment. Test plans are in IOS_POC_RESULTS.md and ANDROID_POC_RESULTS.md |
+| Android app | **L5 on Pixel 4 / Android 13** for the flows listed in ANDROID_POC_RESULTS.md device run 1; L4 Robolectric (11 tests) | Real APK (AGP). Not yet: physical NFC tag, QR camera, other OEMs, Android 14+ |
+| Real-device tests | Android: Pixel 4 run done (28 Sep). iOS: not run | No devices, Apple account or cards in the R&D environment. Test plans are in IOS_POC_RESULTS.md and ANDROID_POC_RESULTS.md |
 
 **Rule followed.** Following section 8 of the brief, nothing is marked Not Feasible because of an environment limitation. Items marked H were concluded only after the full approach search, and the reason is written down.
 

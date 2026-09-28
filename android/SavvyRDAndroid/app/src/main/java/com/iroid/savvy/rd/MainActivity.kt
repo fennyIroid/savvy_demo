@@ -23,6 +23,7 @@ import com.iroid.savvy.rd.data.SavvyLog
 import com.iroid.savvy.rd.picker.AppPickerActivity
 import com.iroid.savvy.rd.picker.ChildAppPickerActivity
 import com.iroid.savvy.rd.service.TamperMonitor
+import com.iroid.savvy.rd.service.UsageMonitorService
 import kotlin.concurrent.thread
 
 /** Android test lab. Each button maps to a test in docs/ANDROID_POC_RESULTS.md. */
@@ -129,6 +130,9 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
+        // Force stop kills the enforcement service and nothing restarts it (Pixel 4 test,
+        // 28 Sep 2026): re-arm it whenever Savvy is opened with a commitment or parent rule.
+        if (repo.commitment != null || repo.parentBlockedPackages.isNotEmpty()) UsageMonitorService.start(this)
         renderTasks()
         bg { actions.restore() }
     }

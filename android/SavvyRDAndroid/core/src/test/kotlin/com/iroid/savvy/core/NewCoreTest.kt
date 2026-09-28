@@ -53,6 +53,19 @@ class ParentAlwaysOnTest {
         assertEquals(RestrictionPolicy.Decision.Allow, RestrictionPolicy.decide("launcher", null, null, anchor, setOf("launcher"), alwaysBlocked = always))
     }
 
+    @Test fun tamperGuardHoldsUnderAlwaysOnRuleWithoutCommitment() {
+        val now = TimeAnchor(0, 0, 1)
+        val ig = setOf("com.instagram.android")
+        val uninstall = RestrictionPolicy.decide("com.google.android.packageinstaller",
+            "com.android.packageinstaller.UninstallerActivity", null, now, emptySet(), alwaysBlocked = ig, parentControlled = true)
+        assertTrue(uninstall is RestrictionPolicy.Decision.BlockTamperScreen)
+        // Self device, or a child with no parent rule: Settings stay open.
+        assertEquals(RestrictionPolicy.Decision.Allow, RestrictionPolicy.decide("com.google.android.packageinstaller",
+            "com.android.packageinstaller.UninstallerActivity", null, now, emptySet(), alwaysBlocked = ig))
+        assertEquals(RestrictionPolicy.Decision.Allow, RestrictionPolicy.decide("com.android.settings",
+            "com.android.settings.Settings\$AccessibilitySettingsActivity", null, now, emptySet(), parentControlled = true))
+    }
+
     @Test fun pauseDoesNotLiftParentAlwaysOn() {
         val c = Commitment(1, Mode.STUDY, UnlockPolicy.CARD_REQUIRED, ControlMode.PARENT, setOf("com.game"), 3_600_000, anchor, null,
             pausedUntilElapsedMs = anchor.elapsedRealtimeMs + 600_000, pauseBootCount = 1)

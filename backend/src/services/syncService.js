@@ -50,7 +50,7 @@ function createSyncService({ store, config, clock, cardService }) {
         const endsMs = atMs + ev.minutes * 60000;
         const row = store.commitments.insert({
           user_id: userId, device_id: deviceId, local_id: ev.local_id, mode: ev.mode, unlock_policy: ev.policy,
-          task_ref: ev.task_ref || null, selection_ref: null,
+          task_ref: ev.task_ref || null, selection_ref: ev.selection_ref || null,
           status: endsMs <= clock.now() ? 'completed' : 'active',
           started_at: iso(atMs), ends_at: iso(endsMs), ended_at: null, end_reason: null, created_offline: true,
         }, iso(clock.now()));

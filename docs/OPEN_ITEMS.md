@@ -1,6 +1,6 @@
 # Savvy R&D Open Items
 
-Status date: 25 September 2026.
+Status date: 28 September 2026 (after Android device run 1).
 
 ## 1. Client decisions needed
 
@@ -52,7 +52,7 @@ Status date: 25 September 2026.
 | # | Item | Why |
 | --- | --- | --- |
 | F1 | Build SavvyRDiOS in Xcode and fix any errors | Non-UI code already runs on Linux (ios/AppHarness, 8 tests) and SavvyCore has 12 tests; SwiftUI / UIKit / AppIntents files are syntax-checked only |
-| F2 | Build the Android APK in Android Studio | App sources already compile against real Android 16 (android-all) and 9 Robolectric end-to-end tests pass; AndroidX / ZXing / resources not yet built |
+| F2 | **Done 28 Sep 2026**: APK builds with `./gradlew :app:assembleDebug` (AGP 8.10.1, Gradle 8.14.5 wrapper) and ran on a Pixel 4 / Android 13. Was: build the Android APK | App sources already compile against real Android 16 (android-all) and 9 Robolectric end-to-end tests pass; AndroidX / ZXing / resources not yet built |
 | F3 | Run all device tests in IOS_POC_RESULTS.md and ANDROID_POC_RESULTS.md, record video | Evidence standard (section 7) |
 | F4 | Choose the DeviceActivity component strategy (T-SCHED-1/2) and delete the other | Reported reliability issue |
 | F5 | Handle iOS 26.5 TokenExpiryMessage and refresh | Tokens can expire or change |
@@ -62,4 +62,8 @@ Status date: 25 September 2026.
 | F9 | Production backend: PostgreSQL repository, real auth, APNs / FCM sender for the push outbox, rate limits, key management (KMS), Redis for live-proof sessions | POC uses memory store and simple tokens |
 | F10 | Test Samsung Dual Messenger / Xiaomi Dual Apps and Android private space | Possible Android bypasses |
 | F12 | Remove the dev-only card factory (`SAVVY_DEV=1`) from any deployed environment | Test helper only |
+| F13 | Android: parent always-on rules arrive only on the child's next sync (app open or 15-min FGS housekeeping) | No FCM push yet; up to 15 min delay |
+| F14 | Android parent mode: `adb shell pm clear` wipes Savvy with device admin active | Alert the parent immediately when USB debugging is on; consider re-sync from server on next start |
+| F15 | Android: card unlock of a task commitment from the block screen leaves the task "active" | Mark the task done when its commitment is released by card |
+| F16 | Android device run 2: physical NFC tags (NTAG215 + NTAG 424 DNA), QR camera scan, Samsung / Xiaomi / OnePlus, Android 8 to 12 (BouncyCastle Ed25519), Android 14 to 17 background launch, notification / split-screen / PiP launches | Only Pixel 4 / Android 13 tested so far |
 | F11 | Confirm the child account age cutoff for Apple Family Sharing in target countries | **Not clear** from Screen Time docs |

@@ -23,8 +23,9 @@ class BackendClient(private val baseUrl: () -> String, private val token: () -> 
         JSONObject().put("email", email).put("platform", "android").put("role", role))
     fun registerCard(payload: String, source: String) = send("POST", "/v1/cards/register",
         JSONObject().put("payload", payload).put("source", source))
-    fun startCommitment(mode: String, minutes: Int, policy: String, taskRef: String?) = send("POST", "/v1/commitments",
-        JSONObject().put("mode", mode).put("duration_minutes", minutes).put("unlock_policy", policy).putOpt("task_ref", taskRef))
+    fun startCommitment(mode: String, minutes: Int, policy: String, taskRef: String?, selectionRef: String? = null) = send("POST", "/v1/commitments",
+        JSONObject().put("mode", mode).put("duration_minutes", minutes).put("unlock_policy", policy).putOpt("task_ref", taskRef)
+            .putOpt("selection_ref", selectionRef))
     fun active() = send("GET", "/v1/commitments/active", null)
     fun release(id: Long, method: String, payload: String?, source: String, presenceToken: String? = null) =
         send("POST", "/v1/commitments/$id/release",

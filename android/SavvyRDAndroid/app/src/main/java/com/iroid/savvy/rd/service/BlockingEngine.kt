@@ -49,7 +49,8 @@ class BlockingEngine(private val context: Context, private val repo: CommitmentR
     fun onForeground(pkg: String, cls: String?, source: Source, eventTimeMs: Long?, launch: Boolean = true): Decision {
         val now = repo.now()
         val serverNow = repo.serverOffsetMs?.let { now.wallClockMs + it }
-        val decision = RestrictionPolicy.decide(pkg, cls, repo.commitment, now, launchers, serverNow, repo.parentBlockedPackages)
+        val decision = RestrictionPolicy.decide(pkg, cls, repo.commitment, now, launchers, serverNow, repo.parentBlockedPackages,
+            parentControlled = repo.role == "child" && repo.controlMode == com.iroid.savvy.core.ControlMode.PARENT)
         when (decision) {
             is Decision.BlockApp, is Decision.BlockTamperScreen -> {
                 val latency = eventTimeMs?.let { android.os.SystemClock.uptimeMillis() - it }

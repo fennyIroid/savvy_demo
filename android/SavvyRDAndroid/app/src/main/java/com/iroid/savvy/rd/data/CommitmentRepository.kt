@@ -76,6 +76,7 @@ class CommitmentRepository(private val context: Context) {
         when (e) {
             is OfflineEvent.CommitmentStarted -> o.put("type", "commitment_started").put("mode", e.mode)
                 .put("minutes", e.minutes).put("policy", e.policy).put("task_ref", e.taskRef ?: JSONObject.NULL)
+                .put("selection_ref", e.selectionRef ?: JSONObject.NULL)
             is OfflineEvent.CardRelease -> o.put("type", "card_release").put("server_id", e.serverId ?: JSONObject.NULL)
                 .put("payload", e.payload).put("source", e.source)
             is OfflineEvent.EmergencyExit -> o.put("type", "emergency_exit").put("server_id", e.serverId ?: JSONObject.NULL)

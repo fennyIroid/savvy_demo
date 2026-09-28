@@ -1,8 +1,116 @@
 # Savvy Android POC Results and Device Test Plan
 
-Status date: 25 September 2026.
+Status date: 28 September 2026 (device run 1 added). Original plan: 25 September 2026.
 
-**Current state:**
+## Device run 1: Google Pixel 4, Android 13 (API 33), 28 September 2026
+
+**Evidence level L5 (real device) for the rows below.**
+
+Setup:
+- The APK was built with AGP 8.10.1 / Gradle 8.14.5, targetSdk 36, and installed with `./gradlew :app:installDebug`.
+- The backend ran on the Mac and was reached over USB (`adb reverse tcp:3000`).
+  - The LAN route (192.168.1.27) was blocked: the phone could not connect.
+  - Removing the reverse route plus Wi-Fi/data off was used as "offline".
+- Actions were driven by adb:
+  - Instagram was launched with `monkey -c LAUNCHER`.
+  - Card taps were delivered as the `NDEF_DISCOVERED` intent that Android's tag dispatch sends. **No physical tag was used.** A real-tag read (A-NFC-1, A-NFC-6) is still open.
+  - Permissions were granted with appops/settings. The disclosure dialog was not exercised.
+  - Timings come from `ActivityTaskManager` and Savvy log timestamps.
+- The phone is a shared dev device with two other blocking-style accessibility services enabled (childsafetyimpl, safescreen). They did not visibly interfere.
+- **Test-method caveat:** `uiautomator dump` suppresses other accessibility services while it runs (Savvy logged destroyed/connected). It was not used during blocking measurements.
+
+### Blocking
+
+| Test | Result | Detail |
+| --- | --- | --- |
+| A-BLOCK-1 launcher, Accessibility path | **Pass** | Detection 37 to 98 ms after the event. The block screen is on top in every run (5/5 after the fix below) |
+| A-BLOCK-2 launcher, UsageStats only (a11y off) | **Pass** | About 420 ms to detect; block screen displayed about 640 ms after Instagram's start. Instagram's splash is briefly visible |
+| A-BLOCK-4 Recent apps | **Pass** | Blocked. The recents thumbnail shows only Instagram's splash, no feed content |
+| A-BLOCK-5 deep link `https://www.instagram.com/instagram/` | **Pass** | Instagram's UrlHandlerActivity blocked |
+| A-BAL-1 background launch of BlockActivity (Android 13) | **Pass** | From both the accessibility service and the UsageStats FGS |
+| Doze (forced deep idle, Savvy not battery-whitelisted) | **Pass** | Blocked while `deviceidle` reported IDLE |
+| A-BLOCK-3 notification, 6 web, 7 Assistant, 8 split screen, 9 PiP | Not run | Need manual steps |
+
+**Bug found and fixed (a11y path).**
+- **Problem:** The service started BlockActivity and *then* sent GLOBAL_ACTION_HOME. The launcher covered the block screen, and the user saw only the fallback overlay. NFC reader mode never ran, so "hold the card" did nothing.
+- **Fix:** Home first, then the block screen after 250 ms. The overlay now appears only if BlockActivity is not resumed after 1.5 s.
+- **Also fixed:** One launch produced 2 to 3 block events; a 1.5 s debounce was added.
+
+### Card unlock (NFC dispatch intent) and QR
+
+| Test | Result | Detail |
+| --- | --- | --- |
+| Right card, online | **Pass** | Released about 330 ms after the intent. Instagram opens afterwards |
+| Another account's genuine Savvy card | **Pass** | Rejected `card_not_owned_by_user` |
+| Forged signature | **Pass** | Rejected `bad_signature` |
+| Static URL form of my own signed card | **Pass** | Rejected `format_mismatch` |
+| Random non-Savvy URL | **Pass** | Never reaches Savvy (intent filter only matches `go.savvy.test/c/`) |
+| A-NFC-9 offline, own signed card | **Pass** | Released offline and queued. Synced on reconnect: the server recorded `released_by_card` |
+| Offline, someone else's genuine card | **Pass** | Rejected `offline_card_check_failed` |
+| A-CRYPTO-1 Ed25519 on API 33 (BouncyCastle provider) | **Pass** | Grants and offline card signatures verified on the device. API 26 to 32 still open |
+| QR camera scan | Not run | Needs a person to point the camera at a printed or on-screen QR |
+
+**Gap found and fixed:** the app had no way to register a card. `registerCard` was only called from tests, so every device unlock would have failed. The fix adds "Register my card" (NFC, QR or card link, through BlockActivity) and a debug "DEV: create + register a test card".
+
+### Commitment, to-do, emergency, insights
+
+| Test | Result |
+| --- | --- |
+| 6 h commitment | **Pass** |
+| 24 h (1440 min) commitment | **Pass** |
+| Second commitment while one is active | Refused `commitment_already_active` (by design) |
+| A-SELF-4 clock moved +7 h in the same boot | **Pass**: still blocked (monotonic clock) |
+| A-SELF-3 offline (no route, Wi-Fi and data off) | **Pass**: still blocked |
+| To-do, card-protected: Start blocks Instagram; Done → wrong card | **Pass**: refused `card_not_owned_by_user` |
+| To-do: Done → right card | **Pass**: released, task marked completed |
+| Free Sleep session: "End session" | **Pass**: released |
+| Card-required session: "End session" | **Pass**: refused ("needs the card") |
+| Emergency exit from the block screen | **Pass**: released |
+| Emergency exit on a **locked** commitment | Released (backend rule allows it; product decision C4) |
+| Emergency limit: 3rd exit in 7 days | **Pass**: `emergency_exit_limit_reached` |
+| Self screen-time summary (UsageStats) | **Pass**: total plus per-app minutes shown |
+| Focus time and streak | **Pass**: `streak_days 1`, focus seconds counted |
+
+**Gaps found and fixed:**
+- **Task completion:** "Done" on a card-protected task sent no card, so the backend always refused it. Done now opens the card screen in task mode.
+- **Free sessions:** these had no end-early action.
+- **Emergency exit:** it was not on the block screen.
+- **Self screen-time:** it was not shown anywhere.
+- **Notifications:** POST_NOTIFICATIONS was never requested.
+
+**Still open:** a card unlock of a *task* commitment from the normal block screen releases the restriction but leaves the task "active".
+
+### Self-mode bypasses
+
+| Test | Result |
+| --- | --- |
+| A-SELF-8 revoke Usage access (a11y on) | Still blocked (Accessibility path) |
+| A-SELF-7 turn off Accessibility (Usage access on) | Still blocked (UsageStats path) |
+| A-SELF-1 **Force stop** | **Full bypass.** Force stop removes Savvy from the enabled accessibility services (it stays off until re-enabled in Settings) and kills the FGS. Instagram opens. An app *update* does not remove the a11y service |
+| Reopen Savvy after force stop | **Bug fixed.** Enforcement did not restart. Opening Savvy now restarts the FGS when a commitment or parent rule is active; the UsageStats path then blocks again. Accessibility still needs re-enabling by the user |
+| A-SELF-10 Clear data | Same as Force stop, plus state lost. Accessibility is removed |
+| A-SELF-5/6 uninstall → reinstall → log in with the same email | **Bug fixed, then Pass.** The server restored the commitment, but with an empty app list (packages were never sent), so nothing was blocked. The selection is now sent as `selection_ref` and restored; Instagram was blocked again after reinstall. Permissions must be granted again, and the card must be re-registered before offline unlock works |
+| A-SELF-2 reboot (6 h commitment active, secure lock screen) | **Pass.** Accessibility rebound by itself before unlock. `BOOT_COMPLETED` arrived only after the user unlocked (about 90 s later in this run) and the FGS restarted. Instagram was blocked after reboot and the commitment was intact |
+
+### Parent / child (one phone as the child; parent driven through the API with curl)
+
+| Test | Result |
+| --- | --- |
+| Link with parent code | **Pass** |
+| Parent sees the child's launchable apps | **Pass**: 208 apps with real names |
+| Parent always-on rule (Instagram) → child | **Pass** after the child syncs. Sync happens on app open or every 15 min in the FGS. **There is no push**, so a rule can take up to 15 min to arrive |
+| Parent status shows tamper flags | **Pass**: `device_admin_off`, `adb_enabled_on` |
+| Device admin active → `pm uninstall` | **Pass**: `DELETE_FAILED_DEVICE_POLICY_MANAGER` |
+| Device admin active → App info "Force stop" | **Pass**: button disabled (Pixel / AOSP) |
+| Uninstall dialog, Accessibility settings, Savvy App info under an always-on rule only | **Bug fixed.** They opened freely because the guard only ran during a focus commitment. After the fix: blocked in 34 to 69 ms |
+| Settings → Security → More security settings → Device admin apps → Savvy (deactivate) | **Pass**: blocked in 132 ms (`DeviceAdminAdd`) |
+| Usage access list | Added to the guard list (`UsageAccessSettingsActivity`) |
+| `adb shell dpm remove-active-admin` | Refused (not a test-only admin) |
+| **`adb shell pm clear` with admin active** | **Succeeds.** All Savvy state is wiped and a11y disabled; Instagram opens. The admin stays active, so uninstall is still blocked. The parent sees only `adb_enabled_on` until the heartbeat is stale (30 min). A parent should be alerted when USB debugging is on |
+
+---
+
+**Automated state (25 September 2026, before the device run):**
 - `core` module: **21 JVM tests pass** (`gradle :core:test`), including the cross-implementation tests against backend-issued cards and grants.
 - `app` module: **compiles against the real Android 16 (API 36) framework** (`gradle :compilecheck:compileKotlin`, Robolectric android-all), with documented stubs for AndroidX / ZXing / R / BuildConfig.
 - **9 Robolectric end-to-end tests pass** (`gradle :compilecheck:test`). They run the real app classes on Google's Android 16 framework with Robolectric shadows, against the real backend. They are mutation-checked.

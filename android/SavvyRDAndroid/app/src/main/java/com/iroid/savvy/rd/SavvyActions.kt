@@ -98,9 +98,14 @@ class SavvyActions(private val context: Context) {
         if (local == null || r.optBoolean("restored_from_previous_install")) {
             val ends = Instant.parse(c.getString("ends_at")).toEpochMilli()
             val serverNow = System.currentTimeMillis() + repo.serverOffsetMs!!
+            // Reinstall / cleared data: the blocked apps come back from the server with the commitment.
+            val pkgs = c.optString("selection_ref").takeIf { it.startsWith("[") }
+                ?.let { s -> JSONArray(s).let { a -> (0 until a.length()).map(a::getString).toSet() } }
+            if (pkgs != null && repo.selectedPackages.isEmpty()) repo.selectedPackages = pkgs
             activate(c.getLong("id"), UUID.randomUUID().toString(), Mode.valueOf(c.getString("mode").uppercase()),
-                UnlockPolicy.fromWire(c.getString("unlock_policy")), ends - serverNow, ends, c.optString("task_ref").ifEmpty { null })
-            return "restored commitment ${c.getLong("id")}"
+                UnlockPolicy.fromWire(c.getString("unlock_policy")), ends - serverNow, ends, c.optString("task_ref").ifEmpty { null },
+                pkgs)
+            return "restored commitment ${c.getLong("id")} (${pkgs?.size ?: 0} apps from server)"
         }
         if (local.serverId == c.getLong("id")) {
             repo.commitment = local.copy(serverEndsAtMs = Instant.parse(c.getString("ends_at")).toEpochMilli())
@@ -111,20 +116,22 @@ class SavvyActions(private val context: Context) {
     fun start(mode: Mode, minutes: Int, policy: UnlockPolicy, taskRef: String? = null): String {
         if (repo.selectedPackages.isEmpty()) return "choose apps first"
         val localId = UUID.randomUUID().toString()
+        val selectionRef = JSONArray(repo.selectedPackages.toList()).toString()
         return try {
-            val r = backend.startCommitment(mode.name.lowercase(), minutes, policy.wire, taskRef)
+            val r = backend.startCommitment(mode.name.lowercase(), minutes, policy.wire, taskRef, selectionRef)
             activate(r.getLong("id"), localId, mode, policy, minutes * 60_000L, Instant.parse(r.getString("ends_at")).toEpochMilli(), taskRef)
             "started ${r.getLong("id")} for $minutes min"
         } catch (e: IOException) {
-            repo.enqueue(OfflineEvent.CommitmentStarted(localId, mode.name.lowercase(), minutes, policy.wire, taskRef, System.currentTimeMillis()))
+            repo.enqueue(OfflineEvent.CommitmentStarted(localId, mode.name.lowercase(), minutes, policy.wire, taskRef,
+                System.currentTimeMillis(), selectionRef))
             activate(null, localId, mode, policy, minutes * 60_000L, null, taskRef)
             "started offline for $minutes min (will sync)"
         }
     }
 
     private fun activate(serverId: Long?, localId: String, mode: Mode, policy: UnlockPolicy, durationMs: Long,
-                         serverEndsAt: Long?, taskRef: String?) {
-        repo.commitment = Commitment(serverId, mode, policy, repo.controlMode, repo.selectedPackages, durationMs, repo.now(),
+                         serverEndsAt: Long?, taskRef: String?, packages: Set<String>? = null) {
+        repo.commitment = Commitment(serverId, mode, policy, repo.controlMode, packages ?: repo.selectedPackages, durationMs, repo.now(),
             serverEndsAt, taskRef = taskRef, localId = localId)
         UsageMonitorService.start(context)
         SavvyLog.event("Actions", "activated $serverId $mode $policy ${durationMs / 60000}min task=$taskRef")

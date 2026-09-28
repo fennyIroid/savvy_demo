@@ -17,7 +17,12 @@ echo "sdk.dir=$HOME/Android/Sdk" > local.properties
 ./gradlew :app:assembleDebug   # generate the wrapper first with: gradle wrapper
 ```
 
-Set `BACKEND_URL` and `CARD_DOMAIN` in `app/build.gradle.kts`. For App Link
+Backend and card domain: `savvy.backendUrl` / `savvy.cardDomain` in `local.properties`
+(or `-P`). For a USB-connected phone the simplest route is `adb reverse tcp:3000 tcp:3000`
+with `savvy.backendUrl=http://127.0.0.1:3000`. Robolectric suite next to the app:
+`./gradlew -Psavvy.compilecheck=true :compilecheck:test`.
+Run the backend with persistent keys (a restart with new keys breaks registered phones):
+`SAVVY_DEV=1 SAVVY_CARD_SIGNING_KEY="$(cat card.pem)" SAVVY_GRANT_SIGNING_KEY="$(cat grant.pem)" npm start`. For App Link
 verification, host `https://<card-domain>/.well-known/assetlinks.json` with the
 debug and release certificate SHA-256 fingerprints.
 

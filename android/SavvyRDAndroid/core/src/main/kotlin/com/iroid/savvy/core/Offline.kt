@@ -10,6 +10,8 @@ sealed class OfflineEvent {
 
     data class CommitmentStarted(override val localId: String, val mode: String, val minutes: Int, val policy: String,
                                  val taskRef: String?, override val atMs: Long,
+                                 /** Android: JSON array of blocked package names, restored after reinstall. */
+                                 val selectionRef: String? = null,
                                  override val eventId: String = UUID.randomUUID().toString()) : OfflineEvent()
     data class CardRelease(override val localId: String, val serverId: Long?, val payload: String, val source: String,
                            override val atMs: Long, override val eventId: String = UUID.randomUUID().toString()) : OfflineEvent()

@@ -43,7 +43,12 @@ object RestrictionPolicy {
         "com.android.settings" to "ToggleAccessibilityServicePreferenceFragment",
         "com.android.settings" to "InstalledAppDetails",
         "com.android.settings" to "AppInfoDashboardFragment",
+        // Pixel 4 / Android 13 (28 Sep 2026): Usage access list, where the UsageStats fallback can be revoked.
+        "com.android.settings" to "UsageAccessSettingsActivity",
     )
+
+    private fun isTamperScreen(pkg: String, cls: String?) =
+        cls != null && TAMPER_SCREENS.any { (p, c) -> pkg == p && cls.contains(c) }
 
     fun decide(
         foregroundPackage: String,
@@ -54,18 +59,25 @@ object RestrictionPolicy {
         serverNowMs: Long? = null,
         /** Parent "always-on" rule (child device): blocked even without a focus commitment. */
         alwaysBlocked: Set<String> = emptySet(),
+        /**
+         * Child device under parent rules. The tamper guard must hold whenever parent rules
+         * are active, not only during a focus commitment: a Pixel 4 test (28 Sep 2026) showed
+         * the uninstall and Accessibility screens open freely under an always-on rule.
+         */
+        parentControlled: Boolean = false,
     ): Decision {
         val always = foregroundPackage in alwaysBlocked &&
             foregroundPackage !in ALWAYS_ALLOWED && foregroundPackage !in launcherPackages
+        if (parentControlled && alwaysBlocked.isNotEmpty() && isTamperScreen(foregroundPackage, foregroundClass)) {
+            return Decision.BlockTamperScreen(foregroundPackage, foregroundClass)
+        }
         if (commitment == null) return if (always) Decision.BlockApp(foregroundPackage) else Decision.Allow
 
         if (TimeIntegrity.remainingMs(commitment, now, serverNowMs) <= 0) return Decision.CommitmentExpired
         // Note: after expiry the caller clears the commitment and calls decide() again,
         // so parent always-on rules still apply on the next event.
 
-        if (commitment.controlMode == ControlMode.PARENT && foregroundClass != null &&
-            TAMPER_SCREENS.any { (pkg, cls) -> foregroundPackage == pkg && foregroundClass.contains(cls) }
-        ) {
+        if (commitment.controlMode == ControlMode.PARENT && isTamperScreen(foregroundPackage, foregroundClass)) {
             return Decision.BlockTamperScreen(foregroundPackage, foregroundClass)
         }
 
