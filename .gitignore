@@ -1,0 +1,16 @@
+.DS_Store
+node_modules/
+*.pem
+.env
+# iOS
+ios/**/xcuserdata/
+ios/**/DerivedData/
+ios/**/*.xcodeproj/
+# Android
+android/**/build/
+android/**/.gradle/
+android/**/.kotlin/
+android/local.properties
+# Swift
+ios/**/.build/
+ios/**/.swiftpm/

@@ -1,0 +1,17 @@
+{
+  "name": "savvy-rd-backend",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Savvy R&D backend POC: card validation (static, signed, NTAG 424 DNA SUN), commitment state, emergency exit, parent-child rule sync, streaks.",
+  "type": "commonjs",
+  "main": "src/server.js",
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "start": "node src/server.js",
+    "test": "node --test test/*.test.js",
+    "provision:cards": "node scripts/provision-cards.js"
+  },
+  "dependencies": {
+    "express": "^4.21.2"
+  }
+}

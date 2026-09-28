@@ -1,0 +1,12 @@
+{
+  "applinks": {
+    "details": [
+      {
+        "appIDs": ["YOUR_TEAM_ID.com.iroid.savvy.rd"],
+        "components": [
+          { "/": "/c/*", "comment": "Savvy card URLs from NFC (background read) and QR" }
+        ]
+      }
+    ]
+  }
+}

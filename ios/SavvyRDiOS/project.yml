@@ -1,0 +1,131 @@
+# XcodeGen spec. Generate the Xcode project on a Mac with:
+#   brew install xcodegen && xcodegen generate && open SavvyRDiOS.xcodeproj
+# Replace DEVELOPMENT_TEAM, bundle IDs, App Group and card domain before building.
+name: SavvyRDiOS
+options:
+  bundleIdPrefix: com.iroid.savvy.rd
+  deploymentTarget:
+    iOS: "16.0"          # .individual authorization needs iOS 16
+packages:
+  SavvyCore:
+    path: ../SavvyCore        # platform-neutral logic, unit-tested on Linux and macOS
+
+settings:
+  base:
+    DEVELOPMENT_TEAM: YOUR_TEAM_ID
+    CODE_SIGN_STYLE: Automatic
+    SWIFT_VERSION: "5.9"
+    TARGETED_DEVICE_FAMILY: "1"
+
+targets:
+  SavvyRDiOS:
+    type: application
+    platform: iOS
+    sources: [App, Shared]
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.iroid.savvy.rd
+        MARKETING_VERSION: "0.1"
+        CURRENT_PROJECT_VERSION: "1"
+    info:
+      path: App/Info.plist
+      properties:
+        CFBundleDisplayName: Savvy R&D
+        UILaunchScreen: {}
+        NFCReaderUsageDescription: Savvy reads your Savvy card to confirm you want to unlock your apps.
+        NSCameraUsageDescription: Savvy scans the QR code on your Savvy card when NFC is not available.
+        # NTAG 424 DNA (Type 4) cards are ISO 7816 tags. Listing the NDEF application
+        # AID makes them readable in NFCTagReaderSession.
+        com.apple.developer.nfc.readersession.iso7816.select-identifiers: [D2760000850101]
+        SavvyBackendURL: http://192.168.1.10:3000
+        NSAppTransportSecurity:
+          NSAllowsLocalNetworking: true   # POC only: plain HTTP to a laptop on the LAN
+        CFBundleURLTypes:
+          - CFBundleURLName: com.iroid.savvy.rd
+            CFBundleURLSchemes: [savvyrd]
+        # Child devices pull parent rules / flush offline events in the background.
+        UIBackgroundModes: [fetch, remote-notification]
+        BGTaskSchedulerPermittedIdentifiers: [com.iroid.savvy.rd.refresh]
+        # Optional: embed raw hex Ed25519 keys here instead of fetching /v1/keys (POC).
+        SavvyGrantPublicKey: ""
+        SavvyCardPublicKey: ""
+    entitlements:
+      path: App/SavvyRDiOS.entitlements
+      properties:
+        com.apple.developer.family-controls: true
+        com.apple.security.application-groups: [group.com.iroid.savvy.rd]
+        # Apple now lists TAG as the only value (covers NFCNDEFReaderSession too).
+        com.apple.developer.nfc.readersession.formats: [TAG]
+        com.apple.developer.associated-domains: ["applinks:go.savvy.test"]
+        aps-environment: development      # silent push when parent rules change
+    dependencies:
+      - package: SavvyCore
+      - target: SavvyMonitor
+      - target: SavvyShieldConfiguration
+      - target: SavvyShieldAction
+      - target: SavvyReport
+
+  SavvyMonitor:
+    type: app-extension
+    platform: iOS
+    sources: [Extensions/Monitor, Shared]
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.iroid.savvy.rd.monitor
+    info:
+      path: Extensions/Monitor/Info.plist
+    entitlements:
+      path: Extensions/Monitor/SavvyMonitor.entitlements
+      properties:
+        com.apple.developer.family-controls: true
+        com.apple.security.application-groups: [group.com.iroid.savvy.rd]
+    dependencies:
+      - package: SavvyCore
+
+  SavvyShieldConfiguration:
+    type: app-extension
+    platform: iOS
+    sources: [Extensions/ShieldConfiguration, Shared]
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.iroid.savvy.rd.shieldconfig
+    info:
+      path: Extensions/ShieldConfiguration/Info.plist
+    entitlements:
+      path: Extensions/ShieldConfiguration/SavvyShieldConfiguration.entitlements
+      properties:
+        com.apple.developer.family-controls: true
+        com.apple.security.application-groups: [group.com.iroid.savvy.rd]
+    dependencies:
+      - package: SavvyCore
+
+  SavvyShieldAction:
+    type: app-extension
+    platform: iOS
+    sources: [Extensions/ShieldAction, Shared]
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.iroid.savvy.rd.shieldaction
+    info:
+      path: Extensions/ShieldAction/Info.plist
+    entitlements:
+      path: Extensions/ShieldAction/SavvyShieldAction.entitlements
+      properties:
+        com.apple.developer.family-controls: true
+        com.apple.security.application-groups: [group.com.iroid.savvy.rd]
+    dependencies:
+      - package: SavvyCore
+
+  SavvyReport:
+    type: extensionkit-extension
+    platform: iOS
+    sources: [Extensions/Report]
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.iroid.savvy.rd.report
+    info:
+      path: Extensions/Report/Info.plist
+    entitlements:
+      path: Extensions/Report/SavvyReport.entitlements
+      properties:
+        com.apple.developer.family-controls: true

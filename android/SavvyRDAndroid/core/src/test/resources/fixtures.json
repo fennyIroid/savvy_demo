@@ -1,0 +1,13 @@
+{
+  "card_public_key_raw_hex": "8a88e3dd7409f195fd52db2d3cba5d72ca6709bf1d94121bf3748801b40f6f5c",
+  "grant_public_key_raw_hex": "8139770ea87d175f56a35466c34c7ecccb8d8a91b4ee37a25df60f5b8fc9b394",
+  "bound_card_code": "8V1QFQWTY6VG",
+  "signed_card_url": "https://go.savvy.test/c/1.8V1QFQWTY6VG.Uv8JJM3QUW21bnJwaiTg205Jgpwa6Lc-z8txMkop0jwIKjTSX-YGoAzgdfFKDcTT3GrbGnEE_Fmd5-YitMDRAg",
+  "forged_card_url": "https://go.savvy.test/c/1.ZZZZZZZZZZZZ.Uv8JJM3QUW21bnJwaiTg205Jgpwa6Lc-z8txMkop0jwIKjTSX-YGoAzgdfFKDcTT3GrbGnEE_Fmd5-YitMDRAg",
+  "static_card_url": "https://go.savvy.test/c/8V1QFQWTY6VG",
+  "sun_card_url": "https://go.savvy.test/c/s/8V1QFQWTY6VG?e=EF963FF7828658A599F3041510671E88&c=94EED9EE65337086",
+  "grant": "eyJhY3Rpb24iOiJyZWxlYXNlIiwiY29tbWl0bWVudF9pZCI6NDIsImRldmljZV9pZCI6NywiZXhwaXJlc19hdCI6IjIwMjYtMDktMjVUMDk6MDU6MDAuMDAwWiIsImdyYW50X2lkIjoiMDAwMDAwMDAtMDAwMC00MDAwLTgwMDAtMDAwMDAwMDAwMDAxIiwiaXNzdWVkX2F0IjoiMjAyNi0wOS0yNVQwOTowMDowMC4wMDBaIiwicmVhc29uIjoiY2FyZF9uZmMifQ.5xstZaEt5_2RsRsAnWBvK6LfB1aX-Scr_yscGPnu_1s1eRw5TD4o22_bx3LzOyycjGoy-4n6YXyQ98YZMBEUDg",
+  "pause_grant": "eyJhY3Rpb24iOiJwYXVzZSIsImNvbW1pdG1lbnRfaWQiOjQyLCJkZXZpY2VfaWQiOjcsImV4cGlyZXNfYXQiOiIyMDI2LTA5LTI1VDA5OjA1OjAwLjAwMFoiLCJncmFudF9pZCI6IjAwMDAwMDAwLTAwMDAtNDAwMC04MDAwLTAwMDAwMDAwMDAwMiIsImlzc3VlZF9hdCI6IjIwMjYtMDktMjVUMDk6MDA6MDAuMDAwWiIsInBhdXNlX3VudGlsIjoiMjAyNi0wOS0yNVQwOToxNTowMC4wMDBaIiwicmVhc29uIjoiZW1lcmdlbmN5X2V4aXQifQ.0g4uZWBdecRfvkZq88XA3pWS56CqwB-EI_9-xbLgGYTCfwsCeUjHjb4_WU2ypLop6boAKeIIDRk0_qTSnKE0BA",
+  "grant_now_valid": "2026-09-25T09:01:00.000Z",
+  "grant_now_expired": "2026-09-25T09:06:00.000Z"
+}
