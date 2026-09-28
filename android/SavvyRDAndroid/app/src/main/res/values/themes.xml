@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Frozen lake palette; the screens themselves are Compose (src/main/ui/.../ui/theme/Theme.kt). -->
+    <color name="savvy_snow">#FFFAFA</color>
+    <color name="savvy_navy">#000080</color>
+    <color name="savvy_canvas">#D6DFE7</color>
+    <color name="savvy_launcher_bg">#0B1030</color>
+
+    <style name="Theme.Savvy" parent="Theme.AppCompat.DayNight.NoActionBar">
+        <item name="android:windowBackground">@color/savvy_canvas</item>
+        <item name="colorPrimary">@color/savvy_navy</item>
+        <item name="colorAccent">@color/savvy_navy</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+    </style>
+</resources>

@@ -3,5 +3,6 @@
 plugins {
     kotlin("jvm") apply false
     kotlin("android") apply false
+    kotlin("plugin.compose") apply false
     id("com.android.application") apply false
 }

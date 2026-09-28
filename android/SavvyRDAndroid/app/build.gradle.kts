@@ -3,6 +3,7 @@ import java.util.Properties
 plugins {
     id("com.android.application")
     kotlin("android")
+    kotlin("plugin.compose")
 }
 
 // Backend and card domain for device tests: set savvy.backendUrl / savvy.cardDomain in
@@ -28,7 +29,10 @@ android {
     }
     // BouncyCastle and jspecify both ship this OSGi manifest; not needed at runtime.
     packaging { resources { excludes += "META-INF/versions/9/OSGI-INF/MANIFEST.MF" } }
-    buildFeatures { buildConfig = true; viewBinding = false }
+    buildFeatures { buildConfig = true; viewBinding = false; compose = true }
+    // src/main/java = logic, also compiled by :compilecheck (Robolectric suite, no Compose there).
+    // src/main/ui   = Jetpack Compose screens, app only.
+    sourceSets["main"].java.srcDirs("src/main/ui")
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
@@ -40,6 +44,18 @@ dependencies {
     implementation(project(":core"))
     implementation("androidx.core:core-ktx:1.16.0")
     implementation("androidx.appcompat:appcompat:1.7.1")
+    // UI (src/main/ui)
+    implementation(platform("androidx.compose:compose-bom:2025.06.01"))
+    implementation("androidx.compose.ui:ui")
+    implementation("androidx.compose.foundation:foundation")
+    implementation("androidx.compose.material3:material3")
+    implementation("androidx.compose.material:material-icons-extended")
+    implementation("androidx.compose.ui:ui-tooling-preview")
+    debugImplementation("androidx.compose.ui:ui-tooling")
+    implementation("androidx.activity:activity-compose:1.10.1")
+    implementation("androidx.navigation:navigation-compose:2.9.0")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.9.1")
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.9.1")
     // QR scanner (live camera only, no gallery import).
     implementation("com.journeyapps:zxing-android-embedded:4.3.0")
     // Ed25519 below API 33 (platform provider has it from API 33).

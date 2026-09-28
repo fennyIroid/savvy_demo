@@ -4,10 +4,6 @@ import android.content.Intent
 import android.nfc.NfcAdapter
 import android.os.Bundle
 import android.provider.Settings
-import android.view.Gravity
-import android.widget.Button
-import android.widget.LinearLayout
-import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import com.iroid.savvy.rd.SavvyActions
@@ -30,12 +26,14 @@ import kotlin.concurrent.thread
  * card-protected to-do task.
  */
 class BlockActivity : AppCompatActivity() {
-    private lateinit var status: TextView
     private lateinit var reader: NfcCardReader
+    /** Compose screen in the app (src/main/ui); a no-op stub in the Robolectric suite. */
+    private lateinit var ui: BlockScreen
     private val unlock by lazy { UnlockCoordinator(this) }
     private val actions by lazy { SavvyActions(this) }
     private var mode = MODE_UNLOCK
     private var taskId: String? = null
+    var state = BlockUiState(); private set
 
     private val qr = registerForActivityResult(ScanContract()) { result ->
         result.contents?.let { handleCard(it, "qr") }
@@ -43,35 +41,13 @@ class BlockActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val blocked = intent.getStringExtra(EXTRA_BLOCKED)
-        val tamper = intent.getBooleanExtra(EXTRA_TAMPER, false)
         readMode(intent)
-        status = TextView(this).apply { textSize = 16f; gravity = Gravity.CENTER }
         reader = NfcCardReader(this, liveBackend = savvy.backend) { url, uid, ms, token ->
             if (token != null) handleLiveProof(url, token, "uid=$uid read=${ms}ms") else handleCard(url, "nfc", "uid=$uid read=${ms}ms")
         }
-
-        setContentView(LinearLayout(this).apply {
-            orientation = LinearLayout.VERTICAL
-            gravity = Gravity.CENTER
-            setPadding(48, 48, 48, 48)
-            addView(TextView(context).apply {
-                textSize = 24f; gravity = Gravity.CENTER
-                text = when {
-                    mode == MODE_REGISTER -> "Register your Savvy card"
-                    mode == MODE_TASK -> "Scan your Savvy card to finish the task"
-                    tamper -> "This setting is locked by your parent's Savvy rules"
-                    else -> "${blocked ?: "This app"} is paused by Savvy"
-                }
-            })
-            addView(status)
-            addView(Button(context).apply { text = "Scan card QR instead"; setOnClickListener {
-                qr.launch(ScanOptions().setDesiredBarcodeFormats(ScanOptions.QR_CODE).setBeepEnabled(false).setOrientationLocked(true))
-            } })
-            addView(Button(context).apply { text = "Turn on NFC"; setOnClickListener { startActivity(Intent(Settings.ACTION_NFC_SETTINGS)) } })
-            if (mode == MODE_UNLOCK) addView(Button(context).apply { text = "Emergency exit"; setOnClickListener { emergency() } })
-            addView(Button(context).apply { text = "Go to Home"; setOnClickListener { goHome() } })
-        })
+        ui = BlockScreen(this)
+        update { BlockUiState(mode = mode, blockedPackage = intent.getStringExtra(EXTRA_BLOCKED),
+            tamper = intent.getBooleanExtra(EXTRA_TAMPER, false), nfc = reader.state) }
         // Back must not return to the blocked app.
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) { override fun handleOnBackPressed() = goHome() })
         handleIntent(intent)
@@ -81,6 +57,7 @@ class BlockActivity : AppCompatActivity() {
         super.onNewIntent(intent)
         // A card link arriving while registering / finishing a task keeps that mode.
         if (intent.hasExtra(EXTRA_MODE)) readMode(intent)
+        update { it.copy(mode = mode) }
         handleIntent(intent)
     }
 
@@ -88,17 +65,18 @@ class BlockActivity : AppCompatActivity() {
         super.onResume()
         resumed = true
         reader.enable()
-        status.text = when (reader.state) {
-            "ready" -> "Hold your Savvy card to the back of your phone${if (mode == MODE_UNLOCK) " to unlock" else ""}."
-            "nfc_disabled" -> "NFC is off. Turn it on, or scan the card QR."
-            else -> "This phone has no NFC. Scan the card QR."
-        }
+        update { it.copy(nfc = reader.state) }
     }
 
     override fun onPause() {
         resumed = false
         reader.disable()
         super.onPause()
+    }
+
+    private fun update(f: (BlockUiState) -> BlockUiState) {
+        state = f(state)
+        ui.render(state)
     }
 
     /** Card tapped while Savvy was in background / not running: tag dispatch or App Link. */
@@ -116,19 +94,24 @@ class BlockActivity : AppCompatActivity() {
         taskId = i.getStringExtra(EXTRA_TASK_ID)
     }
 
+    private fun checking() = update { it.copy(phase = BlockUiState.Phase.CHECKING, message = null) }
+    private fun failed(msg: String) = update { it.copy(phase = BlockUiState.Phase.FAILED, message = msg) }
+    private fun succeeded(msg: String) {
+        update { it.copy(phase = BlockUiState.Phase.SUCCESS, message = msg) }
+        ui.onSuccess { finish() }
+    }
+
     private fun handleCard(raw: String, source: String, note: String = "") {
-        status.text = "Checking card..."
+        checking()
         if (mode != MODE_UNLOCK) { handleOtherMode(raw, source, note); return }
         thread {
             val outcome = unlock.handleCard(raw, source)
             SavvyLog.event("Block", "card source=$source $note -> $outcome")
             runOnUiThread {
                 when (outcome) {
-                    is UnlockCoordinator.Outcome.Released, is UnlockCoordinator.Outcome.Paused -> {
-                        status.text = "Unlocked"
-                        finish()
-                    }
-                    else -> status.text = "Not unlocked: $outcome"
+                    is UnlockCoordinator.Outcome.Released, is UnlockCoordinator.Outcome.Paused -> succeeded(outcome.toString())
+                    is UnlockCoordinator.Outcome.Rejected -> failed(outcome.reason)
+                    else -> failed(outcome.toString())
                 }
             }
         }
@@ -140,41 +123,52 @@ class BlockActivity : AppCompatActivity() {
         }.getOrElse { "error: $it" }
         SavvyLog.event("Block", "$mode card source=$source $note -> $msg")
         runOnUiThread {
-            status.text = msg
             val repo = savvy.repo
             val done = if (mode == MODE_REGISTER) repo.boundCardCode != null && msg.contains("registered")
                 else repo.commitment?.taskRef != taskId
-            if (done) finish()
+            if (done) succeeded(msg) else failed(msg)
         }
     }
 
-    private fun emergency() {
-        status.text = "Requesting emergency exit..."
+    /** Called by the screen after the user confirmed. */
+    fun emergency() {
+        checking()
         thread {
             val msg = runCatching { actions.emergency("block_screen") }.getOrElse { "error: $it" }
             SavvyLog.event("Block", "emergency -> $msg")
             runOnUiThread {
-                status.text = msg
                 val c = savvy.repo.commitment
-                if (c == null || (c.pausedUntilElapsedMs ?: 0) > savvy.repo.now().elapsedRealtimeMs) finish()
+                if (c == null || (c.pausedUntilElapsedMs ?: 0) > savvy.repo.now().elapsedRealtimeMs) succeeded(msg) else failed(msg)
             }
         }
     }
 
+    fun scanQr() {
+        qr.launch(ScanOptions().setDesiredBarcodeFormats(ScanOptions.QR_CODE).setBeepEnabled(false).setOrientationLocked(true))
+    }
+
+    fun openNfcSettings() = startActivity(Intent(Settings.ACTION_NFC_SETTINGS))
+
+    /** Leaves the finished card state so the user can try again. */
+    fun retry() = update { it.copy(phase = BlockUiState.Phase.WAITING, message = null) }
+
     private fun handleLiveProof(url: String, token: String, note: String) {
-        status.text = "Checking card..."
+        checking()
         thread {
             val outcome = unlock.handleLiveProof(url, token)
             SavvyLog.event("Block", "live proof $note -> $outcome")
             runOnUiThread {
-                if (outcome is UnlockCoordinator.Outcome.Released || outcome is UnlockCoordinator.Outcome.Paused) finish()
-                else status.text = "Not unlocked: $outcome"
+                if (outcome is UnlockCoordinator.Outcome.Released || outcome is UnlockCoordinator.Outcome.Paused) succeeded(outcome.toString())
+                else failed((outcome as? UnlockCoordinator.Outcome.Rejected)?.reason ?: outcome.toString())
             }
         }
     }
 
-    private fun goHome() {
-        startActivity(Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_HOME).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+    /** Back and "Go home": never back into the blocked app; other modes just close. */
+    fun goHome() {
+        if (mode == MODE_UNLOCK) {
+            startActivity(Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_HOME).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+        }
         finish()
     }
 
@@ -189,4 +183,17 @@ class BlockActivity : AppCompatActivity() {
         const val MODE_REGISTER = "register"
         const val MODE_TASK = "task"
     }
+}
+
+/** What the block screen shows. [message] is the raw result (reason code or action text) for the screen to phrase. */
+data class BlockUiState(
+    val mode: String = BlockActivity.MODE_UNLOCK,
+    val blockedPackage: String? = null,
+    val tamper: Boolean = false,
+    /** NfcCardReader.state: ready, nfc_disabled or no_nfc_hardware. */
+    val nfc: String = "ready",
+    val phase: Phase = Phase.WAITING,
+    val message: String? = null,
+) {
+    enum class Phase { WAITING, CHECKING, SUCCESS, FAILED }
 }

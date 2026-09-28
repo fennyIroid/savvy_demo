@@ -28,12 +28,14 @@
 
     <application
         android:name=".SavvyApp"
-        android:label="Savvy R&amp;D"
-        android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"
+        android:label="Savvy"
+        android:icon="@mipmap/ic_launcher"
+        android:roundIcon="@mipmap/ic_launcher"
+        android:theme="@style/Theme.Savvy"
         android:usesCleartextTraffic="true"
         tools:targetApi="36">
 
-        <activity android:name=".MainActivity" android:exported="true">
+        <activity android:name=".MainActivity" android:exported="true" android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -61,8 +63,6 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".picker.AppPickerActivity" android:exported="false" />
-        <activity android:name=".picker.ChildAppPickerActivity" android:exported="false" />
 
         <!-- Approach B: AccessibilityService (primary). isAccessibilityTool=false in config. -->
         <service

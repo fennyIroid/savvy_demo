@@ -16,6 +16,7 @@ pluginManagement {
     plugins {
         kotlin("jvm") version "2.1.21"
         kotlin("android") version "2.1.21"
+        kotlin("plugin.compose") version "2.1.21"
         id("com.android.application") version "8.10.1"
     }
 }

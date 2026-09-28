@@ -41,5 +41,23 @@ Both detection paths feed `service/BlockingEngine`, which uses `core/Restriction
 so they can be compared on the same device. Tamper state is reported by
 `service/TamperMonitor` in the heartbeat.
 
+## UI
+
+Jetpack Compose + Material 3, in its own source folder `app/src/main/ui` (the logic in
+`app/src/main/java` is unchanged and is what `:compilecheck` / Robolectric compiles and tests).
+
+- Layout follows the Brick app: a sheet whose bottom corners curve up, a text-only tab bar
+  under it (Focus, Tasks, Activity, Settings), grouped rounded cards, pill buttons, sub-screens
+  as modal pages with a round back button.
+- Colours: the "Frozen lake" palette (#6D8196 slate, #ADD8E6 icy, #FFFAFA snow, #000080 navy),
+  light and dark (`ui/theme/Theme.kt`). Font: Outfit (SIL OFL, `third_party/Outfit-OFL.txt`).
+- `MainActivity` is the single app activity (`ui/SavvyRoot.kt`, navigation-compose).
+  `ui/SavvyViewModel.kt` calls the same `SavvyActions` the old test lab called.
+- `BlockActivity` keeps all card / task / emergency logic and pushes a `BlockUiState` to
+  `BlockScreen` (Compose in the app, a no-op stub in `compilecheck/src/main/kotlin/stubs4`).
+- Every old test-lab action is still reachable: Settings › Diagnostics has status /
+  heartbeat, sync, restore, text reports, show and share log; Settings › Card has the
+  debug test card with its QR.
+
 ## Tests
 See `docs/ANDROID_POC_RESULTS.md` for the device and OEM test plan.

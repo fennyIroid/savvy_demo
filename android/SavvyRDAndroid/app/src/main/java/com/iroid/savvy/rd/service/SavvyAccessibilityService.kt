@@ -7,7 +7,6 @@ import android.view.Gravity
 import android.view.View
 import android.view.WindowManager
 import android.view.accessibility.AccessibilityEvent
-import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.iroid.savvy.core.RestrictionPolicy.Decision
@@ -74,24 +73,39 @@ class SavvyAccessibilityService : AccessibilityService() {
     private fun showOverlay(blocked: String, tamper: Boolean) {
         if (overlay != null) return
         val wm = getSystemService(WindowManager::class.java)
+        // Plain views (no Compose in an accessibility overlay); same frozen-lake look as the block screen.
+        val dp = resources.displayMetrics.density
+        fun pill(label: String, solid: Boolean, onClick: () -> Unit) = TextView(this).apply {
+            text = label; textSize = 16f; gravity = Gravity.CENTER
+            setTextColor(if (solid) 0xFFFFFAFA.toInt() else 0xFF0B1233.toInt())
+            background = android.graphics.drawable.GradientDrawable().apply {
+                cornerRadius = 30 * dp; setColor(if (solid) 0xFF000080.toInt() else 0xFFEEF2F6.toInt())
+            }
+            setPadding(0, (18 * dp).toInt(), 0, (18 * dp).toInt())
+            setOnClickListener { onClick() }
+            layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+                .apply { topMargin = (12 * dp).toInt() }
+        }
         val view = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
             gravity = Gravity.CENTER
-            setBackgroundColor(0xF0111827.toInt())
-            setPadding(48, 48, 48, 48)
+            setBackgroundColor(0xFFFFFAFA.toInt())
+            setPadding((28 * dp).toInt(), 0, (28 * dp).toInt(), 0)
             addView(TextView(context).apply {
-                textSize = 22f; setTextColor(0xFFFFFFFF.toInt()); gravity = Gravity.CENTER
-                text = if (tamper) "This setting is locked by your parent's Savvy rules" else "$blocked is paused by Savvy"
+                textSize = 28f; setTextColor(0xFF0B1233.toInt()); gravity = Gravity.CENTER
+                text = if (tamper) "This setting is locked" else "${appLabel(blocked)} is paused"
             })
-            addView(Button(context).apply {
-                text = "Unlock with Savvy card"
-                setOnClickListener {
-                    removeOverlay()
-                    startActivity(Intent(context, BlockActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                        .putExtra(BlockActivity.EXTRA_BLOCKED, blocked))
-                }
+            addView(TextView(context).apply {
+                textSize = 16f; setTextColor(0xFF6D8196.toInt()); gravity = Gravity.CENTER
+                setPadding(0, (8 * dp).toInt(), 0, (28 * dp).toInt())
+                text = if (tamper) "Your parent's Savvy rules protect this screen." else "Hold your Savvy card to the back of your phone to unlock."
             })
-            addView(Button(context).apply { text = "Close"; setOnClickListener { removeOverlay() } })
+            addView(pill("Unlock with Savvy card", solid = true) {
+                removeOverlay()
+                startActivity(Intent(context, BlockActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    .putExtra(BlockActivity.EXTRA_BLOCKED, blocked))
+            })
+            addView(pill("Close", solid = false) { removeOverlay() })
         }
         val params = WindowManager.LayoutParams(
             WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT,
@@ -101,6 +115,10 @@ class SavvyAccessibilityService : AccessibilityService() {
         runCatching { wm.addView(view, params); overlay = view }
             .onFailure { SavvyLog.event("A11y", "overlay failed $it") }
     }
+
+    private fun appLabel(pkg: String) = runCatching {
+        packageManager.getApplicationLabel(packageManager.getApplicationInfo(pkg, 0)).toString()
+    }.getOrDefault(pkg)
 
     private fun removeOverlay() {
         overlay?.let { v -> runCatching { getSystemService(WindowManager::class.java).removeView(v) } }
