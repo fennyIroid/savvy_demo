@@ -52,6 +52,12 @@ class MainActivity : AppCompatActivity() {
         col.addView(email)
         button("Register this install") { bg { actions.register(email.text.toString()) } }
 
+        header("Savvy card")
+        button("Register my card (tap NFC or scan QR)") {
+            startActivity(Intent(this, BlockActivity::class.java).putExtra(BlockActivity.EXTRA_MODE, BlockActivity.MODE_REGISTER))
+        }
+        if (BuildConfig.DEBUG) button("DEV: create + register a test card") { bg { actions.devCard() } }
+
         header("Permissions")
         button("Choose apps to block") { startActivity(Intent(this, AppPickerActivity::class.java)) }
         button("Enable Accessibility (disclosure first)") { showDisclosure() }
@@ -73,6 +79,7 @@ class MainActivity : AppCompatActivity() {
         button("Start Work, locked") { bg { actions.start(Mode.WORK, mins(), UnlockPolicy.LOCKED) } }
         button("Start Sleep, free") { bg { actions.start(Mode.SLEEP, mins(), UnlockPolicy.FREE) } }
         button("Open block screen (scan card / QR)") { startActivity(Intent(this, BlockActivity::class.java)) }
+        button("End session (free sessions only)") { bg { actions.endFree() } }
         button("Emergency exit") { bg { actions.emergency("test") } }
 
         header("To-do restriction")
@@ -97,6 +104,7 @@ class MainActivity : AppCompatActivity() {
         button("Child status and usage") { bg { actions.children().joinToString("\n\n") { "child $it: ${actions.childReport(it)}" } } }
 
         header("Insights and diagnostics")
+        button("Screen time today (this phone)") { bg { actions.screenTimeToday() } }
         button("Focus time and streak") { bg { actions.insights() } }
         button("Sync offline events now") { bg { actions.flushOffline() } }
         button("Status / heartbeat") { bg {
@@ -106,7 +114,17 @@ class MainActivity : AppCompatActivity() {
                 "\nparent always-on=${repo.parentBlockedPackages.size} offline queue=${repo.offlineQueue().length()}"
         } }
         button("Show log") { show(SavvyLog.read().takeLast(6000)) }
+        button("Share log (test evidence)") {
+            startActivity(Intent.createChooser(Intent(Intent.ACTION_SEND).setType("text/plain")
+                .putExtra(Intent.EXTRA_TEXT, SavvyLog.read().takeLast(90_000)), "Savvy R&D log"))
+        }
         setContentView(ScrollView(this).apply { addView(col) })
+        // Android 13+: without this the "focus is on" FGS notification is hidden, and Play's
+        // monitoring rules expect a visible notification in parent mode.
+        if (android.os.Build.VERSION.SDK_INT >= 33 &&
+            checkSelfPermission(android.Manifest.permission.POST_NOTIFICATIONS) != android.content.pm.PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(arrayOf(android.Manifest.permission.POST_NOTIFICATIONS), 1)
+        }
     }
 
     override fun onResume() {
@@ -129,7 +147,12 @@ class MainActivity : AppCompatActivity() {
                     bg { actions.start(Mode.TASK, t.getInt("minutes"), UnlockPolicy.CARD_REQUIRED, taskRef = id) }
                 } })
                 "active" -> row.addView(Button(this).apply { text = "Done"; setOnClickListener {
-                    bg { actions.completeTask(id).also { runOnUiThread { renderTasks() } } }
+                    val c = repo.commitment
+                    if (c?.taskRef == id && c.unlockPolicy == UnlockPolicy.CARD_REQUIRED) {
+                        // Card-protected task: finishing it needs the card too (backend rule, OPEN_ITEMS C3).
+                        startActivity(Intent(this@MainActivity, BlockActivity::class.java)
+                            .putExtra(BlockActivity.EXTRA_MODE, BlockActivity.MODE_TASK).putExtra(BlockActivity.EXTRA_TASK_ID, id))
+                    } else bg { actions.completeTask(id).also { runOnUiThread { renderTasks() } } }
                 } })
             }
             tasksBox.addView(row)

@@ -21,12 +21,15 @@ import com.iroid.savvy.rd.savvy
  * recents, deep link, split screen). It does not read window content.
  *
  * Block screen delivery, two layers:
- *  1. go Home + start BlockActivity (engine). Background activity launch from an
- *     accessibility service is expected to work but is no longer listed as an
- *     exemption in current docs (test A-BAL-1).
- *  2. fallback: a TYPE_ACCESSIBILITY_OVERLAY window, which needs no
- *     SYSTEM_ALERT_WINDOW. Its button opens BlockActivity from a user tap, which is
- *     always allowed. Removed when a Savvy window comes to the front or on Close.
+ *  1. go Home, THEN start BlockActivity. Order matters: on a Pixel 4 (Android 13)
+ *     starting BlockActivity first and sending Home after it left the launcher on top
+ *     of the block screen, so NFC reader mode never ran (device test 28 Sep 2026).
+ *     Background activity launch from the accessibility service worked on that device
+ *     (A-BAL-1, Android 13).
+ *  2. fallback, only if no Savvy activity is in front after [OVERLAY_FALLBACK_MS]: a
+ *     TYPE_ACCESSIBILITY_OVERLAY window, which needs no SYSTEM_ALERT_WINDOW. Its button
+ *     opens BlockActivity from a user tap, which is always allowed. Removed when a
+ *     Savvy window comes to the front or on Close.
  *
  * Play policy: allowed as a non-accessibility-tool with declaration, prominent
  * disclosure, consent and video. Using it to stop disabling / uninstall is only
@@ -34,6 +37,7 @@ import com.iroid.savvy.rd.savvy
  */
 class SavvyAccessibilityService : AccessibilityService() {
     private var overlay: View? = null
+    private val handler = android.os.Handler(android.os.Looper.getMainLooper())
 
     override fun onServiceConnected() {
         SavvyLog.event("A11y", "connected")
@@ -48,15 +52,23 @@ class SavvyAccessibilityService : AccessibilityService() {
             if (event.className?.toString()?.startsWith("com.iroid.savvy.rd.") == true) removeOverlay()
             return
         }
-        val decision = savvy.engine.onForeground(pkg, event.className?.toString(),
-            BlockingEngine.Source.ACCESSIBILITY, event.eventTime)
-        if (decision is Decision.BlockApp || decision is Decision.BlockTamperScreen) {
-            // Leave the blocked app first so it is not visible behind the block screen.
+        val engine = savvy.engine
+        val decision = engine.onForeground(pkg, event.className?.toString(),
+            BlockingEngine.Source.ACCESSIBILITY, event.eventTime, launch = false)
+        if ((decision is Decision.BlockApp || decision is Decision.BlockTamperScreen) && engine.shouldLaunch(pkg)) {
+            val tamper = decision is Decision.BlockTamperScreen
+            // Leave the blocked app first so it is not visible behind the block screen...
             performGlobalAction(GLOBAL_ACTION_HOME)
-            showOverlay(pkg, decision is Decision.BlockTamperScreen)
+            // ...then bring the block screen above the launcher.
+            handler.postDelayed({
+                runCatching { startActivity(engine.blockIntent(pkg, tamper)) }
+                    .onFailure { SavvyLog.event("A11y", "block screen launch failed $it") }
+            }, HOME_SETTLE_MS)
+            handler.postDelayed({
+                // Window events are not reliable here: the blocked app can still emit one after Home.
+                if (!BlockActivity.resumed) { SavvyLog.event("A11y", "block screen not in front, overlay fallback"); showOverlay(pkg, tamper) }
+            }, OVERLAY_FALLBACK_MS)
         }
-        // The overlay stays over the launcher until BlockActivity (our package) is in
-        // front or the user taps Close; if BlockActivity started normally it is removed at once.
     }
 
     private fun showOverlay(blocked: String, tamper: Boolean) {
@@ -96,6 +108,11 @@ class SavvyAccessibilityService : AccessibilityService() {
     }
 
     override fun onInterrupt() {}
+
+    companion object {
+        const val HOME_SETTLE_MS = 250L
+        const val OVERLAY_FALLBACK_MS = 1500L
+    }
 
     override fun onDestroy() {
         removeOverlay()

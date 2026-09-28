@@ -6,6 +6,7 @@ package com.iroid.savvy.rd
 object BuildConfig {
     const val BACKEND_URL = "http://192.168.1.10:3000"
     const val CARD_DOMAIN = "go.savvy.test"
+    const val DEBUG = true
 }
 
 object R {

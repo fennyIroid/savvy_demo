@@ -42,8 +42,10 @@ include(":core")
 val localProps = file("local.properties")
 val hasSdk = System.getenv("ANDROID_HOME") != null || System.getenv("ANDROID_SDK_ROOT") != null ||
     (localProps.exists() && localProps.readText().contains("sdk.dir"))
-if (hasSdk) include(":app") else {
-    println("Android SDK not found: building :core and :compilecheck (app sources vs android-all)")
+if (hasSdk) include(":app")
+// The Robolectric suite (compilecheck) can also run next to :app with -Psavvy.compilecheck=true.
+if (!hasSdk || providers.gradleProperty("savvy.compilecheck").isPresent) {
+    if (!hasSdk) println("Android SDK not found: building :core and :compilecheck (app sources vs android-all)")
     include(":compilecheck")
     include(":androidxtest")
 }

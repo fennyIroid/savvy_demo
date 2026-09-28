@@ -1,7 +1,17 @@
+import java.util.Properties
+
 plugins {
     id("com.android.application")
     kotlin("android")
 }
+
+// Backend and card domain for device tests: set savvy.backendUrl / savvy.cardDomain in
+// local.properties or pass -Psavvy.backendUrl=... (phone and backend on the same Wi-Fi).
+val localProps = Properties().apply {
+    rootProject.file("local.properties").takeIf { it.exists() }?.inputStream()?.use { load(it) }
+}
+fun setting(key: String, default: String) =
+    (findProperty(key) as String?) ?: localProps.getProperty(key) ?: default
 
 android {
     namespace = "com.iroid.savvy.rd"
@@ -13,9 +23,11 @@ android {
         targetSdk = 36       // Play requires API 36 for new apps from 31 Aug 2026
         versionCode = 1
         versionName = "0.1-rd"
-        buildConfigField("String", "BACKEND_URL", "\"http://192.168.1.10:3000\"")
-        buildConfigField("String", "CARD_DOMAIN", "\"go.savvy.test\"")
+        buildConfigField("String", "BACKEND_URL", "\"${setting("savvy.backendUrl", "http://192.168.1.10:3000")}\"")
+        buildConfigField("String", "CARD_DOMAIN", "\"${setting("savvy.cardDomain", "go.savvy.test")}\"")
     }
+    // BouncyCastle and jspecify both ship this OSGi manifest; not needed at runtime.
+    packaging { resources { excludes += "META-INF/versions/9/OSGI-INF/MANIFEST.MF" } }
     buildFeatures { buildConfig = true; viewBinding = false }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17

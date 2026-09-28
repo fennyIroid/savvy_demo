@@ -10,7 +10,7 @@ ios/**/*.xcodeproj/
 android/**/build/
 android/**/.gradle/
 android/**/.kotlin/
-android/local.properties
+android/**/local.properties
 # Swift
 ios/**/.build/
 ios/**/.swiftpm/

@@ -100,6 +100,11 @@ class CommitmentRepository(private val context: Context) {
         get() = prefs.getString("boundCard", null)
         set(v) = prefs.edit().putString("boundCard", v).apply()
 
+    /** Debug: last dev card URL, so a tester can present it again (adb / QR). */
+    var devCardUrl: String?
+        get() = prefs.getString("devCardUrl", null)
+        set(v) = prefs.edit().putString("devCardUrl", v).apply()
+
     var appliedRuleVersion: Int
         get() = prefs.getInt("ruleVersion", 0)
         set(v) = prefs.edit().putInt("ruleVersion", v).apply()

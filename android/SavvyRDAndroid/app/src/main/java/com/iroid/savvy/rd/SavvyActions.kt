@@ -35,6 +35,54 @@ class SavvyActions(private val context: Context) {
         return "registered device ${repo.deviceId} as ${repo.role}; ${restore()}"
     }
 
+    /**
+     * Binds the physical card (NFC URL or the same URL as QR) to this account. The card
+     * code is also kept locally: offline unlock accepts only the bound signed card.
+     */
+    fun registerCard(raw: String, source: String): String {
+        val payload = com.iroid.savvy.core.CardPayload.parse(raw, BuildConfig.CARD_DOMAIN) ?: return "not a Savvy card"
+        val r = try {
+            backend.registerCard(raw, source)
+        } catch (e: BackendClient.ApiError) {
+            // Re-registering the card this account already owns is fine.
+            if (e.code != "account_already_has_card" || repo.boundCardCode != payload.cardCode) return "card refused: ${e.code}"
+            null
+        }
+        repo.boundCardCode = payload.cardCode
+        SavvyLog.event("Card", "registered ${payload.cardCode} via $source format=${r?.optString("format") ?: "existing"}")
+        return "card ${payload.cardCode} registered (${payload::class.simpleName})"
+    }
+
+    /** Debug builds: create a signed test card on the dev backend and bind it. */
+    fun devCard(): String {
+        val url = backend.devCard().getString("url")
+        repo.devCardUrl = url
+        return "${registerCard(url, "dev")}\n$url"
+    }
+
+    /** FREE policy only: the user ends the session in the app (backend method=user). */
+    fun endFree(): String {
+        val c = repo.commitment ?: return "no commitment"
+        if (c.unlockPolicy != UnlockPolicy.FREE) return "this session needs the card to end early"
+        if (c.serverId == null) { unlock.releaseLocally("user_ended_offline"); return "ended (offline)" }
+        return try {
+            unlock.applyGrant(backend.release(c.serverId!!, "user", null, "app").optString("grant"), c.serverId!!).toString()
+        } catch (e: BackendClient.ApiError) {
+            "end refused: ${e.code}"
+        } catch (e: IOException) {
+            unlock.releaseLocally("user_ended_offline"); "ended (offline)"
+        }
+    }
+
+    /** Self mode screen-time summary from UsageStats. Stays on the device. */
+    fun screenTimeToday(): String {
+        val today = UsageCollector.dailyTotals(context, days = 1).entries.lastOrNull()?.value ?: return "no usage data (grant Usage access)"
+        val pm = context.packageManager
+        fun label(p: String) = runCatching { pm.getApplicationLabel(pm.getApplicationInfo(p, 0)).toString() }.getOrDefault(p)
+        return "Screen time today: ${today.values.sum() / 60} min\n" +
+            today.entries.sortedByDescending { it.value }.take(8).joinToString("\n") { "  ${label(it.key)}: ${it.value / 60} min" }
+    }
+
     /** Launch / reboot / reinstall restore. Offline events are flushed first. */
     fun restore(): String {
         if (repo.deviceToken == null) return "not registered"

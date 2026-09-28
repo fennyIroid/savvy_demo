@@ -29,6 +29,8 @@ class BackendClient(private val baseUrl: () -> String, private val token: () -> 
     fun release(id: Long, method: String, payload: String?, source: String, presenceToken: String? = null) =
         send("POST", "/v1/commitments/$id/release",
             JSONObject().put("method", method).putOpt("payload", payload).put("source", source).putOpt("presence_token", presenceToken))
+    /** Dev-only card factory (backend SAVVY_DEV=1): a new signed card URL to write to a tag or show as QR. */
+    fun devCard() = send("POST", "/v1/dev/cards", JSONObject().put("format", "signed"))
     fun liveStart(cardCode: String) = send("POST", "/v1/cards/live/start", JSONObject().put("card_code", cardCode))
     fun liveStep(sessionId: String, response: String) = send("POST", "/v1/cards/live/step",
         JSONObject().put("session_id", sessionId).put("response", response))
