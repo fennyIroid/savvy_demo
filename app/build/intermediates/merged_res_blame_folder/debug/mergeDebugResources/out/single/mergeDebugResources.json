@@ -1,0 +1,22 @@
+[
+    {
+        "merged": "com.iroid.savvy.rd.app-debug-59:/drawable_ic_launcher_foreground.xml.flat",
+        "source": "com.iroid.savvy.rd.app-main-61:/drawable/ic_launcher_foreground.xml"
+    },
+    {
+        "merged": "com.iroid.savvy.rd.app-debug-59:/mipmap-anydpi-v26_ic_launcher.xml.flat",
+        "source": "com.iroid.savvy.rd.app-main-61:/mipmap-anydpi-v26/ic_launcher.xml"
+    },
+    {
+        "merged": "com.iroid.savvy.rd.app-debug-59:/xml_device_admin.xml.flat",
+        "source": "com.iroid.savvy.rd.app-main-61:/xml/device_admin.xml"
+    },
+    {
+        "merged": "com.iroid.savvy.rd.app-debug-59:/font_outfit.ttf.flat",
+        "source": "com.iroid.savvy.rd.app-main-61:/font/outfit.ttf"
+    },
+    {
+        "merged": "com.iroid.savvy.rd.app-debug-59:/xml_accessibility_config.xml.flat",
+        "source": "com.iroid.savvy.rd.app-main-61:/xml/accessibility_config.xml"
+    }
+]

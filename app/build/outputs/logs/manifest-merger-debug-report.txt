@@ -1,0 +1,596 @@
+-- Merging decision tree log ---
+manifest
+ADDED from /Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:2:1-110:12
+INJECTED from /Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:2:1-110:12
+INJECTED from /Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:2:1-110:12
+INJECTED from /Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:2:1-110:12
+MERGED from [androidx.appcompat:appcompat-resources:1.7.1] /Users/imac/.gradle/caches/8.14.5/transforms/682cbdb428fce65b6f4c1ef428774e91/transformed/appcompat-resources-1.7.1/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.appcompat:appcompat:1.7.1] /Users/imac/.gradle/caches/8.14.5/transforms/915a210843d78c356d82708230497c8d/transformed/appcompat-1.7.1/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.fragment:fragment:1.5.4] /Users/imac/.gradle/caches/8.14.5/transforms/a0a490baab80b06df2cffeb3e0b9e5a7/transformed/fragment-1.5.4/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.navigation:navigation-runtime-android:2.9.0] /Users/imac/.gradle/caches/8.14.5/transforms/50e021607e41039504e0987335088099/transformed/navigation-runtime-release/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.navigation:navigation-common-android:2.9.0] /Users/imac/.gradle/caches/8.14.5/transforms/01dad78fabb6e443860180dc614f70ca/transformed/navigation-common-release/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.navigation:navigation-compose-android:2.9.0] /Users/imac/.gradle/caches/8.14.5/transforms/305333b60b553a283551f30d2c02d8a3/transformed/navigation-compose-release/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.loader:loader:1.0.0] /Users/imac/.gradle/caches/8.14.5/transforms/2222b1d4652a2bfa8446a9aacdfd91f7/transformed/loader-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.compose.material3:material3-android:1.3.2] /Users/imac/.gradle/caches/8.14.5/transforms/ddfd3d25e6ad1c4525e1ac04ce5c7d20/transformed/material3-release/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.compose.material:material-android:1.8.3] /Users/imac/.gradle/caches/8.14.5/transforms/6113cd6e9493b668d09f35f294dbdcea/transformed/material-release/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.animation:animation-core-android:1.8.3] /Users/imac/.gradle/caches/8.14.5/transforms/5adb6a23f6e64f4c6ba02dda3596f38d/transformed/animation-core-release/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.material:material-ripple-android:1.8.3] /Users/imac/.gradle/caches/8.14.5/transforms/374561b368a6eca7814a384e1ef531e8/transformed/material-ripple-release/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.animation:animation-android:1.8.3] /Users/imac/.gradle/caches/8.14.5/transforms/3c5b0f4b332fa531b4c1341449bc641d/transformed/animation-release/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.foundation:foundation-layout-android:1.8.3] /Users/imac/.gradle/caches/8.14.5/transforms/df919f1b3fde6db41e978727af017a03/transformed/foundation-layout-release/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.foundation:foundation-android:1.8.3] /Users/imac/.gradle/caches/8.14.5/transforms/6e99850c0c0eb69d8a59186ef99899bc/transformed/foundation-release/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.ui:ui-tooling-data-android:1.8.3] /Users/imac/.gradle/caches/8.14.5/transforms/8f338c68fca8e80d727ccba88f8d48c2/transformed/ui-tooling-data-release/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.ui:ui-unit-android:1.8.3] /Users/imac/.gradle/caches/8.14.5/transforms/dc83e1bfa2e0f2520edfc20921ad6ae4/transformed/ui-unit-release/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.ui:ui-graphics-android:1.8.3] /Users/imac/.gradle/caches/8.14.5/transforms/d4fc9dc4acb57a682522604c40450ca1/transformed/ui-graphics-release/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.ui:ui-geometry-android:1.8.3] /Users/imac/.gradle/caches/8.14.5/transforms/a3bef6d1776158b8024097ecab490ad2/transformed/ui-geometry-release/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.ui:ui-util-android:1.8.3] /Users/imac/.gradle/caches/8.14.5/transforms/f7863fc50ee41c1af203069320e42e28/transformed/ui-util-release/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.ui:ui-text-android:1.8.3] /Users/imac/.gradle/caches/8.14.5/transforms/ee9f672df72c7feaa1435ad24c21181d/transformed/ui-text-release/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.ui:ui-tooling-preview-android:1.8.3] /Users/imac/.gradle/caches/8.14.5/transforms/06d532b6a43d81c97f417b9737c95200/transformed/ui-tooling-preview-release/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.compose.ui:ui-tooling-android:1.8.3] /Users/imac/.gradle/caches/8.14.5/transforms/cab03f10b6215f4d6347179ad760dbe0/transformed/ui-tooling-release/AndroidManifest.xml:17:1-28:12
+MERGED from [androidx.savedstate:savedstate-ktx:1.3.0] /Users/imac/.gradle/caches/8.14.5/transforms/5826654d7329689aca69237b59485527/transformed/savedstate-ktx-1.3.0/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.savedstate:savedstate-compose-android:1.3.0] /Users/imac/.gradle/caches/8.14.5/transforms/4f153defa53ad18936ff95fc123142ca/transformed/savedstate-compose-release/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.drawerlayout:drawerlayout:1.0.0] /Users/imac/.gradle/caches/8.14.5/transforms/3b2da9cdd1827f506c8eba0bc8de4e1e/transformed/drawerlayout-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.vectordrawable:vectordrawable-animated:1.1.0] /Users/imac/.gradle/caches/8.14.5/transforms/388111a9cb43b52b11f8697fb5661f1c/transformed/vectordrawable-animated-1.1.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.vectordrawable:vectordrawable:1.1.0] /Users/imac/.gradle/caches/8.14.5/transforms/d20d0b99c200c83c73e28617d7fee550/transformed/vectordrawable-1.1.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.viewpager:viewpager:1.0.0] /Users/imac/.gradle/caches/8.14.5/transforms/d23ce1d0a03ec6c8adbdd54b06c0c736/transformed/viewpager-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.customview:customview:1.0.0] /Users/imac/.gradle/caches/8.14.5/transforms/8584f56f58e912b7c3ba46feb2ba118e/transformed/customview-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.autofill:autofill:1.0.0] /Users/imac/.gradle/caches/8.14.5/transforms/3e8ed9d2abf681bc3a164777fe4a00f2/transformed/autofill-1.0.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.emoji2:emoji2-views-helper:1.4.0] /Users/imac/.gradle/caches/8.14.5/transforms/5aa4146b3c6235f9819a937fcc54a507/transformed/emoji2-views-helper-1.4.0/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.emoji2:emoji2:1.4.0] /Users/imac/.gradle/caches/8.14.5/transforms/d770b891d60eedd8c7f0606996510ff7/transformed/emoji2-1.4.0/AndroidManifest.xml:17:1-35:12
+MERGED from [androidx.graphics:graphics-path:1.0.1] /Users/imac/.gradle/caches/8.14.5/transforms/675a63d0c600cd54c8cba78a38eca15f/transformed/graphics-path-1.0.1/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.core:core:1.16.0] /Users/imac/.gradle/caches/8.14.5/transforms/609d095c51b5e7e785ad958a54197cb7/transformed/core-1.16.0/AndroidManifest.xml:17:1-30:12
+MERGED from [androidx.lifecycle:lifecycle-process:2.9.1] /Users/imac/.gradle/caches/8.14.5/transforms/793af3a97c9d57b1a27977e7f3bccd2c/transformed/lifecycle-process-2.9.1/AndroidManifest.xml:17:1-35:12
+MERGED from [androidx.lifecycle:lifecycle-livedata-core-ktx:2.9.1] /Users/imac/.gradle/caches/8.14.5/transforms/f006327850c700c6938f38ca25f08c0a/transformed/lifecycle-livedata-core-ktx-2.9.1/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.lifecycle:lifecycle-runtime-ktx-android:2.9.1] /Users/imac/.gradle/caches/8.14.5/transforms/57f708316d5de1f7f1abea60bebdcfcf/transformed/lifecycle-runtime-ktx/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.lifecycle:lifecycle-runtime-android:2.9.1] /Users/imac/.gradle/caches/8.14.5/transforms/ccacdbdea5dea7a0f6486c958179b51f/transformed/lifecycle-runtime-release/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.lifecycle:lifecycle-viewmodel:2.9.1] /Users/imac/.gradle/caches/8.14.5/transforms/a698d8563a18c32346956494c9e2d7ef/transformed/lifecycle-viewmodel-2.9.1/AndroidManifest.xml:2:1-5:12
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-android:2.9.1] /Users/imac/.gradle/caches/8.14.5/transforms/a580d07a0bbbf37b37b23c7d0e7ebbd1/transformed/lifecycle-viewmodel-release/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-savedstate-android:2.9.1] /Users/imac/.gradle/caches/8.14.5/transforms/ba28888336b80131fb26331192072f5b/transformed/lifecycle-viewmodel-savedstate-release/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.savedstate:savedstate-android:1.3.0] /Users/imac/.gradle/caches/8.14.5/transforms/82aab5b4e2f0d4d37ed5764550b8f2dc/transformed/savedstate-release/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.lifecycle:lifecycle-livedata:2.9.1] /Users/imac/.gradle/caches/8.14.5/transforms/c6f697393fc56bc9d644349427efa645/transformed/lifecycle-livedata-2.9.1/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-ktx:2.9.1] /Users/imac/.gradle/caches/8.14.5/transforms/936ddebe126bf32f2cbeb697069f5850/transformed/lifecycle-viewmodel-ktx-2.9.1/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.9.1] /Users/imac/.gradle/caches/8.14.5/transforms/cd13652fb4b3ac1891fc34e8999a8b23/transformed/lifecycle-livedata-core-2.9.1/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.lifecycle:lifecycle-runtime-compose-android:2.9.1] /Users/imac/.gradle/caches/8.14.5/transforms/6646dd703d533fcf13d6794a7f8328a2/transformed/lifecycle-runtime-compose-release/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-compose-android:2.9.1] /Users/imac/.gradle/caches/8.14.5/transforms/ab63bf753198390357aa8130b842c296/transformed/lifecycle-viewmodel-compose-release/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.material:material-icons-extended-android:1.7.8] /Users/imac/.gradle/caches/8.14.5/transforms/089e0a325c686a9a773dcc744ea22a12/transformed/material-icons-extended-release/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.material:material-icons-core-android:1.7.8] /Users/imac/.gradle/caches/8.14.5/transforms/734a53ef63a3a91f3714245ff6abb7e5/transformed/material-icons-core-release/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.ui:ui-android:1.8.3] /Users/imac/.gradle/caches/8.14.5/transforms/861afe38957f26f9464be9856002f316/transformed/ui-release/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.activity:activity-ktx:1.10.1] /Users/imac/.gradle/caches/8.14.5/transforms/37126151d2ef903627a50ba9e3aa0ed0/transformed/activity-ktx-1.10.1/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.activity:activity:1.10.1] /Users/imac/.gradle/caches/8.14.5/transforms/9b532233574385c8cff72ddd19311167/transformed/activity-1.10.1/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.activity:activity-compose:1.10.1] /Users/imac/.gradle/caches/8.14.5/transforms/0ea0feb0bfece74d48403ec0147d8e66/transformed/activity-compose-1.10.1/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.customview:customview-poolingcontainer:1.0.0] /Users/imac/.gradle/caches/8.14.5/transforms/8537425c979a741c7430237476f8f6dc/transformed/customview-poolingcontainer-1.0.0/AndroidManifest.xml:17:1-23:12
+MERGED from [androidx.core:core-ktx:1.16.0] /Users/imac/.gradle/caches/8.14.5/transforms/99d7b56633df638c2061a09dd576debd/transformed/core-ktx-1.16.0/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.runtime:runtime-saveable-android:1.8.3] /Users/imac/.gradle/caches/8.14.5/transforms/10a10ad335c564b7d942d08a99d48c90/transformed/runtime-saveable-release/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.runtime:runtime-android:1.8.3] /Users/imac/.gradle/caches/8.14.5/transforms/2cacfc32d5c2c1f0fd6a1d5b9609c20c/transformed/runtime-release/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.annotation:annotation-experimental:1.4.1] /Users/imac/.gradle/caches/8.14.5/transforms/ab54b8fc5be7694432655bffa19f6b65/transformed/annotation-experimental-1.4.1/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.core:core-viewtree:1.0.0] /Users/imac/.gradle/caches/8.14.5/transforms/071d2bfec9b73073e043d02ec0b684b9/transformed/core-viewtree-1.0.0/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] /Users/imac/.gradle/caches/8.14.5/transforms/5881f4f19f34ec16781e371aa5c65fb4/transformed/versionedparcelable-1.1.1/AndroidManifest.xml:17:1-27:12
+MERGED from [androidx.cursoradapter:cursoradapter:1.0.0] /Users/imac/.gradle/caches/8.14.5/transforms/30f28ad1643ba9b8a8a94babe5bc9120/transformed/cursoradapter-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.interpolator:interpolator:1.0.0] /Users/imac/.gradle/caches/8.14.5/transforms/8141307068b8c9ae38f29b8533599d26/transformed/interpolator-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.profileinstaller:profileinstaller:1.4.0] /Users/imac/.gradle/caches/8.14.5/transforms/1823af844612dcd500371ed0f77ac304/transformed/profileinstaller-1.4.0/AndroidManifest.xml:17:1-55:12
+MERGED from [androidx.startup:startup-runtime:1.1.1] /Users/imac/.gradle/caches/8.14.5/transforms/579d65ec6543b5c9d030a4fa4838d953/transformed/startup-runtime-1.1.1/AndroidManifest.xml:17:1-33:12
+MERGED from [androidx.tracing:tracing:1.2.0] /Users/imac/.gradle/caches/8.14.5/transforms/d4be2610b6ef08afe3b956d501816b38/transformed/tracing-1.2.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.arch.core:core-runtime:2.2.0] /Users/imac/.gradle/caches/8.14.5/transforms/20ce4ac67fcb38c247d568db2d450314/transformed/core-runtime-2.2.0/AndroidManifest.xml:17:1-22:12
+MERGED from [com.journeyapps:zxing-android-embedded:4.3.0] /Users/imac/.gradle/caches/8.14.5/transforms/8a7bba82670afa4d5ec2fa3795cc0358/transformed/zxing-android-embedded-4.3.0/AndroidManifest.xml:17:1-56:12
+	package
+		INJECTED from /Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml
+	android:versionName
+		INJECTED from /Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml
+	xmlns:tools
+		ADDED from /Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:3:5-51
+	android:versionCode
+		INJECTED from /Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml
+	xmlns:android
+		ADDED from /Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:2:11-69
+uses-permission#android.permission.PACKAGE_USAGE_STATS
+ADDED from /Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:6:5-114
+	tools:ignore
+		ADDED from /Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:6:76-111
+	android:name
+		ADDED from /Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:6:22-75
+uses-permission#android.permission.SYSTEM_ALERT_WINDOW
+ADDED from /Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:8:5-78
+	android:name
+		ADDED from /Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:8:22-75
+uses-permission#android.permission.FOREGROUND_SERVICE
+ADDED from /Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:9:5-77
+	android:name
+		ADDED from /Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:9:22-74
+uses-permission#android.permission.FOREGROUND_SERVICE_SPECIAL_USE
+ADDED from /Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:10:5-89
+	android:name
+		ADDED from /Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:10:22-86
+uses-permission#android.permission.POST_NOTIFICATIONS
+ADDED from /Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:11:5-77
+	android:name
+		ADDED from /Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:11:22-74
+uses-permission#android.permission.RECEIVE_BOOT_COMPLETED
+ADDED from /Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:12:5-81
+	android:name
+		ADDED from /Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:12:22-78
+uses-permission#android.permission.INTERNET
+ADDED from /Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:13:5-67
+	android:name
+		ADDED from /Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:13:22-64
+uses-permission#android.permission.NFC
+ADDED from /Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:14:5-62
+	android:name
+		ADDED from /Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:14:22-59
+uses-permission#android.permission.CAMERA
+ADDED from /Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:15:5-65
+MERGED from [com.journeyapps:zxing-android-embedded:4.3.0] /Users/imac/.gradle/caches/8.14.5/transforms/8a7bba82670afa4d5ec2fa3795cc0358/transformed/zxing-android-embedded-4.3.0/AndroidManifest.xml:22:5-65
+MERGED from [com.journeyapps:zxing-android-embedded:4.3.0] /Users/imac/.gradle/caches/8.14.5/transforms/8a7bba82670afa4d5ec2fa3795cc0358/transformed/zxing-android-embedded-4.3.0/AndroidManifest.xml:22:5-65
+	android:name
+		ADDED from /Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:15:22-62
+uses-permission#android.permission.QUERY_ADVANCED_PROTECTION_MODE
+ADDED from /Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:17:5-89
+	android:name
+		ADDED from /Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:17:22-86
+uses-feature#android.hardware.nfc
+ADDED from /Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:18:5-82
+	android:required
+		ADDED from /Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:18:55-79
+	android:name
+		ADDED from /Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:18:19-54
+uses-feature#android.hardware.camera
+ADDED from /Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:19:5-85
+MERGED from [com.journeyapps:zxing-android-embedded:4.3.0] /Users/imac/.gradle/caches/8.14.5/transforms/8a7bba82670afa4d5ec2fa3795cc0358/transformed/zxing-android-embedded-4.3.0/AndroidManifest.xml:25:5-27:36
+MERGED from [com.journeyapps:zxing-android-embedded:4.3.0] /Users/imac/.gradle/caches/8.14.5/transforms/8a7bba82670afa4d5ec2fa3795cc0358/transformed/zxing-android-embedded-4.3.0/AndroidManifest.xml:25:5-27:36
+	android:required
+		ADDED from /Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:19:58-82
+	android:name
+		ADDED from /Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:19:19-57
+queries
+ADDED from /Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:22:5-27:15
+intent#action:name:android.intent.action.MAIN+category:name:android.intent.category.LAUNCHER
+ADDED from /Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:23:9-26:18
+action#android.intent.action.MAIN
+ADDED from /Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:24:13-65
+	android:name
+		ADDED from /Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:24:21-62
+category#android.intent.category.LAUNCHER
+ADDED from /Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:25:13-73
+	android:name
+		ADDED from /Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:25:23-70
+application
+ADDED from /Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:29:5-109:19
+INJECTED from /Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:29:5-109:19
+MERGED from [androidx.compose.ui:ui-tooling-android:1.8.3] /Users/imac/.gradle/caches/8.14.5/transforms/cab03f10b6215f4d6347179ad760dbe0/transformed/ui-tooling-release/AndroidManifest.xml:22:5-26:19
+MERGED from [androidx.compose.ui:ui-tooling-android:1.8.3] /Users/imac/.gradle/caches/8.14.5/transforms/cab03f10b6215f4d6347179ad760dbe0/transformed/ui-tooling-release/AndroidManifest.xml:22:5-26:19
+MERGED from [androidx.emoji2:emoji2:1.4.0] /Users/imac/.gradle/caches/8.14.5/transforms/d770b891d60eedd8c7f0606996510ff7/transformed/emoji2-1.4.0/AndroidManifest.xml:23:5-33:19
+MERGED from [androidx.emoji2:emoji2:1.4.0] /Users/imac/.gradle/caches/8.14.5/transforms/d770b891d60eedd8c7f0606996510ff7/transformed/emoji2-1.4.0/AndroidManifest.xml:23:5-33:19
+MERGED from [androidx.core:core:1.16.0] /Users/imac/.gradle/caches/8.14.5/transforms/609d095c51b5e7e785ad958a54197cb7/transformed/core-1.16.0/AndroidManifest.xml:28:5-89
+MERGED from [androidx.core:core:1.16.0] /Users/imac/.gradle/caches/8.14.5/transforms/609d095c51b5e7e785ad958a54197cb7/transformed/core-1.16.0/AndroidManifest.xml:28:5-89
+MERGED from [androidx.lifecycle:lifecycle-process:2.9.1] /Users/imac/.gradle/caches/8.14.5/transforms/793af3a97c9d57b1a27977e7f3bccd2c/transformed/lifecycle-process-2.9.1/AndroidManifest.xml:23:5-33:19
+MERGED from [androidx.lifecycle:lifecycle-process:2.9.1] /Users/imac/.gradle/caches/8.14.5/transforms/793af3a97c9d57b1a27977e7f3bccd2c/transformed/lifecycle-process-2.9.1/AndroidManifest.xml:23:5-33:19
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] /Users/imac/.gradle/caches/8.14.5/transforms/5881f4f19f34ec16781e371aa5c65fb4/transformed/versionedparcelable-1.1.1/AndroidManifest.xml:24:5-25:19
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] /Users/imac/.gradle/caches/8.14.5/transforms/5881f4f19f34ec16781e371aa5c65fb4/transformed/versionedparcelable-1.1.1/AndroidManifest.xml:24:5-25:19
+MERGED from [androidx.profileinstaller:profileinstaller:1.4.0] /Users/imac/.gradle/caches/8.14.5/transforms/1823af844612dcd500371ed0f77ac304/transformed/profileinstaller-1.4.0/AndroidManifest.xml:23:5-53:19
+MERGED from [androidx.profileinstaller:profileinstaller:1.4.0] /Users/imac/.gradle/caches/8.14.5/transforms/1823af844612dcd500371ed0f77ac304/transformed/profileinstaller-1.4.0/AndroidManifest.xml:23:5-53:19
+MERGED from [androidx.startup:startup-runtime:1.1.1] /Users/imac/.gradle/caches/8.14.5/transforms/579d65ec6543b5c9d030a4fa4838d953/transformed/startup-runtime-1.1.1/AndroidManifest.xml:25:5-31:19
+MERGED from [androidx.startup:startup-runtime:1.1.1] /Users/imac/.gradle/caches/8.14.5/transforms/579d65ec6543b5c9d030a4fa4838d953/transformed/startup-runtime-1.1.1/AndroidManifest.xml:25:5-31:19
+MERGED from [com.journeyapps:zxing-android-embedded:4.3.0] /Users/imac/.gradle/caches/8.14.5/transforms/8a7bba82670afa4d5ec2fa3795cc0358/transformed/zxing-android-embedded-4.3.0/AndroidManifest.xml:46:5-54:19
+MERGED from [com.journeyapps:zxing-android-embedded:4.3.0] /Users/imac/.gradle/caches/8.14.5/transforms/8a7bba82670afa4d5ec2fa3795cc0358/transformed/zxing-android-embedded-4.3.0/AndroidManifest.xml:46:5-54:19
+	android:extractNativeLibs
+		INJECTED from /Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml
+	android:appComponentFactory
+		ADDED from [androidx.core:core:1.16.0] /Users/imac/.gradle/caches/8.14.5/transforms/609d095c51b5e7e785ad958a54197cb7/transformed/core-1.16.0/AndroidManifest.xml:28:18-86
+	android:label
+		ADDED from /Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:31:9-30
+	android:roundIcon
+		ADDED from /Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:33:9-48
+	tools:targetApi
+		ADDED from /Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:36:9-29
+	android:icon
+		ADDED from /Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:32:9-43
+	android:theme
+		ADDED from /Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:34:9-43
+	android:usesCleartextTraffic
+		ADDED from /Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:35:9-44
+	android:name
+		ADDED from /Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:30:9-33
+activity#com.iroid.savvy.rd.MainActivity
+ADDED from /Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:38:9-43:20
+	android:windowSoftInputMode
+		ADDED from /Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:38:72-114
+	android:exported
+		ADDED from /Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:38:48-71
+	android:name
+		ADDED from /Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:38:19-47
+intent-filter#action:name:android.intent.action.MAIN+category:name:android.intent.category.LAUNCHER
+ADDED from /Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:39:13-42:29
+activity#com.iroid.savvy.rd.block.BlockActivity
+ADDED from /Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:47:9-64:20
+	android:excludeFromRecents
+		ADDED from /Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:50:13-46
+	android:launchMode
+		ADDED from /Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:51:13-44
+	android:exported
+		ADDED from /Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:49:13-36
+	android:taskAffinity
+		ADDED from /Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:52:13-60
+	android:name
+		ADDED from /Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:48:13-48
+intent-filter#action:name:android.nfc.action.NDEF_DISCOVERED+category:name:android.intent.category.DEFAULT+data:host:go.savvy.test+data:pathPrefix:/c/+data:scheme:https
+ADDED from /Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:53:13-57:29
+	android:autoVerify
+		ADDED from /Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:53:28-53
+action#android.nfc.action.NDEF_DISCOVERED
+ADDED from /Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:54:17-77
+	android:name
+		ADDED from /Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:54:25-74
+category#android.intent.category.DEFAULT
+ADDED from /Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:55:17-76
+	android:name
+		ADDED from /Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:55:27-73
+data
+ADDED from /Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:56:17-102
+	android:host
+		ADDED from /Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:56:46-74
+	android:scheme
+		ADDED from /Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:56:23-45
+	android:pathPrefix
+		ADDED from /Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:56:75-99
+intent-filter#action:name:android.intent.action.VIEW+category:name:android.intent.category.BROWSABLE+category:name:android.intent.category.DEFAULT+data:host:go.savvy.test+data:pathPrefix:/c/+data:scheme:https
+ADDED from /Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:58:13-63:29
+	android:autoVerify
+		ADDED from /Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:58:28-53
+action#android.intent.action.VIEW
+ADDED from /Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:59:17-69
+	android:name
+		ADDED from /Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:59:25-66
+category#android.intent.category.BROWSABLE
+ADDED from /Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:61:17-78
+	android:name
+		ADDED from /Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:61:27-75
+service#com.iroid.savvy.rd.service.SavvyAccessibilityService
+ADDED from /Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:68:9-76:19
+	android:exported
+		ADDED from /Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:70:13-37
+	android:permission
+		ADDED from /Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:71:13-79
+	android:name
+		ADDED from /Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:69:13-62
+intent-filter#action:name:android.accessibilityservice.AccessibilityService
+ADDED from /Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:72:13-74:29
+action#android.accessibilityservice.AccessibilityService
+ADDED from /Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:73:17-92
+	android:name
+		ADDED from /Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:73:25-89
+meta-data#android.accessibilityservice
+ADDED from /Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:75:13-115
+	android:resource
+		ADDED from /Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:75:68-112
+	android:name
+		ADDED from /Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:75:24-67
+service#com.iroid.savvy.rd.service.UsageMonitorService
+ADDED from /Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:79:9-86:19
+	android:exported
+		ADDED from /Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:81:13-37
+	android:foregroundServiceType
+		ADDED from /Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:82:13-55
+	android:name
+		ADDED from /Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:80:13-56
+property#android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE
+ADDED from /Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:83:13-85:136
+	android:value
+		ADDED from /Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:85:17-133
+	android:name
+		ADDED from /Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:84:17-76
+receiver#com.iroid.savvy.rd.service.BootReceiver
+ADDED from /Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:88:9-93:20
+	android:exported
+		ADDED from /Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:88:56-80
+	android:name
+		ADDED from /Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:88:19-55
+intent-filter#action:name:android.intent.action.BOOT_COMPLETED+action:name:android.intent.action.MY_PACKAGE_REPLACED
+ADDED from /Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:89:13-92:29
+action#android.intent.action.BOOT_COMPLETED
+ADDED from /Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:90:17-79
+	android:name
+		ADDED from /Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:90:25-76
+action#android.intent.action.MY_PACKAGE_REPLACED
+ADDED from /Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:91:17-84
+	android:name
+		ADDED from /Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:91:25-81
+receiver#com.iroid.savvy.rd.admin.SavvyDeviceAdminReceiver
+ADDED from /Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:96:9-104:20
+	android:exported
+		ADDED from /Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:98:13-36
+	android:permission
+		ADDED from /Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:99:13-70
+	android:name
+		ADDED from /Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:97:13-59
+meta-data#android.app.device_admin
+ADDED from /Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:100:13-103
+	android:resource
+		ADDED from /Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:100:64-100
+	android:name
+		ADDED from /Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:100:24-63
+intent-filter#action:name:android.app.action.DEVICE_ADMIN_ENABLED
+ADDED from /Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:101:13-103:29
+action#android.app.action.DEVICE_ADMIN_ENABLED
+ADDED from /Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:102:17-82
+	android:name
+		ADDED from /Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:102:25-79
+uses-sdk
+INJECTED from /Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml reason: use-sdk injection requested
+INJECTED from /Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml
+INJECTED from /Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml
+MERGED from [androidx.appcompat:appcompat-resources:1.7.1] /Users/imac/.gradle/caches/8.14.5/transforms/682cbdb428fce65b6f4c1ef428774e91/transformed/appcompat-resources-1.7.1/AndroidManifest.xml:5:5-44
+MERGED from [androidx.appcompat:appcompat-resources:1.7.1] /Users/imac/.gradle/caches/8.14.5/transforms/682cbdb428fce65b6f4c1ef428774e91/transformed/appcompat-resources-1.7.1/AndroidManifest.xml:5:5-44
+MERGED from [androidx.appcompat:appcompat:1.7.1] /Users/imac/.gradle/caches/8.14.5/transforms/915a210843d78c356d82708230497c8d/transformed/appcompat-1.7.1/AndroidManifest.xml:5:5-44
+MERGED from [androidx.appcompat:appcompat:1.7.1] /Users/imac/.gradle/caches/8.14.5/transforms/915a210843d78c356d82708230497c8d/transformed/appcompat-1.7.1/AndroidManifest.xml:5:5-44
+MERGED from [androidx.fragment:fragment:1.5.4] /Users/imac/.gradle/caches/8.14.5/transforms/a0a490baab80b06df2cffeb3e0b9e5a7/transformed/fragment-1.5.4/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.fragment:fragment:1.5.4] /Users/imac/.gradle/caches/8.14.5/transforms/a0a490baab80b06df2cffeb3e0b9e5a7/transformed/fragment-1.5.4/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.navigation:navigation-runtime-android:2.9.0] /Users/imac/.gradle/caches/8.14.5/transforms/50e021607e41039504e0987335088099/transformed/navigation-runtime-release/AndroidManifest.xml:20:5-44
+MERGED from [androidx.navigation:navigation-runtime-android:2.9.0] /Users/imac/.gradle/caches/8.14.5/transforms/50e021607e41039504e0987335088099/transformed/navigation-runtime-release/AndroidManifest.xml:20:5-44
+MERGED from [androidx.navigation:navigation-common-android:2.9.0] /Users/imac/.gradle/caches/8.14.5/transforms/01dad78fabb6e443860180dc614f70ca/transformed/navigation-common-release/AndroidManifest.xml:20:5-44
+MERGED from [androidx.navigation:navigation-common-android:2.9.0] /Users/imac/.gradle/caches/8.14.5/transforms/01dad78fabb6e443860180dc614f70ca/transformed/navigation-common-release/AndroidManifest.xml:20:5-44
+MERGED from [androidx.navigation:navigation-compose-android:2.9.0] /Users/imac/.gradle/caches/8.14.5/transforms/305333b60b553a283551f30d2c02d8a3/transformed/navigation-compose-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.navigation:navigation-compose-android:2.9.0] /Users/imac/.gradle/caches/8.14.5/transforms/305333b60b553a283551f30d2c02d8a3/transformed/navigation-compose-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.loader:loader:1.0.0] /Users/imac/.gradle/caches/8.14.5/transforms/2222b1d4652a2bfa8446a9aacdfd91f7/transformed/loader-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.loader:loader:1.0.0] /Users/imac/.gradle/caches/8.14.5/transforms/2222b1d4652a2bfa8446a9aacdfd91f7/transformed/loader-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.compose.material3:material3-android:1.3.2] /Users/imac/.gradle/caches/8.14.5/transforms/ddfd3d25e6ad1c4525e1ac04ce5c7d20/transformed/material3-release/AndroidManifest.xml:20:5-44
+MERGED from [androidx.compose.material3:material3-android:1.3.2] /Users/imac/.gradle/caches/8.14.5/transforms/ddfd3d25e6ad1c4525e1ac04ce5c7d20/transformed/material3-release/AndroidManifest.xml:20:5-44
+MERGED from [androidx.compose.material:material-android:1.8.3] /Users/imac/.gradle/caches/8.14.5/transforms/6113cd6e9493b668d09f35f294dbdcea/transformed/material-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.material:material-android:1.8.3] /Users/imac/.gradle/caches/8.14.5/transforms/6113cd6e9493b668d09f35f294dbdcea/transformed/material-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.animation:animation-core-android:1.8.3] /Users/imac/.gradle/caches/8.14.5/transforms/5adb6a23f6e64f4c6ba02dda3596f38d/transformed/animation-core-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.animation:animation-core-android:1.8.3] /Users/imac/.gradle/caches/8.14.5/transforms/5adb6a23f6e64f4c6ba02dda3596f38d/transformed/animation-core-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.material:material-ripple-android:1.8.3] /Users/imac/.gradle/caches/8.14.5/transforms/374561b368a6eca7814a384e1ef531e8/transformed/material-ripple-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.material:material-ripple-android:1.8.3] /Users/imac/.gradle/caches/8.14.5/transforms/374561b368a6eca7814a384e1ef531e8/transformed/material-ripple-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.animation:animation-android:1.8.3] /Users/imac/.gradle/caches/8.14.5/transforms/3c5b0f4b332fa531b4c1341449bc641d/transformed/animation-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.animation:animation-android:1.8.3] /Users/imac/.gradle/caches/8.14.5/transforms/3c5b0f4b332fa531b4c1341449bc641d/transformed/animation-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.foundation:foundation-layout-android:1.8.3] /Users/imac/.gradle/caches/8.14.5/transforms/df919f1b3fde6db41e978727af017a03/transformed/foundation-layout-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.foundation:foundation-layout-android:1.8.3] /Users/imac/.gradle/caches/8.14.5/transforms/df919f1b3fde6db41e978727af017a03/transformed/foundation-layout-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.foundation:foundation-android:1.8.3] /Users/imac/.gradle/caches/8.14.5/transforms/6e99850c0c0eb69d8a59186ef99899bc/transformed/foundation-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.foundation:foundation-android:1.8.3] /Users/imac/.gradle/caches/8.14.5/transforms/6e99850c0c0eb69d8a59186ef99899bc/transformed/foundation-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.ui:ui-tooling-data-android:1.8.3] /Users/imac/.gradle/caches/8.14.5/transforms/8f338c68fca8e80d727ccba88f8d48c2/transformed/ui-tooling-data-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.ui:ui-tooling-data-android:1.8.3] /Users/imac/.gradle/caches/8.14.5/transforms/8f338c68fca8e80d727ccba88f8d48c2/transformed/ui-tooling-data-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.ui:ui-unit-android:1.8.3] /Users/imac/.gradle/caches/8.14.5/transforms/dc83e1bfa2e0f2520edfc20921ad6ae4/transformed/ui-unit-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.ui:ui-unit-android:1.8.3] /Users/imac/.gradle/caches/8.14.5/transforms/dc83e1bfa2e0f2520edfc20921ad6ae4/transformed/ui-unit-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.ui:ui-graphics-android:1.8.3] /Users/imac/.gradle/caches/8.14.5/transforms/d4fc9dc4acb57a682522604c40450ca1/transformed/ui-graphics-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.ui:ui-graphics-android:1.8.3] /Users/imac/.gradle/caches/8.14.5/transforms/d4fc9dc4acb57a682522604c40450ca1/transformed/ui-graphics-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.ui:ui-geometry-android:1.8.3] /Users/imac/.gradle/caches/8.14.5/transforms/a3bef6d1776158b8024097ecab490ad2/transformed/ui-geometry-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.ui:ui-geometry-android:1.8.3] /Users/imac/.gradle/caches/8.14.5/transforms/a3bef6d1776158b8024097ecab490ad2/transformed/ui-geometry-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.ui:ui-util-android:1.8.3] /Users/imac/.gradle/caches/8.14.5/transforms/f7863fc50ee41c1af203069320e42e28/transformed/ui-util-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.ui:ui-util-android:1.8.3] /Users/imac/.gradle/caches/8.14.5/transforms/f7863fc50ee41c1af203069320e42e28/transformed/ui-util-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.ui:ui-text-android:1.8.3] /Users/imac/.gradle/caches/8.14.5/transforms/ee9f672df72c7feaa1435ad24c21181d/transformed/ui-text-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.ui:ui-text-android:1.8.3] /Users/imac/.gradle/caches/8.14.5/transforms/ee9f672df72c7feaa1435ad24c21181d/transformed/ui-text-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.ui:ui-tooling-preview-android:1.8.3] /Users/imac/.gradle/caches/8.14.5/transforms/06d532b6a43d81c97f417b9737c95200/transformed/ui-tooling-preview-release/AndroidManifest.xml:20:5-44
+MERGED from [androidx.compose.ui:ui-tooling-preview-android:1.8.3] /Users/imac/.gradle/caches/8.14.5/transforms/06d532b6a43d81c97f417b9737c95200/transformed/ui-tooling-preview-release/AndroidManifest.xml:20:5-44
+MERGED from [androidx.compose.ui:ui-tooling-android:1.8.3] /Users/imac/.gradle/caches/8.14.5/transforms/cab03f10b6215f4d6347179ad760dbe0/transformed/ui-tooling-release/AndroidManifest.xml:20:5-44
+MERGED from [androidx.compose.ui:ui-tooling-android:1.8.3] /Users/imac/.gradle/caches/8.14.5/transforms/cab03f10b6215f4d6347179ad760dbe0/transformed/ui-tooling-release/AndroidManifest.xml:20:5-44
+MERGED from [androidx.savedstate:savedstate-ktx:1.3.0] /Users/imac/.gradle/caches/8.14.5/transforms/5826654d7329689aca69237b59485527/transformed/savedstate-ktx-1.3.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.savedstate:savedstate-ktx:1.3.0] /Users/imac/.gradle/caches/8.14.5/transforms/5826654d7329689aca69237b59485527/transformed/savedstate-ktx-1.3.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.savedstate:savedstate-compose-android:1.3.0] /Users/imac/.gradle/caches/8.14.5/transforms/4f153defa53ad18936ff95fc123142ca/transformed/savedstate-compose-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.savedstate:savedstate-compose-android:1.3.0] /Users/imac/.gradle/caches/8.14.5/transforms/4f153defa53ad18936ff95fc123142ca/transformed/savedstate-compose-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.drawerlayout:drawerlayout:1.0.0] /Users/imac/.gradle/caches/8.14.5/transforms/3b2da9cdd1827f506c8eba0bc8de4e1e/transformed/drawerlayout-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.drawerlayout:drawerlayout:1.0.0] /Users/imac/.gradle/caches/8.14.5/transforms/3b2da9cdd1827f506c8eba0bc8de4e1e/transformed/drawerlayout-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.vectordrawable:vectordrawable-animated:1.1.0] /Users/imac/.gradle/caches/8.14.5/transforms/388111a9cb43b52b11f8697fb5661f1c/transformed/vectordrawable-animated-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.vectordrawable:vectordrawable-animated:1.1.0] /Users/imac/.gradle/caches/8.14.5/transforms/388111a9cb43b52b11f8697fb5661f1c/transformed/vectordrawable-animated-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.vectordrawable:vectordrawable:1.1.0] /Users/imac/.gradle/caches/8.14.5/transforms/d20d0b99c200c83c73e28617d7fee550/transformed/vectordrawable-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.vectordrawable:vectordrawable:1.1.0] /Users/imac/.gradle/caches/8.14.5/transforms/d20d0b99c200c83c73e28617d7fee550/transformed/vectordrawable-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.viewpager:viewpager:1.0.0] /Users/imac/.gradle/caches/8.14.5/transforms/d23ce1d0a03ec6c8adbdd54b06c0c736/transformed/viewpager-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.viewpager:viewpager:1.0.0] /Users/imac/.gradle/caches/8.14.5/transforms/d23ce1d0a03ec6c8adbdd54b06c0c736/transformed/viewpager-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.customview:customview:1.0.0] /Users/imac/.gradle/caches/8.14.5/transforms/8584f56f58e912b7c3ba46feb2ba118e/transformed/customview-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.customview:customview:1.0.0] /Users/imac/.gradle/caches/8.14.5/transforms/8584f56f58e912b7c3ba46feb2ba118e/transformed/customview-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.autofill:autofill:1.0.0] /Users/imac/.gradle/caches/8.14.5/transforms/3e8ed9d2abf681bc3a164777fe4a00f2/transformed/autofill-1.0.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.autofill:autofill:1.0.0] /Users/imac/.gradle/caches/8.14.5/transforms/3e8ed9d2abf681bc3a164777fe4a00f2/transformed/autofill-1.0.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.emoji2:emoji2-views-helper:1.4.0] /Users/imac/.gradle/caches/8.14.5/transforms/5aa4146b3c6235f9819a937fcc54a507/transformed/emoji2-views-helper-1.4.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.emoji2:emoji2-views-helper:1.4.0] /Users/imac/.gradle/caches/8.14.5/transforms/5aa4146b3c6235f9819a937fcc54a507/transformed/emoji2-views-helper-1.4.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.emoji2:emoji2:1.4.0] /Users/imac/.gradle/caches/8.14.5/transforms/d770b891d60eedd8c7f0606996510ff7/transformed/emoji2-1.4.0/AndroidManifest.xml:21:5-44
+MERGED from [androidx.emoji2:emoji2:1.4.0] /Users/imac/.gradle/caches/8.14.5/transforms/d770b891d60eedd8c7f0606996510ff7/transformed/emoji2-1.4.0/AndroidManifest.xml:21:5-44
+MERGED from [androidx.graphics:graphics-path:1.0.1] /Users/imac/.gradle/caches/8.14.5/transforms/675a63d0c600cd54c8cba78a38eca15f/transformed/graphics-path-1.0.1/AndroidManifest.xml:5:5-44
+MERGED from [androidx.graphics:graphics-path:1.0.1] /Users/imac/.gradle/caches/8.14.5/transforms/675a63d0c600cd54c8cba78a38eca15f/transformed/graphics-path-1.0.1/AndroidManifest.xml:5:5-44
+MERGED from [androidx.core:core:1.16.0] /Users/imac/.gradle/caches/8.14.5/transforms/609d095c51b5e7e785ad958a54197cb7/transformed/core-1.16.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.core:core:1.16.0] /Users/imac/.gradle/caches/8.14.5/transforms/609d095c51b5e7e785ad958a54197cb7/transformed/core-1.16.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-process:2.9.1] /Users/imac/.gradle/caches/8.14.5/transforms/793af3a97c9d57b1a27977e7f3bccd2c/transformed/lifecycle-process-2.9.1/AndroidManifest.xml:21:5-44
+MERGED from [androidx.lifecycle:lifecycle-process:2.9.1] /Users/imac/.gradle/caches/8.14.5/transforms/793af3a97c9d57b1a27977e7f3bccd2c/transformed/lifecycle-process-2.9.1/AndroidManifest.xml:21:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata-core-ktx:2.9.1] /Users/imac/.gradle/caches/8.14.5/transforms/f006327850c700c6938f38ca25f08c0a/transformed/lifecycle-livedata-core-ktx-2.9.1/AndroidManifest.xml:5:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata-core-ktx:2.9.1] /Users/imac/.gradle/caches/8.14.5/transforms/f006327850c700c6938f38ca25f08c0a/transformed/lifecycle-livedata-core-ktx-2.9.1/AndroidManifest.xml:5:5-44
+MERGED from [androidx.lifecycle:lifecycle-runtime-ktx-android:2.9.1] /Users/imac/.gradle/caches/8.14.5/transforms/57f708316d5de1f7f1abea60bebdcfcf/transformed/lifecycle-runtime-ktx/AndroidManifest.xml:5:5-44
+MERGED from [androidx.lifecycle:lifecycle-runtime-ktx-android:2.9.1] /Users/imac/.gradle/caches/8.14.5/transforms/57f708316d5de1f7f1abea60bebdcfcf/transformed/lifecycle-runtime-ktx/AndroidManifest.xml:5:5-44
+MERGED from [androidx.lifecycle:lifecycle-runtime-android:2.9.1] /Users/imac/.gradle/caches/8.14.5/transforms/ccacdbdea5dea7a0f6486c958179b51f/transformed/lifecycle-runtime-release/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-runtime-android:2.9.1] /Users/imac/.gradle/caches/8.14.5/transforms/ccacdbdea5dea7a0f6486c958179b51f/transformed/lifecycle-runtime-release/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel:2.9.1] /Users/imac/.gradle/caches/8.14.5/transforms/a698d8563a18c32346956494c9e2d7ef/transformed/lifecycle-viewmodel-2.9.1/AndroidManifest.xml:4:5-43
+MERGED from [androidx.lifecycle:lifecycle-viewmodel:2.9.1] /Users/imac/.gradle/caches/8.14.5/transforms/a698d8563a18c32346956494c9e2d7ef/transformed/lifecycle-viewmodel-2.9.1/AndroidManifest.xml:4:5-43
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-android:2.9.1] /Users/imac/.gradle/caches/8.14.5/transforms/a580d07a0bbbf37b37b23c7d0e7ebbd1/transformed/lifecycle-viewmodel-release/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-android:2.9.1] /Users/imac/.gradle/caches/8.14.5/transforms/a580d07a0bbbf37b37b23c7d0e7ebbd1/transformed/lifecycle-viewmodel-release/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-savedstate-android:2.9.1] /Users/imac/.gradle/caches/8.14.5/transforms/ba28888336b80131fb26331192072f5b/transformed/lifecycle-viewmodel-savedstate-release/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-savedstate-android:2.9.1] /Users/imac/.gradle/caches/8.14.5/transforms/ba28888336b80131fb26331192072f5b/transformed/lifecycle-viewmodel-savedstate-release/AndroidManifest.xml:20:5-44
+MERGED from [androidx.savedstate:savedstate-android:1.3.0] /Users/imac/.gradle/caches/8.14.5/transforms/82aab5b4e2f0d4d37ed5764550b8f2dc/transformed/savedstate-release/AndroidManifest.xml:20:5-44
+MERGED from [androidx.savedstate:savedstate-android:1.3.0] /Users/imac/.gradle/caches/8.14.5/transforms/82aab5b4e2f0d4d37ed5764550b8f2dc/transformed/savedstate-release/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata:2.9.1] /Users/imac/.gradle/caches/8.14.5/transforms/c6f697393fc56bc9d644349427efa645/transformed/lifecycle-livedata-2.9.1/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata:2.9.1] /Users/imac/.gradle/caches/8.14.5/transforms/c6f697393fc56bc9d644349427efa645/transformed/lifecycle-livedata-2.9.1/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-ktx:2.9.1] /Users/imac/.gradle/caches/8.14.5/transforms/936ddebe126bf32f2cbeb697069f5850/transformed/lifecycle-viewmodel-ktx-2.9.1/AndroidManifest.xml:5:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-ktx:2.9.1] /Users/imac/.gradle/caches/8.14.5/transforms/936ddebe126bf32f2cbeb697069f5850/transformed/lifecycle-viewmodel-ktx-2.9.1/AndroidManifest.xml:5:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.9.1] /Users/imac/.gradle/caches/8.14.5/transforms/cd13652fb4b3ac1891fc34e8999a8b23/transformed/lifecycle-livedata-core-2.9.1/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.9.1] /Users/imac/.gradle/caches/8.14.5/transforms/cd13652fb4b3ac1891fc34e8999a8b23/transformed/lifecycle-livedata-core-2.9.1/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-runtime-compose-android:2.9.1] /Users/imac/.gradle/caches/8.14.5/transforms/6646dd703d533fcf13d6794a7f8328a2/transformed/lifecycle-runtime-compose-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.lifecycle:lifecycle-runtime-compose-android:2.9.1] /Users/imac/.gradle/caches/8.14.5/transforms/6646dd703d533fcf13d6794a7f8328a2/transformed/lifecycle-runtime-compose-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-compose-android:2.9.1] /Users/imac/.gradle/caches/8.14.5/transforms/ab63bf753198390357aa8130b842c296/transformed/lifecycle-viewmodel-compose-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-compose-android:2.9.1] /Users/imac/.gradle/caches/8.14.5/transforms/ab63bf753198390357aa8130b842c296/transformed/lifecycle-viewmodel-compose-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.material:material-icons-extended-android:1.7.8] /Users/imac/.gradle/caches/8.14.5/transforms/089e0a325c686a9a773dcc744ea22a12/transformed/material-icons-extended-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.material:material-icons-extended-android:1.7.8] /Users/imac/.gradle/caches/8.14.5/transforms/089e0a325c686a9a773dcc744ea22a12/transformed/material-icons-extended-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.material:material-icons-core-android:1.7.8] /Users/imac/.gradle/caches/8.14.5/transforms/734a53ef63a3a91f3714245ff6abb7e5/transformed/material-icons-core-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.material:material-icons-core-android:1.7.8] /Users/imac/.gradle/caches/8.14.5/transforms/734a53ef63a3a91f3714245ff6abb7e5/transformed/material-icons-core-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.ui:ui-android:1.8.3] /Users/imac/.gradle/caches/8.14.5/transforms/861afe38957f26f9464be9856002f316/transformed/ui-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.ui:ui-android:1.8.3] /Users/imac/.gradle/caches/8.14.5/transforms/861afe38957f26f9464be9856002f316/transformed/ui-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.activity:activity-ktx:1.10.1] /Users/imac/.gradle/caches/8.14.5/transforms/37126151d2ef903627a50ba9e3aa0ed0/transformed/activity-ktx-1.10.1/AndroidManifest.xml:5:5-44
+MERGED from [androidx.activity:activity-ktx:1.10.1] /Users/imac/.gradle/caches/8.14.5/transforms/37126151d2ef903627a50ba9e3aa0ed0/transformed/activity-ktx-1.10.1/AndroidManifest.xml:5:5-44
+MERGED from [androidx.activity:activity:1.10.1] /Users/imac/.gradle/caches/8.14.5/transforms/9b532233574385c8cff72ddd19311167/transformed/activity-1.10.1/AndroidManifest.xml:20:5-44
+MERGED from [androidx.activity:activity:1.10.1] /Users/imac/.gradle/caches/8.14.5/transforms/9b532233574385c8cff72ddd19311167/transformed/activity-1.10.1/AndroidManifest.xml:20:5-44
+MERGED from [androidx.activity:activity-compose:1.10.1] /Users/imac/.gradle/caches/8.14.5/transforms/0ea0feb0bfece74d48403ec0147d8e66/transformed/activity-compose-1.10.1/AndroidManifest.xml:5:5-44
+MERGED from [androidx.activity:activity-compose:1.10.1] /Users/imac/.gradle/caches/8.14.5/transforms/0ea0feb0bfece74d48403ec0147d8e66/transformed/activity-compose-1.10.1/AndroidManifest.xml:5:5-44
+MERGED from [androidx.customview:customview-poolingcontainer:1.0.0] /Users/imac/.gradle/caches/8.14.5/transforms/8537425c979a741c7430237476f8f6dc/transformed/customview-poolingcontainer-1.0.0/AndroidManifest.xml:20:5-21:38
+MERGED from [androidx.customview:customview-poolingcontainer:1.0.0] /Users/imac/.gradle/caches/8.14.5/transforms/8537425c979a741c7430237476f8f6dc/transformed/customview-poolingcontainer-1.0.0/AndroidManifest.xml:20:5-21:38
+MERGED from [androidx.core:core-ktx:1.16.0] /Users/imac/.gradle/caches/8.14.5/transforms/99d7b56633df638c2061a09dd576debd/transformed/core-ktx-1.16.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.core:core-ktx:1.16.0] /Users/imac/.gradle/caches/8.14.5/transforms/99d7b56633df638c2061a09dd576debd/transformed/core-ktx-1.16.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.runtime:runtime-saveable-android:1.8.3] /Users/imac/.gradle/caches/8.14.5/transforms/10a10ad335c564b7d942d08a99d48c90/transformed/runtime-saveable-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.runtime:runtime-saveable-android:1.8.3] /Users/imac/.gradle/caches/8.14.5/transforms/10a10ad335c564b7d942d08a99d48c90/transformed/runtime-saveable-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.runtime:runtime-android:1.8.3] /Users/imac/.gradle/caches/8.14.5/transforms/2cacfc32d5c2c1f0fd6a1d5b9609c20c/transformed/runtime-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.runtime:runtime-android:1.8.3] /Users/imac/.gradle/caches/8.14.5/transforms/2cacfc32d5c2c1f0fd6a1d5b9609c20c/transformed/runtime-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.annotation:annotation-experimental:1.4.1] /Users/imac/.gradle/caches/8.14.5/transforms/ab54b8fc5be7694432655bffa19f6b65/transformed/annotation-experimental-1.4.1/AndroidManifest.xml:5:5-44
+MERGED from [androidx.annotation:annotation-experimental:1.4.1] /Users/imac/.gradle/caches/8.14.5/transforms/ab54b8fc5be7694432655bffa19f6b65/transformed/annotation-experimental-1.4.1/AndroidManifest.xml:5:5-44
+MERGED from [androidx.core:core-viewtree:1.0.0] /Users/imac/.gradle/caches/8.14.5/transforms/071d2bfec9b73073e043d02ec0b684b9/transformed/core-viewtree-1.0.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.core:core-viewtree:1.0.0] /Users/imac/.gradle/caches/8.14.5/transforms/071d2bfec9b73073e043d02ec0b684b9/transformed/core-viewtree-1.0.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] /Users/imac/.gradle/caches/8.14.5/transforms/5881f4f19f34ec16781e371aa5c65fb4/transformed/versionedparcelable-1.1.1/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] /Users/imac/.gradle/caches/8.14.5/transforms/5881f4f19f34ec16781e371aa5c65fb4/transformed/versionedparcelable-1.1.1/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.cursoradapter:cursoradapter:1.0.0] /Users/imac/.gradle/caches/8.14.5/transforms/30f28ad1643ba9b8a8a94babe5bc9120/transformed/cursoradapter-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.cursoradapter:cursoradapter:1.0.0] /Users/imac/.gradle/caches/8.14.5/transforms/30f28ad1643ba9b8a8a94babe5bc9120/transformed/cursoradapter-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.interpolator:interpolator:1.0.0] /Users/imac/.gradle/caches/8.14.5/transforms/8141307068b8c9ae38f29b8533599d26/transformed/interpolator-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.interpolator:interpolator:1.0.0] /Users/imac/.gradle/caches/8.14.5/transforms/8141307068b8c9ae38f29b8533599d26/transformed/interpolator-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.profileinstaller:profileinstaller:1.4.0] /Users/imac/.gradle/caches/8.14.5/transforms/1823af844612dcd500371ed0f77ac304/transformed/profileinstaller-1.4.0/AndroidManifest.xml:21:5-44
+MERGED from [androidx.profileinstaller:profileinstaller:1.4.0] /Users/imac/.gradle/caches/8.14.5/transforms/1823af844612dcd500371ed0f77ac304/transformed/profileinstaller-1.4.0/AndroidManifest.xml:21:5-44
+MERGED from [androidx.startup:startup-runtime:1.1.1] /Users/imac/.gradle/caches/8.14.5/transforms/579d65ec6543b5c9d030a4fa4838d953/transformed/startup-runtime-1.1.1/AndroidManifest.xml:21:5-23:41
+MERGED from [androidx.startup:startup-runtime:1.1.1] /Users/imac/.gradle/caches/8.14.5/transforms/579d65ec6543b5c9d030a4fa4838d953/transformed/startup-runtime-1.1.1/AndroidManifest.xml:21:5-23:41
+MERGED from [androidx.tracing:tracing:1.2.0] /Users/imac/.gradle/caches/8.14.5/transforms/d4be2610b6ef08afe3b956d501816b38/transformed/tracing-1.2.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.tracing:tracing:1.2.0] /Users/imac/.gradle/caches/8.14.5/transforms/d4be2610b6ef08afe3b956d501816b38/transformed/tracing-1.2.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.arch.core:core-runtime:2.2.0] /Users/imac/.gradle/caches/8.14.5/transforms/20ce4ac67fcb38c247d568db2d450314/transformed/core-runtime-2.2.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.arch.core:core-runtime:2.2.0] /Users/imac/.gradle/caches/8.14.5/transforms/20ce4ac67fcb38c247d568db2d450314/transformed/core-runtime-2.2.0/AndroidManifest.xml:20:5-44
+MERGED from [com.journeyapps:zxing-android-embedded:4.3.0] /Users/imac/.gradle/caches/8.14.5/transforms/8a7bba82670afa4d5ec2fa3795cc0358/transformed/zxing-android-embedded-4.3.0/AndroidManifest.xml:20:5-44
+MERGED from [com.journeyapps:zxing-android-embedded:4.3.0] /Users/imac/.gradle/caches/8.14.5/transforms/8a7bba82670afa4d5ec2fa3795cc0358/transformed/zxing-android-embedded-4.3.0/AndroidManifest.xml:20:5-44
+	android:targetSdkVersion
+		INJECTED from /Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml
+	android:minSdkVersion
+		INJECTED from /Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml
+activity#androidx.compose.ui.tooling.PreviewActivity
+ADDED from [androidx.compose.ui:ui-tooling-android:1.8.3] /Users/imac/.gradle/caches/8.14.5/transforms/cab03f10b6215f4d6347179ad760dbe0/transformed/ui-tooling-release/AndroidManifest.xml:23:9-25:39
+	android:exported
+		ADDED from [androidx.compose.ui:ui-tooling-android:1.8.3] /Users/imac/.gradle/caches/8.14.5/transforms/cab03f10b6215f4d6347179ad760dbe0/transformed/ui-tooling-release/AndroidManifest.xml:25:13-36
+	android:name
+		ADDED from [androidx.compose.ui:ui-tooling-android:1.8.3] /Users/imac/.gradle/caches/8.14.5/transforms/cab03f10b6215f4d6347179ad760dbe0/transformed/ui-tooling-release/AndroidManifest.xml:24:13-71
+provider#androidx.startup.InitializationProvider
+ADDED from [androidx.emoji2:emoji2:1.4.0] /Users/imac/.gradle/caches/8.14.5/transforms/d770b891d60eedd8c7f0606996510ff7/transformed/emoji2-1.4.0/AndroidManifest.xml:24:9-32:20
+MERGED from [androidx.lifecycle:lifecycle-process:2.9.1] /Users/imac/.gradle/caches/8.14.5/transforms/793af3a97c9d57b1a27977e7f3bccd2c/transformed/lifecycle-process-2.9.1/AndroidManifest.xml:24:9-32:20
+MERGED from [androidx.lifecycle:lifecycle-process:2.9.1] /Users/imac/.gradle/caches/8.14.5/transforms/793af3a97c9d57b1a27977e7f3bccd2c/transformed/lifecycle-process-2.9.1/AndroidManifest.xml:24:9-32:20
+MERGED from [androidx.profileinstaller:profileinstaller:1.4.0] /Users/imac/.gradle/caches/8.14.5/transforms/1823af844612dcd500371ed0f77ac304/transformed/profileinstaller-1.4.0/AndroidManifest.xml:24:9-32:20
+MERGED from [androidx.profileinstaller:profileinstaller:1.4.0] /Users/imac/.gradle/caches/8.14.5/transforms/1823af844612dcd500371ed0f77ac304/transformed/profileinstaller-1.4.0/AndroidManifest.xml:24:9-32:20
+MERGED from [androidx.startup:startup-runtime:1.1.1] /Users/imac/.gradle/caches/8.14.5/transforms/579d65ec6543b5c9d030a4fa4838d953/transformed/startup-runtime-1.1.1/AndroidManifest.xml:26:9-30:34
+MERGED from [androidx.startup:startup-runtime:1.1.1] /Users/imac/.gradle/caches/8.14.5/transforms/579d65ec6543b5c9d030a4fa4838d953/transformed/startup-runtime-1.1.1/AndroidManifest.xml:26:9-30:34
+	tools:node
+		ADDED from [androidx.emoji2:emoji2:1.4.0] /Users/imac/.gradle/caches/8.14.5/transforms/d770b891d60eedd8c7f0606996510ff7/transformed/emoji2-1.4.0/AndroidManifest.xml:28:13-31
+	android:authorities
+		ADDED from [androidx.emoji2:emoji2:1.4.0] /Users/imac/.gradle/caches/8.14.5/transforms/d770b891d60eedd8c7f0606996510ff7/transformed/emoji2-1.4.0/AndroidManifest.xml:26:13-68
+	android:exported
+		ADDED from [androidx.emoji2:emoji2:1.4.0] /Users/imac/.gradle/caches/8.14.5/transforms/d770b891d60eedd8c7f0606996510ff7/transformed/emoji2-1.4.0/AndroidManifest.xml:27:13-37
+	android:name
+		ADDED from [androidx.emoji2:emoji2:1.4.0] /Users/imac/.gradle/caches/8.14.5/transforms/d770b891d60eedd8c7f0606996510ff7/transformed/emoji2-1.4.0/AndroidManifest.xml:25:13-67
+meta-data#androidx.emoji2.text.EmojiCompatInitializer
+ADDED from [androidx.emoji2:emoji2:1.4.0] /Users/imac/.gradle/caches/8.14.5/transforms/d770b891d60eedd8c7f0606996510ff7/transformed/emoji2-1.4.0/AndroidManifest.xml:29:13-31:52
+	android:value
+		ADDED from [androidx.emoji2:emoji2:1.4.0] /Users/imac/.gradle/caches/8.14.5/transforms/d770b891d60eedd8c7f0606996510ff7/transformed/emoji2-1.4.0/AndroidManifest.xml:31:17-49
+	android:name
+		ADDED from [androidx.emoji2:emoji2:1.4.0] /Users/imac/.gradle/caches/8.14.5/transforms/d770b891d60eedd8c7f0606996510ff7/transformed/emoji2-1.4.0/AndroidManifest.xml:30:17-75
+permission#${applicationId}.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION
+ADDED from [androidx.core:core:1.16.0] /Users/imac/.gradle/caches/8.14.5/transforms/609d095c51b5e7e785ad958a54197cb7/transformed/core-1.16.0/AndroidManifest.xml:22:5-24:47
+	android:protectionLevel
+		ADDED from [androidx.core:core:1.16.0] /Users/imac/.gradle/caches/8.14.5/transforms/609d095c51b5e7e785ad958a54197cb7/transformed/core-1.16.0/AndroidManifest.xml:24:9-44
+	android:name
+		ADDED from [androidx.core:core:1.16.0] /Users/imac/.gradle/caches/8.14.5/transforms/609d095c51b5e7e785ad958a54197cb7/transformed/core-1.16.0/AndroidManifest.xml:23:9-81
+permission#com.iroid.savvy.rd.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION
+ADDED from [androidx.core:core:1.16.0] /Users/imac/.gradle/caches/8.14.5/transforms/609d095c51b5e7e785ad958a54197cb7/transformed/core-1.16.0/AndroidManifest.xml:22:5-24:47
+	android:protectionLevel
+		ADDED from [androidx.core:core:1.16.0] /Users/imac/.gradle/caches/8.14.5/transforms/609d095c51b5e7e785ad958a54197cb7/transformed/core-1.16.0/AndroidManifest.xml:24:9-44
+	android:name
+		ADDED from [androidx.core:core:1.16.0] /Users/imac/.gradle/caches/8.14.5/transforms/609d095c51b5e7e785ad958a54197cb7/transformed/core-1.16.0/AndroidManifest.xml:23:9-81
+uses-permission#${applicationId}.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION
+ADDED from [androidx.core:core:1.16.0] /Users/imac/.gradle/caches/8.14.5/transforms/609d095c51b5e7e785ad958a54197cb7/transformed/core-1.16.0/AndroidManifest.xml:26:5-97
+	android:name
+		ADDED from [androidx.core:core:1.16.0] /Users/imac/.gradle/caches/8.14.5/transforms/609d095c51b5e7e785ad958a54197cb7/transformed/core-1.16.0/AndroidManifest.xml:26:22-94
+uses-permission#com.iroid.savvy.rd.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION
+ADDED from [androidx.core:core:1.16.0] /Users/imac/.gradle/caches/8.14.5/transforms/609d095c51b5e7e785ad958a54197cb7/transformed/core-1.16.0/AndroidManifest.xml:26:5-97
+	android:name
+		ADDED from [androidx.core:core:1.16.0] /Users/imac/.gradle/caches/8.14.5/transforms/609d095c51b5e7e785ad958a54197cb7/transformed/core-1.16.0/AndroidManifest.xml:26:22-94
+meta-data#androidx.lifecycle.ProcessLifecycleInitializer
+ADDED from [androidx.lifecycle:lifecycle-process:2.9.1] /Users/imac/.gradle/caches/8.14.5/transforms/793af3a97c9d57b1a27977e7f3bccd2c/transformed/lifecycle-process-2.9.1/AndroidManifest.xml:29:13-31:52
+	android:value
+		ADDED from [androidx.lifecycle:lifecycle-process:2.9.1] /Users/imac/.gradle/caches/8.14.5/transforms/793af3a97c9d57b1a27977e7f3bccd2c/transformed/lifecycle-process-2.9.1/AndroidManifest.xml:31:17-49
+	android:name
+		ADDED from [androidx.lifecycle:lifecycle-process:2.9.1] /Users/imac/.gradle/caches/8.14.5/transforms/793af3a97c9d57b1a27977e7f3bccd2c/transformed/lifecycle-process-2.9.1/AndroidManifest.xml:30:17-78
+meta-data#androidx.profileinstaller.ProfileInstallerInitializer
+ADDED from [androidx.profileinstaller:profileinstaller:1.4.0] /Users/imac/.gradle/caches/8.14.5/transforms/1823af844612dcd500371ed0f77ac304/transformed/profileinstaller-1.4.0/AndroidManifest.xml:29:13-31:52
+	android:value
+		ADDED from [androidx.profileinstaller:profileinstaller:1.4.0] /Users/imac/.gradle/caches/8.14.5/transforms/1823af844612dcd500371ed0f77ac304/transformed/profileinstaller-1.4.0/AndroidManifest.xml:31:17-49
+	android:name
+		ADDED from [androidx.profileinstaller:profileinstaller:1.4.0] /Users/imac/.gradle/caches/8.14.5/transforms/1823af844612dcd500371ed0f77ac304/transformed/profileinstaller-1.4.0/AndroidManifest.xml:30:17-85
+receiver#androidx.profileinstaller.ProfileInstallReceiver
+ADDED from [androidx.profileinstaller:profileinstaller:1.4.0] /Users/imac/.gradle/caches/8.14.5/transforms/1823af844612dcd500371ed0f77ac304/transformed/profileinstaller-1.4.0/AndroidManifest.xml:34:9-52:20
+	android:enabled
+		ADDED from [androidx.profileinstaller:profileinstaller:1.4.0] /Users/imac/.gradle/caches/8.14.5/transforms/1823af844612dcd500371ed0f77ac304/transformed/profileinstaller-1.4.0/AndroidManifest.xml:37:13-35
+	android:exported
+		ADDED from [androidx.profileinstaller:profileinstaller:1.4.0] /Users/imac/.gradle/caches/8.14.5/transforms/1823af844612dcd500371ed0f77ac304/transformed/profileinstaller-1.4.0/AndroidManifest.xml:38:13-36
+	android:permission
+		ADDED from [androidx.profileinstaller:profileinstaller:1.4.0] /Users/imac/.gradle/caches/8.14.5/transforms/1823af844612dcd500371ed0f77ac304/transformed/profileinstaller-1.4.0/AndroidManifest.xml:39:13-57
+	android:directBootAware
+		ADDED from [androidx.profileinstaller:profileinstaller:1.4.0] /Users/imac/.gradle/caches/8.14.5/transforms/1823af844612dcd500371ed0f77ac304/transformed/profileinstaller-1.4.0/AndroidManifest.xml:36:13-44
+	android:name
+		ADDED from [androidx.profileinstaller:profileinstaller:1.4.0] /Users/imac/.gradle/caches/8.14.5/transforms/1823af844612dcd500371ed0f77ac304/transformed/profileinstaller-1.4.0/AndroidManifest.xml:35:13-76
+intent-filter#action:name:androidx.profileinstaller.action.INSTALL_PROFILE
+ADDED from [androidx.profileinstaller:profileinstaller:1.4.0] /Users/imac/.gradle/caches/8.14.5/transforms/1823af844612dcd500371ed0f77ac304/transformed/profileinstaller-1.4.0/AndroidManifest.xml:40:13-42:29
+action#androidx.profileinstaller.action.INSTALL_PROFILE
+ADDED from [androidx.profileinstaller:profileinstaller:1.4.0] /Users/imac/.gradle/caches/8.14.5/transforms/1823af844612dcd500371ed0f77ac304/transformed/profileinstaller-1.4.0/AndroidManifest.xml:41:17-91
+	android:name
+		ADDED from [androidx.profileinstaller:profileinstaller:1.4.0] /Users/imac/.gradle/caches/8.14.5/transforms/1823af844612dcd500371ed0f77ac304/transformed/profileinstaller-1.4.0/AndroidManifest.xml:41:25-88
+intent-filter#action:name:androidx.profileinstaller.action.SKIP_FILE
+ADDED from [androidx.profileinstaller:profileinstaller:1.4.0] /Users/imac/.gradle/caches/8.14.5/transforms/1823af844612dcd500371ed0f77ac304/transformed/profileinstaller-1.4.0/AndroidManifest.xml:43:13-45:29
+action#androidx.profileinstaller.action.SKIP_FILE
+ADDED from [androidx.profileinstaller:profileinstaller:1.4.0] /Users/imac/.gradle/caches/8.14.5/transforms/1823af844612dcd500371ed0f77ac304/transformed/profileinstaller-1.4.0/AndroidManifest.xml:44:17-85
+	android:name
+		ADDED from [androidx.profileinstaller:profileinstaller:1.4.0] /Users/imac/.gradle/caches/8.14.5/transforms/1823af844612dcd500371ed0f77ac304/transformed/profileinstaller-1.4.0/AndroidManifest.xml:44:25-82
+intent-filter#action:name:androidx.profileinstaller.action.SAVE_PROFILE
+ADDED from [androidx.profileinstaller:profileinstaller:1.4.0] /Users/imac/.gradle/caches/8.14.5/transforms/1823af844612dcd500371ed0f77ac304/transformed/profileinstaller-1.4.0/AndroidManifest.xml:46:13-48:29
+action#androidx.profileinstaller.action.SAVE_PROFILE
+ADDED from [androidx.profileinstaller:profileinstaller:1.4.0] /Users/imac/.gradle/caches/8.14.5/transforms/1823af844612dcd500371ed0f77ac304/transformed/profileinstaller-1.4.0/AndroidManifest.xml:47:17-88
+	android:name
+		ADDED from [androidx.profileinstaller:profileinstaller:1.4.0] /Users/imac/.gradle/caches/8.14.5/transforms/1823af844612dcd500371ed0f77ac304/transformed/profileinstaller-1.4.0/AndroidManifest.xml:47:25-85
+intent-filter#action:name:androidx.profileinstaller.action.BENCHMARK_OPERATION
+ADDED from [androidx.profileinstaller:profileinstaller:1.4.0] /Users/imac/.gradle/caches/8.14.5/transforms/1823af844612dcd500371ed0f77ac304/transformed/profileinstaller-1.4.0/AndroidManifest.xml:49:13-51:29
+action#androidx.profileinstaller.action.BENCHMARK_OPERATION
+ADDED from [androidx.profileinstaller:profileinstaller:1.4.0] /Users/imac/.gradle/caches/8.14.5/transforms/1823af844612dcd500371ed0f77ac304/transformed/profileinstaller-1.4.0/AndroidManifest.xml:50:17-95
+	android:name
+		ADDED from [androidx.profileinstaller:profileinstaller:1.4.0] /Users/imac/.gradle/caches/8.14.5/transforms/1823af844612dcd500371ed0f77ac304/transformed/profileinstaller-1.4.0/AndroidManifest.xml:50:25-92
+uses-feature#android.hardware.camera.front
+ADDED from [com.journeyapps:zxing-android-embedded:4.3.0] /Users/imac/.gradle/caches/8.14.5/transforms/8a7bba82670afa4d5ec2fa3795cc0358/transformed/zxing-android-embedded-4.3.0/AndroidManifest.xml:28:5-30:36
+	android:required
+		ADDED from [com.journeyapps:zxing-android-embedded:4.3.0] /Users/imac/.gradle/caches/8.14.5/transforms/8a7bba82670afa4d5ec2fa3795cc0358/transformed/zxing-android-embedded-4.3.0/AndroidManifest.xml:30:9-33
+	android:name
+		ADDED from [com.journeyapps:zxing-android-embedded:4.3.0] /Users/imac/.gradle/caches/8.14.5/transforms/8a7bba82670afa4d5ec2fa3795cc0358/transformed/zxing-android-embedded-4.3.0/AndroidManifest.xml:29:9-53
+uses-feature#android.hardware.camera.autofocus
+ADDED from [com.journeyapps:zxing-android-embedded:4.3.0] /Users/imac/.gradle/caches/8.14.5/transforms/8a7bba82670afa4d5ec2fa3795cc0358/transformed/zxing-android-embedded-4.3.0/AndroidManifest.xml:33:5-35:36
+	android:required
+		ADDED from [com.journeyapps:zxing-android-embedded:4.3.0] /Users/imac/.gradle/caches/8.14.5/transforms/8a7bba82670afa4d5ec2fa3795cc0358/transformed/zxing-android-embedded-4.3.0/AndroidManifest.xml:35:9-33
+	android:name
+		ADDED from [com.journeyapps:zxing-android-embedded:4.3.0] /Users/imac/.gradle/caches/8.14.5/transforms/8a7bba82670afa4d5ec2fa3795cc0358/transformed/zxing-android-embedded-4.3.0/AndroidManifest.xml:34:9-57
+uses-feature#android.hardware.camera.flash
+ADDED from [com.journeyapps:zxing-android-embedded:4.3.0] /Users/imac/.gradle/caches/8.14.5/transforms/8a7bba82670afa4d5ec2fa3795cc0358/transformed/zxing-android-embedded-4.3.0/AndroidManifest.xml:36:5-38:36
+	android:required
+		ADDED from [com.journeyapps:zxing-android-embedded:4.3.0] /Users/imac/.gradle/caches/8.14.5/transforms/8a7bba82670afa4d5ec2fa3795cc0358/transformed/zxing-android-embedded-4.3.0/AndroidManifest.xml:38:9-33
+	android:name
+		ADDED from [com.journeyapps:zxing-android-embedded:4.3.0] /Users/imac/.gradle/caches/8.14.5/transforms/8a7bba82670afa4d5ec2fa3795cc0358/transformed/zxing-android-embedded-4.3.0/AndroidManifest.xml:37:9-53
+uses-feature#android.hardware.screen.landscape
+ADDED from [com.journeyapps:zxing-android-embedded:4.3.0] /Users/imac/.gradle/caches/8.14.5/transforms/8a7bba82670afa4d5ec2fa3795cc0358/transformed/zxing-android-embedded-4.3.0/AndroidManifest.xml:39:5-41:36
+	android:required
+		ADDED from [com.journeyapps:zxing-android-embedded:4.3.0] /Users/imac/.gradle/caches/8.14.5/transforms/8a7bba82670afa4d5ec2fa3795cc0358/transformed/zxing-android-embedded-4.3.0/AndroidManifest.xml:41:9-33
+	android:name
+		ADDED from [com.journeyapps:zxing-android-embedded:4.3.0] /Users/imac/.gradle/caches/8.14.5/transforms/8a7bba82670afa4d5ec2fa3795cc0358/transformed/zxing-android-embedded-4.3.0/AndroidManifest.xml:40:9-57
+uses-feature#android.hardware.wifi
+ADDED from [com.journeyapps:zxing-android-embedded:4.3.0] /Users/imac/.gradle/caches/8.14.5/transforms/8a7bba82670afa4d5ec2fa3795cc0358/transformed/zxing-android-embedded-4.3.0/AndroidManifest.xml:42:5-44:36
+	android:required
+		ADDED from [com.journeyapps:zxing-android-embedded:4.3.0] /Users/imac/.gradle/caches/8.14.5/transforms/8a7bba82670afa4d5ec2fa3795cc0358/transformed/zxing-android-embedded-4.3.0/AndroidManifest.xml:44:9-33
+	android:name
+		ADDED from [com.journeyapps:zxing-android-embedded:4.3.0] /Users/imac/.gradle/caches/8.14.5/transforms/8a7bba82670afa4d5ec2fa3795cc0358/transformed/zxing-android-embedded-4.3.0/AndroidManifest.xml:43:9-45
+activity#com.journeyapps.barcodescanner.CaptureActivity
+ADDED from [com.journeyapps:zxing-android-embedded:4.3.0] /Users/imac/.gradle/caches/8.14.5/transforms/8a7bba82670afa4d5ec2fa3795cc0358/transformed/zxing-android-embedded-4.3.0/AndroidManifest.xml:47:9-53:63
+	android:screenOrientation
+		ADDED from [com.journeyapps:zxing-android-embedded:4.3.0] /Users/imac/.gradle/caches/8.14.5/transforms/8a7bba82670afa4d5ec2fa3795cc0358/transformed/zxing-android-embedded-4.3.0/AndroidManifest.xml:50:13-56
+	android:clearTaskOnLaunch
+		ADDED from [com.journeyapps:zxing-android-embedded:4.3.0] /Users/imac/.gradle/caches/8.14.5/transforms/8a7bba82670afa4d5ec2fa3795cc0358/transformed/zxing-android-embedded-4.3.0/AndroidManifest.xml:49:13-45
+	android:stateNotNeeded
+		ADDED from [com.journeyapps:zxing-android-embedded:4.3.0] /Users/imac/.gradle/caches/8.14.5/transforms/8a7bba82670afa4d5ec2fa3795cc0358/transformed/zxing-android-embedded-4.3.0/AndroidManifest.xml:51:13-42
+	android:windowSoftInputMode
+		ADDED from [com.journeyapps:zxing-android-embedded:4.3.0] /Users/imac/.gradle/caches/8.14.5/transforms/8a7bba82670afa4d5ec2fa3795cc0358/transformed/zxing-android-embedded-4.3.0/AndroidManifest.xml:53:13-60
+	android:theme
+		ADDED from [com.journeyapps:zxing-android-embedded:4.3.0] /Users/imac/.gradle/caches/8.14.5/transforms/8a7bba82670afa4d5ec2fa3795cc0358/transformed/zxing-android-embedded-4.3.0/AndroidManifest.xml:52:13-54
+	android:name
+		ADDED from [com.journeyapps:zxing-android-embedded:4.3.0] /Users/imac/.gradle/caches/8.14.5/transforms/8a7bba82670afa4d5ec2fa3795cc0358/transformed/zxing-android-embedded-4.3.0/AndroidManifest.xml:48:13-74

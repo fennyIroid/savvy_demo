@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Savvy card with scan-frame corners, snow on navy. 108dp adaptive canvas, 72dp safe zone. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp" android:height="108dp" android:viewportWidth="108" android:viewportHeight="108">
+    <path android:fillColor="#FFFAFA"
+        android:pathData="M36,38 L72,38 A8,8 0 0 1 80,46 L80,62 A8,8 0 0 1 72,70 L36,70 A8,8 0 0 1 28,62 L28,46 A8,8 0 0 1 36,38 Z" />
+    <path android:strokeColor="#ADD8E6" android:strokeWidth="2.4" android:strokeLineCap="round" android:fillColor="#00000000"
+        android:pathData="M34,49 L34,46 Q34,44 36,44 L39,44 M74,49 L74,46 Q74,44 72,44 L69,44 M34,59 L34,62 Q34,64 36,64 L39,64 M74,59 L74,62 Q74,64 72,64 L69,64" />
+    <path android:strokeColor="#000080" android:strokeWidth="2.6" android:strokeLineCap="round" android:fillColor="#00000000"
+        android:pathData="M50,48 Q54,54 50,60 M55,45 Q61,54 55,63" />
+</vector>

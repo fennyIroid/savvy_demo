@@ -1,0 +1,392 @@
+1<?xml version="1.0" encoding="utf-8"?>
+2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+3    package="com.iroid.savvy.rd"
+4    android:versionCode="1"
+5    android:versionName="0.1-rd" >
+6
+7    <uses-sdk
+8        android:minSdkVersion="26"
+9        android:targetSdkVersion="36" />
+10
+11    <!-- Foreground app detection, fallback path (user grants in Settings > Usage access). -->
+12    <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS" />
+12-->/Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:6:5-114
+12-->/Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:6:22-75
+13    <!-- Block screen launch from background for the UsageStats path (BAL exemption). -->
+14    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+14-->/Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:8:5-78
+14-->/Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:8:22-75
+15    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+15-->/Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:9:5-77
+15-->/Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:9:22-74
+16    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
+16-->/Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:10:5-89
+16-->/Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:10:22-86
+17    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+17-->/Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:11:5-77
+17-->/Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:11:22-74
+18    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+18-->/Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:12:5-81
+18-->/Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:12:22-78
+19    <uses-permission android:name="android.permission.INTERNET" />
+19-->/Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:13:5-67
+19-->/Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:13:22-64
+20    <uses-permission android:name="android.permission.NFC" />
+20-->/Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:14:5-62
+20-->/Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:14:22-59
+21    <uses-permission android:name="android.permission.CAMERA" />
+21-->/Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:15:5-65
+21-->/Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:15:22-62
+22    <!-- Android 16+: detect Advanced Protection Mode (Android 17 AAPM revokes non-tool accessibility). -->
+23    <uses-permission android:name="android.permission.QUERY_ADVANCED_PROTECTION_MODE" />
+23-->/Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:17:5-89
+23-->/Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:17:22-86
+24
+25    <uses-feature
+25-->/Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:18:5-82
+26        android:name="android.hardware.nfc"
+26-->/Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:18:19-54
+27        android:required="false" />
+27-->/Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:18:55-79
+28    <uses-feature
+28-->/Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:19:5-85
+29        android:name="android.hardware.camera"
+29-->/Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:19:19-57
+30        android:required="false" />
+30-->/Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:19:58-82
+31
+32    <!-- App picker: every launchable app, without QUERY_ALL_PACKAGES. -->
+33    <queries>
+33-->/Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:22:5-27:15
+34        <intent>
+34-->/Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:23:9-26:18
+35            <action android:name="android.intent.action.MAIN" />
+35-->/Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:24:13-65
+35-->/Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:24:21-62
+36
+37            <category android:name="android.intent.category.LAUNCHER" />
+37-->/Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:25:13-73
+37-->/Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:25:23-70
+38        </intent>
+39    </queries>
+40
+41    <permission
+41-->[androidx.core:core:1.16.0] /Users/imac/.gradle/caches/8.14.5/transforms/609d095c51b5e7e785ad958a54197cb7/transformed/core-1.16.0/AndroidManifest.xml:22:5-24:47
+42        android:name="com.iroid.savvy.rd.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+42-->[androidx.core:core:1.16.0] /Users/imac/.gradle/caches/8.14.5/transforms/609d095c51b5e7e785ad958a54197cb7/transformed/core-1.16.0/AndroidManifest.xml:23:9-81
+43        android:protectionLevel="signature" />
+43-->[androidx.core:core:1.16.0] /Users/imac/.gradle/caches/8.14.5/transforms/609d095c51b5e7e785ad958a54197cb7/transformed/core-1.16.0/AndroidManifest.xml:24:9-44
+44
+45    <uses-permission android:name="com.iroid.savvy.rd.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION" />
+45-->[androidx.core:core:1.16.0] /Users/imac/.gradle/caches/8.14.5/transforms/609d095c51b5e7e785ad958a54197cb7/transformed/core-1.16.0/AndroidManifest.xml:26:5-97
+45-->[androidx.core:core:1.16.0] /Users/imac/.gradle/caches/8.14.5/transforms/609d095c51b5e7e785ad958a54197cb7/transformed/core-1.16.0/AndroidManifest.xml:26:22-94
+46
+47    <uses-feature
+47-->[com.journeyapps:zxing-android-embedded:4.3.0] /Users/imac/.gradle/caches/8.14.5/transforms/8a7bba82670afa4d5ec2fa3795cc0358/transformed/zxing-android-embedded-4.3.0/AndroidManifest.xml:28:5-30:36
+48        android:name="android.hardware.camera.front"
+48-->[com.journeyapps:zxing-android-embedded:4.3.0] /Users/imac/.gradle/caches/8.14.5/transforms/8a7bba82670afa4d5ec2fa3795cc0358/transformed/zxing-android-embedded-4.3.0/AndroidManifest.xml:29:9-53
+49        android:required="false" /> <!-- TODO replace above two with next line after Android 4.2 -->
+49-->[com.journeyapps:zxing-android-embedded:4.3.0] /Users/imac/.gradle/caches/8.14.5/transforms/8a7bba82670afa4d5ec2fa3795cc0358/transformed/zxing-android-embedded-4.3.0/AndroidManifest.xml:30:9-33
+50    <!-- <uses-feature android:name="android.hardware.camera.any"/> -->
+51    <uses-feature
+51-->[com.journeyapps:zxing-android-embedded:4.3.0] /Users/imac/.gradle/caches/8.14.5/transforms/8a7bba82670afa4d5ec2fa3795cc0358/transformed/zxing-android-embedded-4.3.0/AndroidManifest.xml:33:5-35:36
+52        android:name="android.hardware.camera.autofocus"
+52-->[com.journeyapps:zxing-android-embedded:4.3.0] /Users/imac/.gradle/caches/8.14.5/transforms/8a7bba82670afa4d5ec2fa3795cc0358/transformed/zxing-android-embedded-4.3.0/AndroidManifest.xml:34:9-57
+53        android:required="false" />
+53-->[com.journeyapps:zxing-android-embedded:4.3.0] /Users/imac/.gradle/caches/8.14.5/transforms/8a7bba82670afa4d5ec2fa3795cc0358/transformed/zxing-android-embedded-4.3.0/AndroidManifest.xml:35:9-33
+54    <uses-feature
+54-->[com.journeyapps:zxing-android-embedded:4.3.0] /Users/imac/.gradle/caches/8.14.5/transforms/8a7bba82670afa4d5ec2fa3795cc0358/transformed/zxing-android-embedded-4.3.0/AndroidManifest.xml:36:5-38:36
+55        android:name="android.hardware.camera.flash"
+55-->[com.journeyapps:zxing-android-embedded:4.3.0] /Users/imac/.gradle/caches/8.14.5/transforms/8a7bba82670afa4d5ec2fa3795cc0358/transformed/zxing-android-embedded-4.3.0/AndroidManifest.xml:37:9-53
+56        android:required="false" />
+56-->[com.journeyapps:zxing-android-embedded:4.3.0] /Users/imac/.gradle/caches/8.14.5/transforms/8a7bba82670afa4d5ec2fa3795cc0358/transformed/zxing-android-embedded-4.3.0/AndroidManifest.xml:38:9-33
+57    <uses-feature
+57-->[com.journeyapps:zxing-android-embedded:4.3.0] /Users/imac/.gradle/caches/8.14.5/transforms/8a7bba82670afa4d5ec2fa3795cc0358/transformed/zxing-android-embedded-4.3.0/AndroidManifest.xml:39:5-41:36
+58        android:name="android.hardware.screen.landscape"
+58-->[com.journeyapps:zxing-android-embedded:4.3.0] /Users/imac/.gradle/caches/8.14.5/transforms/8a7bba82670afa4d5ec2fa3795cc0358/transformed/zxing-android-embedded-4.3.0/AndroidManifest.xml:40:9-57
+59        android:required="false" />
+59-->[com.journeyapps:zxing-android-embedded:4.3.0] /Users/imac/.gradle/caches/8.14.5/transforms/8a7bba82670afa4d5ec2fa3795cc0358/transformed/zxing-android-embedded-4.3.0/AndroidManifest.xml:41:9-33
+60    <uses-feature
+60-->[com.journeyapps:zxing-android-embedded:4.3.0] /Users/imac/.gradle/caches/8.14.5/transforms/8a7bba82670afa4d5ec2fa3795cc0358/transformed/zxing-android-embedded-4.3.0/AndroidManifest.xml:42:5-44:36
+61        android:name="android.hardware.wifi"
+61-->[com.journeyapps:zxing-android-embedded:4.3.0] /Users/imac/.gradle/caches/8.14.5/transforms/8a7bba82670afa4d5ec2fa3795cc0358/transformed/zxing-android-embedded-4.3.0/AndroidManifest.xml:43:9-45
+62        android:required="false" />
+62-->[com.journeyapps:zxing-android-embedded:4.3.0] /Users/imac/.gradle/caches/8.14.5/transforms/8a7bba82670afa4d5ec2fa3795cc0358/transformed/zxing-android-embedded-4.3.0/AndroidManifest.xml:44:9-33
+63
+64    <application
+64-->/Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:29:5-109:19
+65        android:name="com.iroid.savvy.rd.SavvyApp"
+65-->/Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:30:9-33
+66        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
+66-->[androidx.core:core:1.16.0] /Users/imac/.gradle/caches/8.14.5/transforms/609d095c51b5e7e785ad958a54197cb7/transformed/core-1.16.0/AndroidManifest.xml:28:18-86
+67        android:debuggable="true"
+68        android:extractNativeLibs="false"
+69        android:icon="@mipmap/ic_launcher"
+69-->/Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:32:9-43
+70        android:label="Savvy"
+70-->/Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:31:9-30
+71        android:roundIcon="@mipmap/ic_launcher"
+71-->/Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:33:9-48
+72        android:testOnly="true"
+73        android:theme="@style/Theme.Savvy"
+73-->/Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:34:9-43
+74        android:usesCleartextTraffic="true" >
+74-->/Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:35:9-44
+75        <activity
+75-->/Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:38:9-43:20
+76            android:name="com.iroid.savvy.rd.MainActivity"
+76-->/Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:38:19-47
+77            android:exported="true"
+77-->/Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:38:48-71
+78            android:windowSoftInputMode="adjustResize" >
+78-->/Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:38:72-114
+79            <intent-filter>
+79-->/Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:39:13-42:29
+80                <action android:name="android.intent.action.MAIN" />
+80-->/Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:24:13-65
+80-->/Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:24:21-62
+81
+82                <category android:name="android.intent.category.LAUNCHER" />
+82-->/Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:25:13-73
+82-->/Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:25:23-70
+83            </intent-filter>
+84        </activity>
+85
+86        <!--
+87             Block screen. Also receives card taps:
+88             App Link (https card URL) from the NFC tag dispatch or the Camera app.
+89        -->
+90        <activity
+90-->/Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:47:9-64:20
+91            android:name="com.iroid.savvy.rd.block.BlockActivity"
+91-->/Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:48:13-48
+92            android:excludeFromRecents="true"
+92-->/Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:50:13-46
+93            android:exported="true"
+93-->/Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:49:13-36
+94            android:launchMode="singleTask"
+94-->/Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:51:13-44
+95            android:taskAffinity="com.iroid.savvy.rd.block" >
+95-->/Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:52:13-60
+96            <intent-filter android:autoVerify="true" >
+96-->/Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:53:13-57:29
+96-->/Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:53:28-53
+97                <action android:name="android.nfc.action.NDEF_DISCOVERED" />
+97-->/Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:54:17-77
+97-->/Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:54:25-74
+98
+99                <category android:name="android.intent.category.DEFAULT" />
+99-->/Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:55:17-76
+99-->/Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:55:27-73
+100
+101                <data
+101-->/Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:56:17-102
+102                    android:host="go.savvy.test"
+102-->/Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:56:46-74
+103                    android:pathPrefix="/c/"
+103-->/Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:56:75-99
+104                    android:scheme="https" />
+104-->/Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:56:23-45
+105            </intent-filter>
+106            <intent-filter android:autoVerify="true" >
+106-->/Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:58:13-63:29
+106-->/Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:58:28-53
+107                <action android:name="android.intent.action.VIEW" />
+107-->/Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:59:17-69
+107-->/Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:59:25-66
+108
+109                <category android:name="android.intent.category.DEFAULT" />
+109-->/Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:55:17-76
+109-->/Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:55:27-73
+110                <category android:name="android.intent.category.BROWSABLE" />
+110-->/Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:61:17-78
+110-->/Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:61:27-75
+111
+112                <data
+112-->/Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:56:17-102
+113                    android:host="go.savvy.test"
+113-->/Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:56:46-74
+114                    android:pathPrefix="/c/"
+114-->/Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:56:75-99
+115                    android:scheme="https" />
+115-->/Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:56:23-45
+116            </intent-filter>
+117        </activity>
+118
+119        <!-- Approach B: AccessibilityService (primary). isAccessibilityTool=false in config. -->
+120        <service
+120-->/Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:68:9-76:19
+121            android:name="com.iroid.savvy.rd.service.SavvyAccessibilityService"
+121-->/Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:69:13-62
+122            android:exported="false"
+122-->/Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:70:13-37
+123            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE" >
+123-->/Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:71:13-79
+124            <intent-filter>
+124-->/Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:72:13-74:29
+125                <action android:name="android.accessibilityservice.AccessibilityService" />
+125-->/Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:73:17-92
+125-->/Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:73:25-89
+126            </intent-filter>
+127
+128            <meta-data
+128-->/Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:75:13-115
+129                android:name="android.accessibilityservice"
+129-->/Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:75:24-67
+130                android:resource="@xml/accessibility_config" />
+130-->/Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:75:68-112
+131        </service>
+132
+133        <!-- Approach A + D: UsageStats polling in a foreground service (fallback). -->
+134        <service
+134-->/Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:79:9-86:19
+135            android:name="com.iroid.savvy.rd.service.UsageMonitorService"
+135-->/Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:80:13-56
+136            android:exported="false"
+136-->/Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:81:13-37
+137            android:foregroundServiceType="specialUse" >
+137-->/Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:82:13-55
+138            <property
+138-->/Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:83:13-85:136
+139                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+139-->/Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:84:17-76
+140                android:value="Keeps a user-started focus session active and blocks the apps the user chose until the session ends." />
+140-->/Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:85:17-133
+141        </service>
+142
+143        <receiver
+143-->/Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:88:9-93:20
+144            android:name="com.iroid.savvy.rd.service.BootReceiver"
+144-->/Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:88:19-55
+145            android:exported="false" >
+145-->/Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:88:56-80
+146            <intent-filter>
+146-->/Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:89:13-92:29
+147                <action android:name="android.intent.action.BOOT_COMPLETED" />
+147-->/Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:90:17-79
+147-->/Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:90:25-76
+148                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+148-->/Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:91:17-84
+148-->/Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:91:25-81
+149            </intent-filter>
+150        </receiver>
+151
+152        <!-- Approach E: device admin. PARENT mode only (see STORE_POLICY_RISKS.md). -->
+153        <receiver
+153-->/Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:96:9-104:20
+154            android:name="com.iroid.savvy.rd.admin.SavvyDeviceAdminReceiver"
+154-->/Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:97:13-59
+155            android:exported="true"
+155-->/Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:98:13-36
+156            android:permission="android.permission.BIND_DEVICE_ADMIN" >
+156-->/Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:99:13-70
+157            <meta-data
+157-->/Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:100:13-103
+158                android:name="android.app.device_admin"
+158-->/Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:100:24-63
+159                android:resource="@xml/device_admin" />
+159-->/Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:100:64-100
+160
+161            <intent-filter>
+161-->/Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:101:13-103:29
+162                <action android:name="android.app.action.DEVICE_ADMIN_ENABLED" />
+162-->/Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:102:17-82
+162-->/Users/imac/Documents/Fenny/Demo apps/savvy-claude-cool-mendel-udrak6/android/SavvyRDAndroid/app/src/main/AndroidManifest.xml:102:25-79
+163            </intent-filter>
+164        </receiver>
+165
+166        <!--
+167             Play "isMonitoringTool": required for child monitoring apps. Only in the parent-mode
+168             build if Savvy sends child data to the parent (see STORE_POLICY_RISKS.md).
+169        -->
+170        <!-- <meta-data android:name="isMonitoringTool" android:value="child_monitoring" /> -->
+171        <activity
+171-->[androidx.compose.ui:ui-tooling-android:1.8.3] /Users/imac/.gradle/caches/8.14.5/transforms/cab03f10b6215f4d6347179ad760dbe0/transformed/ui-tooling-release/AndroidManifest.xml:23:9-25:39
+172            android:name="androidx.compose.ui.tooling.PreviewActivity"
+172-->[androidx.compose.ui:ui-tooling-android:1.8.3] /Users/imac/.gradle/caches/8.14.5/transforms/cab03f10b6215f4d6347179ad760dbe0/transformed/ui-tooling-release/AndroidManifest.xml:24:13-71
+173            android:exported="true" />
+173-->[androidx.compose.ui:ui-tooling-android:1.8.3] /Users/imac/.gradle/caches/8.14.5/transforms/cab03f10b6215f4d6347179ad760dbe0/transformed/ui-tooling-release/AndroidManifest.xml:25:13-36
+174
+175        <provider
+175-->[androidx.emoji2:emoji2:1.4.0] /Users/imac/.gradle/caches/8.14.5/transforms/d770b891d60eedd8c7f0606996510ff7/transformed/emoji2-1.4.0/AndroidManifest.xml:24:9-32:20
+176            android:name="androidx.startup.InitializationProvider"
+176-->[androidx.emoji2:emoji2:1.4.0] /Users/imac/.gradle/caches/8.14.5/transforms/d770b891d60eedd8c7f0606996510ff7/transformed/emoji2-1.4.0/AndroidManifest.xml:25:13-67
+177            android:authorities="com.iroid.savvy.rd.androidx-startup"
+177-->[androidx.emoji2:emoji2:1.4.0] /Users/imac/.gradle/caches/8.14.5/transforms/d770b891d60eedd8c7f0606996510ff7/transformed/emoji2-1.4.0/AndroidManifest.xml:26:13-68
+178            android:exported="false" >
+178-->[androidx.emoji2:emoji2:1.4.0] /Users/imac/.gradle/caches/8.14.5/transforms/d770b891d60eedd8c7f0606996510ff7/transformed/emoji2-1.4.0/AndroidManifest.xml:27:13-37
+179            <meta-data
+179-->[androidx.emoji2:emoji2:1.4.0] /Users/imac/.gradle/caches/8.14.5/transforms/d770b891d60eedd8c7f0606996510ff7/transformed/emoji2-1.4.0/AndroidManifest.xml:29:13-31:52
+180                android:name="androidx.emoji2.text.EmojiCompatInitializer"
+180-->[androidx.emoji2:emoji2:1.4.0] /Users/imac/.gradle/caches/8.14.5/transforms/d770b891d60eedd8c7f0606996510ff7/transformed/emoji2-1.4.0/AndroidManifest.xml:30:17-75
+181                android:value="androidx.startup" />
+181-->[androidx.emoji2:emoji2:1.4.0] /Users/imac/.gradle/caches/8.14.5/transforms/d770b891d60eedd8c7f0606996510ff7/transformed/emoji2-1.4.0/AndroidManifest.xml:31:17-49
+182            <meta-data
+182-->[androidx.lifecycle:lifecycle-process:2.9.1] /Users/imac/.gradle/caches/8.14.5/transforms/793af3a97c9d57b1a27977e7f3bccd2c/transformed/lifecycle-process-2.9.1/AndroidManifest.xml:29:13-31:52
+183                android:name="androidx.lifecycle.ProcessLifecycleInitializer"
+183-->[androidx.lifecycle:lifecycle-process:2.9.1] /Users/imac/.gradle/caches/8.14.5/transforms/793af3a97c9d57b1a27977e7f3bccd2c/transformed/lifecycle-process-2.9.1/AndroidManifest.xml:30:17-78
+184                android:value="androidx.startup" />
+184-->[androidx.lifecycle:lifecycle-process:2.9.1] /Users/imac/.gradle/caches/8.14.5/transforms/793af3a97c9d57b1a27977e7f3bccd2c/transformed/lifecycle-process-2.9.1/AndroidManifest.xml:31:17-49
+185            <meta-data
+185-->[androidx.profileinstaller:profileinstaller:1.4.0] /Users/imac/.gradle/caches/8.14.5/transforms/1823af844612dcd500371ed0f77ac304/transformed/profileinstaller-1.4.0/AndroidManifest.xml:29:13-31:52
+186                android:name="androidx.profileinstaller.ProfileInstallerInitializer"
+186-->[androidx.profileinstaller:profileinstaller:1.4.0] /Users/imac/.gradle/caches/8.14.5/transforms/1823af844612dcd500371ed0f77ac304/transformed/profileinstaller-1.4.0/AndroidManifest.xml:30:17-85
+187                android:value="androidx.startup" />
+187-->[androidx.profileinstaller:profileinstaller:1.4.0] /Users/imac/.gradle/caches/8.14.5/transforms/1823af844612dcd500371ed0f77ac304/transformed/profileinstaller-1.4.0/AndroidManifest.xml:31:17-49
+188        </provider>
+189
+190        <receiver
+190-->[androidx.profileinstaller:profileinstaller:1.4.0] /Users/imac/.gradle/caches/8.14.5/transforms/1823af844612dcd500371ed0f77ac304/transformed/profileinstaller-1.4.0/AndroidManifest.xml:34:9-52:20
+191            android:name="androidx.profileinstaller.ProfileInstallReceiver"
+191-->[androidx.profileinstaller:profileinstaller:1.4.0] /Users/imac/.gradle/caches/8.14.5/transforms/1823af844612dcd500371ed0f77ac304/transformed/profileinstaller-1.4.0/AndroidManifest.xml:35:13-76
+192            android:directBootAware="false"
+192-->[androidx.profileinstaller:profileinstaller:1.4.0] /Users/imac/.gradle/caches/8.14.5/transforms/1823af844612dcd500371ed0f77ac304/transformed/profileinstaller-1.4.0/AndroidManifest.xml:36:13-44
+193            android:enabled="true"
+193-->[androidx.profileinstaller:profileinstaller:1.4.0] /Users/imac/.gradle/caches/8.14.5/transforms/1823af844612dcd500371ed0f77ac304/transformed/profileinstaller-1.4.0/AndroidManifest.xml:37:13-35
+194            android:exported="true"
+194-->[androidx.profileinstaller:profileinstaller:1.4.0] /Users/imac/.gradle/caches/8.14.5/transforms/1823af844612dcd500371ed0f77ac304/transformed/profileinstaller-1.4.0/AndroidManifest.xml:38:13-36
+195            android:permission="android.permission.DUMP" >
+195-->[androidx.profileinstaller:profileinstaller:1.4.0] /Users/imac/.gradle/caches/8.14.5/transforms/1823af844612dcd500371ed0f77ac304/transformed/profileinstaller-1.4.0/AndroidManifest.xml:39:13-57
+196            <intent-filter>
+196-->[androidx.profileinstaller:profileinstaller:1.4.0] /Users/imac/.gradle/caches/8.14.5/transforms/1823af844612dcd500371ed0f77ac304/transformed/profileinstaller-1.4.0/AndroidManifest.xml:40:13-42:29
+197                <action android:name="androidx.profileinstaller.action.INSTALL_PROFILE" />
+197-->[androidx.profileinstaller:profileinstaller:1.4.0] /Users/imac/.gradle/caches/8.14.5/transforms/1823af844612dcd500371ed0f77ac304/transformed/profileinstaller-1.4.0/AndroidManifest.xml:41:17-91
+197-->[androidx.profileinstaller:profileinstaller:1.4.0] /Users/imac/.gradle/caches/8.14.5/transforms/1823af844612dcd500371ed0f77ac304/transformed/profileinstaller-1.4.0/AndroidManifest.xml:41:25-88
+198            </intent-filter>
+199            <intent-filter>
+199-->[androidx.profileinstaller:profileinstaller:1.4.0] /Users/imac/.gradle/caches/8.14.5/transforms/1823af844612dcd500371ed0f77ac304/transformed/profileinstaller-1.4.0/AndroidManifest.xml:43:13-45:29
+200                <action android:name="androidx.profileinstaller.action.SKIP_FILE" />
+200-->[androidx.profileinstaller:profileinstaller:1.4.0] /Users/imac/.gradle/caches/8.14.5/transforms/1823af844612dcd500371ed0f77ac304/transformed/profileinstaller-1.4.0/AndroidManifest.xml:44:17-85
+200-->[androidx.profileinstaller:profileinstaller:1.4.0] /Users/imac/.gradle/caches/8.14.5/transforms/1823af844612dcd500371ed0f77ac304/transformed/profileinstaller-1.4.0/AndroidManifest.xml:44:25-82
+201            </intent-filter>
+202            <intent-filter>
+202-->[androidx.profileinstaller:profileinstaller:1.4.0] /Users/imac/.gradle/caches/8.14.5/transforms/1823af844612dcd500371ed0f77ac304/transformed/profileinstaller-1.4.0/AndroidManifest.xml:46:13-48:29
+203                <action android:name="androidx.profileinstaller.action.SAVE_PROFILE" />
+203-->[androidx.profileinstaller:profileinstaller:1.4.0] /Users/imac/.gradle/caches/8.14.5/transforms/1823af844612dcd500371ed0f77ac304/transformed/profileinstaller-1.4.0/AndroidManifest.xml:47:17-88
+203-->[androidx.profileinstaller:profileinstaller:1.4.0] /Users/imac/.gradle/caches/8.14.5/transforms/1823af844612dcd500371ed0f77ac304/transformed/profileinstaller-1.4.0/AndroidManifest.xml:47:25-85
+204            </intent-filter>
+205            <intent-filter>
+205-->[androidx.profileinstaller:profileinstaller:1.4.0] /Users/imac/.gradle/caches/8.14.5/transforms/1823af844612dcd500371ed0f77ac304/transformed/profileinstaller-1.4.0/AndroidManifest.xml:49:13-51:29
+206                <action android:name="androidx.profileinstaller.action.BENCHMARK_OPERATION" />
+206-->[androidx.profileinstaller:profileinstaller:1.4.0] /Users/imac/.gradle/caches/8.14.5/transforms/1823af844612dcd500371ed0f77ac304/transformed/profileinstaller-1.4.0/AndroidManifest.xml:50:17-95
+206-->[androidx.profileinstaller:profileinstaller:1.4.0] /Users/imac/.gradle/caches/8.14.5/transforms/1823af844612dcd500371ed0f77ac304/transformed/profileinstaller-1.4.0/AndroidManifest.xml:50:25-92
+207            </intent-filter>
+208        </receiver>
+209
+210        <activity
+210-->[com.journeyapps:zxing-android-embedded:4.3.0] /Users/imac/.gradle/caches/8.14.5/transforms/8a7bba82670afa4d5ec2fa3795cc0358/transformed/zxing-android-embedded-4.3.0/AndroidManifest.xml:47:9-53:63
+211            android:name="com.journeyapps.barcodescanner.CaptureActivity"
+211-->[com.journeyapps:zxing-android-embedded:4.3.0] /Users/imac/.gradle/caches/8.14.5/transforms/8a7bba82670afa4d5ec2fa3795cc0358/transformed/zxing-android-embedded-4.3.0/AndroidManifest.xml:48:13-74
+212            android:clearTaskOnLaunch="true"
+212-->[com.journeyapps:zxing-android-embedded:4.3.0] /Users/imac/.gradle/caches/8.14.5/transforms/8a7bba82670afa4d5ec2fa3795cc0358/transformed/zxing-android-embedded-4.3.0/AndroidManifest.xml:49:13-45
+213            android:screenOrientation="sensorLandscape"
+213-->[com.journeyapps:zxing-android-embedded:4.3.0] /Users/imac/.gradle/caches/8.14.5/transforms/8a7bba82670afa4d5ec2fa3795cc0358/transformed/zxing-android-embedded-4.3.0/AndroidManifest.xml:50:13-56
+214            android:stateNotNeeded="true"
+214-->[com.journeyapps:zxing-android-embedded:4.3.0] /Users/imac/.gradle/caches/8.14.5/transforms/8a7bba82670afa4d5ec2fa3795cc0358/transformed/zxing-android-embedded-4.3.0/AndroidManifest.xml:51:13-42
+215            android:theme="@style/zxing_CaptureTheme"
+215-->[com.journeyapps:zxing-android-embedded:4.3.0] /Users/imac/.gradle/caches/8.14.5/transforms/8a7bba82670afa4d5ec2fa3795cc0358/transformed/zxing-android-embedded-4.3.0/AndroidManifest.xml:52:13-54
+216            android:windowSoftInputMode="stateAlwaysHidden" />
+216-->[com.journeyapps:zxing-android-embedded:4.3.0] /Users/imac/.gradle/caches/8.14.5/transforms/8a7bba82670afa4d5ec2fa3795cc0358/transformed/zxing-android-embedded-4.3.0/AndroidManifest.xml:53:13-60
+217    </application>
+218
+219</manifest>

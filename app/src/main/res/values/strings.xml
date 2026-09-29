@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="accessibility_description">Savvy uses this to see which app you open, so it can pause the apps you chose during a focus session. Savvy does not read what is on your screen.</string>
+    <string name="prominent_disclosure">Savvy uses the Accessibility Service to detect which app is open on your screen. When you start a focus session, Savvy uses this only to pause the apps you selected. Savvy does not read or collect the content of your screen, messages or passwords, and does not send this information to our servers. You can turn this off at any time in Settings.</string>
+</resources>

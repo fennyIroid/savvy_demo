@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.iroid.savvy.core.OfflinePolicyTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2026-09-28T13:02:49.858Z" hostname="192.168.1.27" time="0.01">
+  <properties/>
+  <testcase name="offlineTaskCompletion()" classname="com.iroid.savvy.core.OfflinePolicyTest" time="0.004"/>
+  <testcase name="offlineCardDecisionsMatchIos()" classname="com.iroid.savvy.core.OfflinePolicyTest" time="0.003"/>
+  <testcase name="emergencyLimitIncludingClockMovedBack()" classname="com.iroid.savvy.core.OfflinePolicyTest" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
