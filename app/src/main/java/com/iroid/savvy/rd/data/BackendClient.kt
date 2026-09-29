@@ -37,6 +37,7 @@ class BackendClient(private val baseUrl: () -> String, private val token: () -> 
         JSONObject().put("session_id", sessionId).put("response", response))
     fun liveFinish(sessionId: String, response: String) = send("POST", "/v1/cards/live/finish",
         JSONObject().put("session_id", sessionId).put("response", response))
+    fun emergencyUsage() = send("GET", "/v1/emergency-exits/usage", null)
     fun emergencyExit(id: Long, reason: String) = send("POST", "/v1/commitments/$id/emergency-exit", JSONObject().put("reason", reason))
     fun heartbeat(status: JSONObject) = send("POST", "/v1/devices/heartbeat", status)
     fun redeemLink(code: String) = send("POST", "/v1/family/link", JSONObject().put("code", code))

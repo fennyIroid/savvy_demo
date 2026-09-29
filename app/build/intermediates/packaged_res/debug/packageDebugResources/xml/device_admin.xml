@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- No policies are used. Being an active admin alone means Savvy must be
-     deactivated before it can be uninstalled, and AOSP Settings disables Force stop
-     and Clear storage for active admins. -->
-<device-admin>
-    <uses-policies />
-</device-admin>

@@ -17,6 +17,7 @@ import org.json.JSONArray
 import org.json.JSONObject
 import org.junit.After
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
@@ -254,5 +255,98 @@ class AndroidFlowTest {
         app.repo.commitment = app.repo.commitment!!.copy(controlMode = ControlMode.PARENT)
         assertEquals(Decision.BlockTamperScreen(settings, adminScreen), app.engine.onForeground(settings, adminScreen, BlockingEngine.Source.ACCESSIBILITY, null))
         assertEquals(true, nextStarted()?.getBooleanExtra(BlockActivity.EXTRA_TAMPER, false))
+    }
+
+    // ---- Further enhancements (brief re-check, 29 Sep 2026) --------------------------------
+
+    /** Device run 1 open item: a task unlocked by card (or expired) stayed "active" forever. */
+    @Test fun taskEndedByCardOrExpiryIsMarkedEndedNotActive() {
+        val actions = SavvyActions(app)
+        actions.register("fay@test")
+        val card = backend.newCard()
+        actions.registerCard(card, "nfc")
+        app.repo.selectedPackages = setOf(INSTAGRAM)
+        actions.addTask("Essay", 30)
+        val taskId = app.repo.tasksJson.getJSONObject(0).getString("id")
+        actions.start(Mode.TASK, 30, UnlockPolicy.CARD_REQUIRED, taskRef = taskId)
+        assertEquals("active", app.repo.tasksJson.getJSONObject(0).getString("status"))
+        // Card held on the normal block screen: releases the restriction, but the task is not "done".
+        assertEquals(UnlockCoordinator.Outcome.Released(offline = false), UnlockCoordinator(app).handleCard(card, "nfc"))
+        assertEquals("ended", app.repo.tasksJson.getJSONObject(0).getString("status"))
+        // Marking it done afterwards needs no card (nothing is blocked any more).
+        assertTrue(actions.completeTask(taskId).startsWith("task done"))
+        assertEquals("completed", app.repo.tasksJson.getJSONObject(0).getString("status"))
+
+        // Expiry path (to-do Flow B): time box over -> released and task ended.
+        actions.addTask("Reading", 15)
+        val t2 = app.repo.tasksJson.getJSONObject(1).getString("id")
+        app.repo.commitment = Commitment(null, Mode.TASK, UnlockPolicy.CARD_REQUIRED, ControlMode.SELF, setOf(INSTAGRAM), 1, app.repo.now(), null, taskRef = t2)
+        actions.setTaskStatus(t2, "active")
+        Thread.sleep(5); org.robolectric.shadows.ShadowSystemClock.advanceBy(java.time.Duration.ofSeconds(1))
+        assertEquals(Decision.Allow, app.engine.onForeground(INSTAGRAM, null, BlockingEngine.Source.ACCESSIBILITY, null))
+        assertEquals(null, app.repo.commitment)
+        assertEquals("ended", app.repo.tasksJson.getJSONObject(1).getString("status"))
+    }
+
+    /** Brief section 25: a child must not drop parent mode from Settings; the parent's PIN is needed. */
+    @Test fun childNeedsParentPinToLeaveParentModeAndParentChoosesModeAndPolicy() {
+        val parent = backend.call("POST", "/v1/devices/register", JSONObject().put("email", "p3@test").put("platform", "android"), null)
+        val parentToken = parent.getString("device_token")
+        val code = backend.call("POST", "/v1/family/link-codes", JSONObject(), parentToken).getString("code")
+        val actions = SavvyActions(app)
+        app.repo.role = "child"
+        actions.register("c3@test")
+        actions.linkAsChild(code)
+        val childId = app.repo.deviceId
+        // Same JSON SavvyActions.sendRules builds on the parent phone.
+        backend.call("PUT", "/v1/family/children/$childId/rules", JSONObject().put("rules", JSONObject()
+            .put("packages", JSONArray(listOf(INSTAGRAM))).put("always_on", true)
+            .put("focus", JSONObject().put("mode", "sleep").put("duration_minutes", 60).put("unlock_policy", "locked"))
+            .put("leave_pin_sha256", com.iroid.savvy.core.ParentPin.hash(childId, "2468"))), parentToken)
+        actions.syncRules()
+        assertEquals(Mode.SLEEP, app.repo.commitment?.mode)
+        assertEquals(UnlockPolicy.LOCKED, app.repo.commitment?.unlockPolicy)
+        assertTrue(actions.managedByParent)
+
+        // Re-registering would give an unlinked token: refused.
+        assertEquals("managed_by_parent", actions.register("c3-new@test"))
+        assertEquals("wrong_pin", actions.leaveParentMode("1111"))
+        assertEquals(setOf(INSTAGRAM), app.repo.parentBlockedPackages)
+        assertEquals("left parent mode", actions.leaveParentMode("2468"))
+        assertEquals(ControlMode.SELF, app.repo.controlMode)
+        assertTrue(app.repo.parentBlockedPackages.isEmpty())
+    }
+
+    /** Found on device: picking "Child's phone" before linking must not lock the user out. */
+    @Test fun childRoleWithoutParentLinkIsNotManaged() {
+        val actions = SavvyActions(app)
+        actions.register("d4@test")
+        app.repo.role = "child"
+        app.repo.controlMode = ControlMode.PARENT // what the role picker sets
+        assertFalse(actions.managedByParent)
+        assertTrue(actions.register("d4@test").startsWith("registered"))
+    }
+
+    @Test fun emergencyUsageComesFromBackend() {
+        val actions = SavvyActions(app)
+        actions.register("gus@test")
+        app.repo.selectedPackages = setOf(INSTAGRAM)
+        assertEquals(Triple(0, 2, 7), actions.emergencyUsage())
+        actions.start(Mode.WORK, 60, UnlockPolicy.LOCKED)
+        assertTrue(actions.emergency("test").contains("Released"))
+        assertEquals(Triple(1, 2, 7), actions.emergencyUsage())
+    }
+
+    /** Wiring of the offline reboot protection (the math is in core TimeIntegrityTest). */
+    @Test fun clockChangeCheckpointsAndLockedBootRecordsBootWall() {
+        app.repo.commitment = Commitment(null, Mode.STUDY, UnlockPolicy.CARD_REQUIRED, ControlMode.SELF, setOf(INSTAGRAM), 6 * 3_600_000L, app.repo.now(), null)
+        assertEquals(null, app.repo.checkpointFor(app.repo.commitment!!))
+        com.iroid.savvy.rd.service.TimeChangeReceiver().onReceive(app, Intent(Intent.ACTION_TIME_CHANGED))
+        assertNotNull(app.repo.checkpointFor(app.repo.commitment!!))
+        BootReceiver().onReceive(app, Intent(Intent.ACTION_LOCKED_BOOT_COMPLETED))
+        assertNotNull(app.repo.bootWallMs())
+        // A new commitment never reuses the old checkpoint.
+        app.repo.commitment = app.repo.commitment!!.copy(localId = "other")
+        assertEquals(null, app.repo.checkpointFor(app.repo.commitment!!))
     }
 }

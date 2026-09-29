@@ -10,14 +10,17 @@ import java.time.Instant
 object SavvyLog {
     private lateinit var file: File
 
-    fun init(context: Context) { file = File(context.filesDir, "savvy-rd.log") }
+    fun init(context: Context) { runCatching { file = File(context.filesDir, "savvy-rd.log") } }
 
     @Synchronized
     fun event(source: String, message: String) {
         Log.i("SavvyRD", "[$source] $message")
         if (!::file.isInitialized) return
-        if (file.length() > 512 * 1024) file.writeText("")
-        file.appendText("${Instant.now()} rt=${SystemClock.elapsedRealtime()} [$source] $message\n")
+        // Fails before the first unlock after boot (credential-encrypted storage locked): logcat only.
+        runCatching {
+            if (file.length() > 512 * 1024) file.writeText("")
+            file.appendText("${Instant.now()} rt=${SystemClock.elapsedRealtime()} [$source] $message\n")
+        }
     }
 
     fun read(): String = if (::file.isInitialized && file.exists()) file.readText() else "(empty)"

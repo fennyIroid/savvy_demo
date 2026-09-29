@@ -58,6 +58,7 @@ fun SettingsTab(vm: SavvyViewModel, nav: NavHostController) {
     val context = LocalContext.current
     val s = vm.snapshot
     val t = vm.tamper
+    androidx.compose.runtime.LaunchedEffect(Unit) { vm.loadEmergencyUsage() }
     val missing = t?.let { listOf(it.accessibility || it.usageAccess, it.overlay, it.ignoringBatteryOptimizations).count { ok -> !ok } } ?: 0
 
     Column(
@@ -90,12 +91,14 @@ fun SettingsTab(vm: SavvyViewModel, nav: NavHostController) {
         }
 
         GroupCard {
-            SettingRow("Blocked apps", Icons.Outlined.Apps, value = "${s.selected.size}", onClick = { nav.navigate(Routes.APPS) })
+            SettingRow("Blocked apps", Icons.Outlined.Apps, value = "${(s.selected + s.selfBlocked).size}", subtitle = if (s.managedByParent) "Chosen by your parent" else null,
+                onClick = { nav.navigate(Routes.APPS) })
             RowDivider()
             SettingRow("Focus session", Icons.Outlined.Timer,
                 value = "${Friendly.mode(vm.session.mode)} · ${Friendly.duration(vm.session.minutes)}", onClick = { nav.navigate(Routes.SESSION) })
             RowDivider()
-            SettingRow("Emergency exit", Icons.Outlined.Lock, value = "2 a week", onClick = { nav.navigate(Routes.EMERGENCY) })
+            SettingRow("Emergency exit", Icons.Outlined.Lock, value = vm.emergencyUsage?.let { "${it.left} of ${it.limit} left" } ?: "2 a week",
+                onClick = { nav.navigate(Routes.EMERGENCY) })
         }
 
         GroupCard {

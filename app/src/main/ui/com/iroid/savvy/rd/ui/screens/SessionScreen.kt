@@ -100,7 +100,7 @@ fun SessionScreen(vm: SavvyViewModel, nav: NavHostController) {
 
         Spacer(Modifier.padding(2.dp))
         FieldPill("Blocked apps", onClick = { save(); nav.navigate(Routes.APPS) }) {
-            Text("${vm.snapshot.selected.size} apps", style = SavvyType.bodyMedium, color = c.ink)
+            Text("${(vm.snapshot.selected + vm.snapshot.selfBlocked).size} apps", style = SavvyType.bodyMedium, color = c.ink)
         }
     }
 }

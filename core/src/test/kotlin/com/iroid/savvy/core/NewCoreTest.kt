@@ -36,6 +36,21 @@ class OfflinePolicyTest {
         assertEquals(OfflinePolicy.CardDecision.Reject("not_a_savvy_card"), d("https://example.com", c(UnlockPolicy.CARD_REQUIRED)))
     }
 
+    @Test fun alwaysBlockedUnblockNeedsTheBoundCard() {
+        fun d(raw: String, bound: String? = "8V1QFQWTY6VG", live: Boolean = false) =
+            OfflinePolicy.alwaysBlockedUnblock(raw, "go.savvy.test", key, bound, live)
+        val release = OfflinePolicy.CardDecision.Release
+        assertEquals(release, d(f.getValue("signed_card_url")))
+        assertEquals(OfflinePolicy.CardDecision.Reject("no_card_linked"), d(f.getValue("signed_card_url"), bound = null))
+        assertEquals(OfflinePolicy.CardDecision.Reject("not_your_card"), d(f.getValue("signed_card_url"), bound = "AAAAAAAAAAAA"))
+        assertEquals(OfflinePolicy.CardDecision.Reject("offline_card_check_failed"),
+            d("https://go.savvy.test/c/1.8V1QFQWTY6VG.AAAA", bound = "8V1QFQWTY6VG")) // bad signature
+        assertEquals(OfflinePolicy.CardDecision.Reject("offline_card_check_failed"), d(f.getValue("static_card_url")))
+        assertEquals(OfflinePolicy.CardDecision.Reject("sun_card_needs_internet"), d(f.getValue("sun_card_url")))
+        assertEquals(release, d(f.getValue("sun_card_url"), live = true))
+        assertEquals(OfflinePolicy.CardDecision.Reject("not_a_savvy_card"), d("https://example.com"))
+    }
+
     @Test fun offlineTaskCompletion() {
         assertEquals(OfflinePolicy.CardDecision.Release, OfflinePolicy.taskCompletion(c(UnlockPolicy.FREE, Mode.TASK, "t1"), "t1"))
         assertEquals(OfflinePolicy.CardDecision.Reject("card_or_server_required"), OfflinePolicy.taskCompletion(c(UnlockPolicy.CARD_REQUIRED, Mode.TASK, "t1"), "t1"))
@@ -75,6 +90,35 @@ class ParentAlwaysOnTest {
     }
 }
 
+class SelfAlwaysBlockedTest {
+    private val anchor = TimeAnchor(1_000_000, 1_000, 1)
+    private val ig = setOf("com.instagram.android")
+
+    @Test fun blocksWithoutCommitmentButNeverSavvyOrLauncher() {
+        assertIs<RestrictionPolicy.Decision.BlockApp>(RestrictionPolicy.decide("com.instagram.android", null, null, anchor, setOf("launcher"), selfBlocked = ig))
+        assertEquals(RestrictionPolicy.Decision.Allow, RestrictionPolicy.decide("com.game", null, null, anchor, setOf("launcher"), selfBlocked = ig))
+        val bad = setOf("com.iroid.savvy.rd", "launcher", "com.android.dialer")
+        bad.forEach { assertEquals(RestrictionPolicy.Decision.Allow, RestrictionPolicy.decide(it, null, null, anchor, setOf("launcher"), selfBlocked = bad)) }
+    }
+
+    @Test fun neverTurnsOnTheTamperGuard() {
+        assertEquals(RestrictionPolicy.Decision.Allow, RestrictionPolicy.decide("com.google.android.packageinstaller",
+            "com.android.packageinstaller.UninstallerActivity", null, anchor, emptySet(), selfBlocked = ig, parentControlled = true))
+    }
+
+    @Test fun staysBlockedDuringAndAfterAPausedSession() {
+        val c = Commitment(1, Mode.STUDY, UnlockPolicy.CARD_REQUIRED, ControlMode.SELF, setOf("com.game"), 3_600_000, anchor, null,
+            pausedUntilElapsedMs = anchor.elapsedRealtimeMs + 600_000, pauseBootCount = 1)
+        val now = anchor.copy(elapsedRealtimeMs = anchor.elapsedRealtimeMs + 60_000, wallClockMs = anchor.wallClockMs + 60_000)
+        assertEquals(RestrictionPolicy.Decision.Allow, RestrictionPolicy.decide("com.game", null, c, now, emptySet(), selfBlocked = ig))
+        assertIs<RestrictionPolicy.Decision.BlockApp>(RestrictionPolicy.decide("com.instagram.android", null, c, now, emptySet(), selfBlocked = ig))
+        // Unpaused session: both its apps and the always-blocked ones.
+        val running = c.copy(pausedUntilElapsedMs = null, pauseBootCount = null)
+        assertIs<RestrictionPolicy.Decision.BlockApp>(RestrictionPolicy.decide("com.game", null, running, now, emptySet(), selfBlocked = ig))
+        assertIs<RestrictionPolicy.Decision.BlockApp>(RestrictionPolicy.decide("com.instagram.android", null, running, now, emptySet(), selfBlocked = ig))
+    }
+}
+
 class UsageAggregatorTest {
     private val zone = ZoneId.of("Asia/Kolkata")
     private fun t(day: Int, h: Int, m: Int) = ZonedDateTime.of(2026, 9, day, h, m, 0, 0, zone).toInstant().toEpochMilli()
@@ -100,5 +144,16 @@ class UsageAggregatorTest {
             ev(t(25, 8, 1), "b", UsageAggregator.Kind.PAUSED),
         )
         assertEquals(mapOf("a" to 600L), UsageAggregator.dailyTotals(events, t(25, 8, 10), zone)[LocalDate.of(2026, 9, 25)])
+    }
+}
+
+class ParentPinTest {
+    @Test fun pinMatchesOnlyForSameChildAndPin() {
+        val h = ParentPin.hash(42, "2468")
+        assertTrue(ParentPin.matches(42, "2468", h))
+        assertFalse(ParentPin.matches(42, "2469", h))
+        assertFalse(ParentPin.matches(43, "2468", h)) // hash is bound to the child device
+        assertFalse(ParentPin.matches(42, "2468", null)) // no PIN set: cannot leave
+        assertFalse(ParentPin.valid("12a4")); assertFalse(ParentPin.valid("123"))
     }
 }

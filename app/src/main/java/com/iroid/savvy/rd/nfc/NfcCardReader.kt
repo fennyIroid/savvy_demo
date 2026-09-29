@@ -44,7 +44,11 @@ class NfcCardReader(
 
     fun disable() { adapter?.disableReaderMode(activity) }
 
+    /** When set, a tag is handed here raw instead of being read (debug tag writer). Reader thread. */
+    @Volatile var onRawTag: ((Tag) -> Unit)? = null
+
     private fun onTag(tag: Tag, started: Long) {
+        onRawTag?.let { it(tag); return }
         val uid = tag.id?.joinToString("") { "%02X".format(it) } ?: ""
         val url = runCatching {
             Ndef.get(tag)?.use { ndef ->

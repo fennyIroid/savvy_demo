@@ -27,11 +27,21 @@ class SavvyActions(private val context: Context) {
     private val backend get() = context.savvy.backend
     private val unlock by lazy { UnlockCoordinator(context) }
 
+    /**
+     * Child phone linked to a parent: role, account and app list are the parent's to change.
+     * Only after the link: picking "Child's phone" alone must not lock the user out.
+     */
+    val managedByParent get() = repo.role == "child" && repo.controlMode == com.iroid.savvy.core.ControlMode.PARENT && repo.parentLinked
+
     fun register(email: String): String {
+        // Re-registering would give the child a fresh, unlinked device token.
+        if (managedByParent && repo.deviceToken != null) return "managed_by_parent"
         val r = backend.register(email, repo.role)
         repo.deviceId = r.getLong("device_id"); repo.deviceToken = r.getString("device_token")
+        repo.parentLinked = false
         val k = backend.keys()
         repo.grantKeyHex = spkiRawHex(k.getString("grant_public_key")); repo.cardKeyHex = spkiRawHex(k.getString("card_public_key"))
+        com.iroid.savvy.rd.service.SyncJobService.schedule(context)
         return "registered device ${repo.deviceId} as ${repo.role}; ${restore()}"
     }
 
@@ -88,7 +98,7 @@ class SavvyActions(private val context: Context) {
         if (repo.deviceToken == null) return "not registered"
         flushOffline()
         val r = backend.active()
-        repo.serverOffsetMs = Instant.parse(r.getString("server_time")).toEpochMilli() - System.currentTimeMillis()
+        repo.recordServerTime(Instant.parse(r.getString("server_time")).toEpochMilli())
         val c = r.optJSONObject("commitment")
         if (c == null) {
             if (repo.commitment?.serverId != null) unlock.releaseLocally("server_says_not_active")
@@ -126,6 +136,9 @@ class SavvyActions(private val context: Context) {
                 System.currentTimeMillis(), selectionRef))
             activate(null, localId, mode, policy, minutes * 60_000L, null, taskRef)
             "started offline for $minutes min (will sync)"
+        }.also {
+            // Marked only once the restriction is really on (a refused start leaves the task pending).
+            if (taskRef != null && repo.commitment?.taskRef == taskRef) setTaskStatus(taskRef, "active")
         }
     }
 
@@ -133,7 +146,9 @@ class SavvyActions(private val context: Context) {
                          serverEndsAt: Long?, taskRef: String?, packages: Set<String>? = null) {
         repo.commitment = Commitment(serverId, mode, policy, repo.controlMode, packages ?: repo.selectedPackages, durationMs, repo.now(),
             serverEndsAt, taskRef = taskRef, localId = localId)
+        repo.emergencyPending = null
         UsageMonitorService.start(context)
+        com.iroid.savvy.rd.admin.DeviceOwnerController.reconcile(context)
         SavvyLog.event("Actions", "activated $serverId $mode $policy ${durationMs / 60000}min task=$taskRef")
     }
 
@@ -169,8 +184,12 @@ class SavvyActions(private val context: Context) {
         if (c.serverId != null) {
             try {
                 val r = backend.emergencyExit(c.serverId!!, reason)
-                return if (r.optString("status") == "pending") "pending until ${r.optString("available_at")}"
-                else unlock.applyGrant(r.optString("grant"), c.serverId!!).toString()
+                if (r.optString("status") == "pending") {
+                    // Backend cooling-off: calling again after available_at confirms the same request.
+                    repo.emergencyPending = "${c.serverId}|${r.optString("available_at")}"
+                    return "pending until ${r.optString("available_at")}"
+                }
+                return unlock.applyGrant(r.optString("grant"), c.serverId!!).toString()
             } catch (e: BackendClient.ApiError) {
                 return "emergency refused: ${e.code}"
             } catch (e: IOException) {
@@ -183,6 +202,40 @@ class SavvyActions(private val context: Context) {
         repo.enqueue(OfflineEvent.EmergencyExit(c.localId, c.serverId, now))
         unlock.releaseLocally("emergency_offline")
         return "emergency exit offline (will sync)"
+    }
+
+    /** Emergency exits used in the backend window: (used, limit, windowDays). */
+    fun emergencyUsage(): Triple<Int, Int, Int> = backend.emergencyUsage().let {
+        Triple(it.getInt("used"), it.getInt("limit"), it.getInt("window_days"))
+    }
+
+    // ---- Always blocked (the user's own list, independent of focus sessions) ----------
+
+    /** Adds an app to the always-blocked list. Blocking is instant and needs no card. */
+    fun blockAlways(pkg: String): String {
+        if (managedByParent) return "managed_by_parent"
+        if (pkg in com.iroid.savvy.core.RestrictionPolicy.ALWAYS_ALLOWED || pkg == context.packageName) return "cannot_block_app"
+        repo.selfBlockedPackages = repo.selfBlockedPackages + pkg
+        UsageMonitorService.start(context)
+        SavvyLog.event("Always", "blocked $pkg")
+        return "always blocked $pkg"
+    }
+
+    /**
+     * Card tap on an always-blocked app: the same card that ends a focus session early, checked
+     * on the device (core OfflinePolicy.alwaysBlockedUnblock) as there is no commitment to release.
+     * @param presenceVerified a SUN card's live proof already passed during the tap.
+     */
+    fun unblockAlways(pkg: String, raw: String, presenceVerified: Boolean = false): String {
+        if (pkg !in repo.selfBlockedPackages) return "unblocked $pkg"
+        val d = OfflinePolicy.alwaysBlockedUnblock(raw, BuildConfig.CARD_DOMAIN,
+            repo.cardKeyHex?.chunked(2)?.map { it.toInt(16).toByte() }?.toByteArray() ?: ByteArray(0),
+            repo.boundCardCode, presenceVerified)
+        if (d is OfflinePolicy.CardDecision.Reject) return d.reason
+        repo.selfBlockedPackages = repo.selfBlockedPackages - pkg
+        if (repo.commitment == null && !repo.hasAlwaysOnBlocks) UsageMonitorService.stop(context)
+        SavvyLog.event("Always", "unblocked $pkg with card")
+        return "unblocked $pkg"
     }
 
     fun flushOffline(): String {
@@ -213,7 +266,10 @@ class SavvyActions(private val context: Context) {
         backend.redeemLink(code)
         repo.role = "child"
         repo.controlMode = com.iroid.savvy.core.ControlMode.PARENT
+        repo.parentLinked = true
         uploadInventory()
+        // Report in now: the parent sees the phone as reporting and any rules already waiting apply.
+        housekeeping()
         return "linked as child"
     }
 
@@ -227,16 +283,45 @@ class SavvyActions(private val context: Context) {
         val pkgs = rules.optJSONArray("packages")?.let { a -> (0 until a.length()).map(a::getString).toSet() } ?: emptySet()
         repo.selectedPackages = pkgs
         repo.parentBlockedPackages = if (rules.optBoolean("always_on")) pkgs else emptySet()
+        repo.parentLeavePinHash = rules.optString("leave_pin_sha256").ifEmpty { null }
         val focus = rules.optJSONObject("focus")
-        if (focus != null && repo.commitment == null) {
+        val running = repo.commitment
+        if (focus != null && running == null) {
             start(Mode.valueOf(focus.getString("mode").uppercase()), focus.getInt("duration_minutes"), UnlockPolicy.fromWire(focus.getString("unlock_policy")))
-        } else if (focus == null && repo.commitment != null) {
+        } else if (focus != null && running != null && running.controlMode == com.iroid.savvy.core.ControlMode.PARENT) {
+            // A parent session already running takes the parent's new app list right away.
+            repo.commitment = running.copy(blockedPackages = pkgs)
+        } else if (focus == null && running != null) {
             unlock.releaseLocally("parent_rules_cleared")
         }
         if (repo.parentBlockedPackages.isNotEmpty()) UsageMonitorService.start(context)
+        com.iroid.savvy.rd.admin.DeviceOwnerController.reconcile(context)
         repo.appliedRuleVersion = r.getInt("version")
         backend.ackRules(r.getInt("version"))
         return "applied rules v${r.getInt("version")} (${pkgs.size} apps, always_on=${rules.optBoolean("always_on")})"
+    }
+
+    /**
+     * Child phone leaves parent mode with the parent's PIN (checked offline against the hash in
+     * the rules). Always-on blocks and the tamper guard stop; a focus session already running
+     * continues until it ends (the backend would restore it anyway). The family link stays on
+     * the backend (no unlink endpoint in the POC backend).
+     */
+    fun leaveParentMode(pin: String): String {
+        if (!managedByParent) return "not in parent mode"
+        if (repo.parentLeavePinHash == null) return "no_leave_pin"
+        if (!com.iroid.savvy.core.ParentPin.matches(repo.deviceId, pin, repo.parentLeavePinHash)) {
+            SavvyLog.event("Family", "leave parent mode: wrong PIN")
+            return "wrong_pin"
+        }
+        repo.role = "self"
+        repo.controlMode = com.iroid.savvy.core.ControlMode.SELF
+        repo.parentLinked = false
+        repo.parentBlockedPackages = emptySet()
+        repo.parentLeavePinHash = null
+        com.iroid.savvy.rd.admin.DeviceOwnerController.reconcile(context)
+        SavvyLog.event("Family", "left parent mode with parent PIN")
+        return "left parent mode"
     }
 
     fun uploadUsage(): String {
@@ -250,14 +335,13 @@ class SavvyActions(private val context: Context) {
         if (repo.deviceToken == null) return "not registered"
         val out = mutableListOf<String>()
         out += runCatching { flushOffline() }.getOrElse { "sync: $it" }
+        // Rules before the heartbeat, so the parent sees the version applied in this same pass.
+        if (repo.role == "child") out += runCatching { syncRules() }.getOrElse { "rules: $it" }
         out += runCatching {
             backend.heartbeat(TamperMonitor.read(context).toJson().put("applied_rule_version", repo.appliedRuleVersion)
                 .put("shield_active", repo.commitment != null)); "heartbeat ok"
         }.getOrElse { "heartbeat: $it" }
-        if (repo.role == "child") {
-            out += runCatching { syncRules() }.getOrElse { "rules: $it" }
-            out += runCatching { uploadUsage() }.getOrElse { "usage: $it" }
-        }
+        if (repo.role == "child") out += runCatching { uploadUsage() }.getOrElse { "usage: $it" }
         SavvyLog.event("Housekeeping", out.joinToString("; "))
         return out.joinToString("\n")
     }
@@ -270,9 +354,15 @@ class SavvyActions(private val context: Context) {
         (0 until a.length()).map { a.getJSONObject(it).getLong("child_device_id") }
     }
 
-    fun sendRules(childId: Long, packages: Set<String>, focusMinutes: Int?, policy: UnlockPolicy, alwaysOn: Boolean): String {
+    /**
+     * @param leavePinHash core ParentPin.hash for the child, or null for "no way to leave parent mode".
+     * The backend stores the rules JSON as sent, so the extra fields need no backend change.
+     */
+    fun sendRules(childId: Long, packages: Set<String>, focusMinutes: Int?, policy: UnlockPolicy, alwaysOn: Boolean,
+                  mode: Mode = Mode.STUDY, leavePinHash: String? = null): String {
         val rules = JSONObject().put("packages", JSONArray(packages.toList())).put("always_on", alwaysOn)
-            .put("focus", focusMinutes?.let { JSONObject().put("mode", "study").put("duration_minutes", it).put("unlock_policy", policy.wire) } ?: JSONObject.NULL)
+            .put("focus", focusMinutes?.let { JSONObject().put("mode", mode.name.lowercase()).put("duration_minutes", it).put("unlock_policy", policy.wire) } ?: JSONObject.NULL)
+            .putOpt("leave_pin_sha256", leavePinHash)
         return "rules v${backend.putRules(childId, rules).getInt("version")} sent"
     }
 

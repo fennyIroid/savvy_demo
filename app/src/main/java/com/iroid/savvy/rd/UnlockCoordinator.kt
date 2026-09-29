@@ -79,15 +79,21 @@ class UnlockCoordinator(private val context: Context) {
             val now = repo.now()
             val pauseMs = g.pauseUntil!!.toEpochMilli() - now.wallClockMs
             repo.commitment = repo.commitment?.copy(pausedUntilElapsedMs = now.elapsedRealtimeMs + pauseMs, pauseBootCount = now.bootCount)
+            repo.emergencyPending = null
+            com.iroid.savvy.rd.admin.DeviceOwnerController.reconcile(context)
             return Outcome.Paused(g.pauseUntil!!)
         }
         releaseLocally(g.reason)
         return Outcome.Released(offline = false)
     }
 
+    /** Every way a restriction ends (card, grant, emergency, expiry, offline) goes through here. */
     fun releaseLocally(reason: String) {
         repo.commitment = null
-        if (repo.parentBlockedPackages.isEmpty()) UsageMonitorService.stop(context)
+        repo.emergencyPending = null
+        repo.reconcileTasks()
+        if (!repo.hasAlwaysOnBlocks) UsageMonitorService.stop(context)
+        com.iroid.savvy.rd.admin.DeviceOwnerController.reconcile(context)
         SavvyLog.event("Unlock", "released locally reason=$reason")
     }
 }

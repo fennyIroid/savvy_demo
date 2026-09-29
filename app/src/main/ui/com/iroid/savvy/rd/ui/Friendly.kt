@@ -24,6 +24,9 @@ object Friendly {
         "needs the card to end early" to "This session needs your card to end early.",
         "card_required" to "This needs your Savvy card.",
         "locked_commitment_no_early_unlock" to "This session is locked until the timer runs out.",
+        "no_card_linked" to "Link your Savvy card first to unblock apps.",
+        "not_your_card" to "That isn't the card linked to your account.",
+        "cannot_block_app" to "This app can't be blocked.",
         "no_active_commitment" to "There's no focus session running.",
         "no commitment" to "There's no focus session running.",
         "not_this_task" to "That card doesn't match this task.",
@@ -39,6 +42,9 @@ object Friendly {
         "no usage data" to "Allow Usage access to see screen time.",
         "grant_" to "The unlock couldn't be verified. Try again.",
         "unauthorized" to "Your session has expired. Sign in again.",
+        "managed_by_parent" to "Your parent manages this phone.",
+        "no_leave_pin" to "Your parent hasn't set a PIN for leaving parent mode.",
+        "wrong_pin" to "That PIN isn't right.",
     )
 
     fun text(raw: String): String {
@@ -55,8 +61,11 @@ object Friendly {
             r.startsWith("pending until") -> return "Emergency exit requested. It unlocks at ${r.removePrefix("pending until ").take(16).replace('T', ' ')}."
             r.startsWith("emergency exit offline") -> return "Emergency exit used. It will sync when you're back online."
             r.contains("Paused(") -> return "Unlocked for a short break."
+            r.startsWith("always blocked ") -> return "Blocked. Only your Savvy card can unblock it."
+            r.startsWith("unblocked ") -> return "Unblocked."
             r == "task added" -> return "Task added."
             r.startsWith("linked as child") -> return "This phone is now linked to your parent."
+            r == "left parent mode" -> return "Parent mode is off. This phone is yours to manage now."
             r.startsWith("synced") -> return "Synced."
             r == "nothing to sync" -> return "Everything is already synced."
             r.startsWith("rules v") && r.endsWith("sent") -> return "Rules sent. They apply at the child's next sync."
@@ -94,6 +103,10 @@ object Friendly {
         val h = s / 3600; val m = (s % 3600) / 60; val sec = s % 60
         return if (h > 0) "%dh %02dm".format(h, m) else "%dm %02ds".format(m, sec)
     }
+
+    /** Local wall-clock time, e.g. "14:20". */
+    fun time(epochMs: Long): String = java.time.Instant.ofEpochMilli(epochMs).atZone(java.time.ZoneId.systemDefault())
+        .format(java.time.format.DateTimeFormatter.ofLocalizedTime(java.time.format.FormatStyle.SHORT))
 
     fun hm(seconds: Long): Pair<String, String> = "${seconds / 3600}h" to "${(seconds % 3600) / 60}m"
 }

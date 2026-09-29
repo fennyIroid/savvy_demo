@@ -38,6 +38,34 @@ object UsageCollector {
         return UsageAggregator.dailyTotals(events, end, zone)
     }
 
+    /**
+     * A-USAGE-2: Android keeps raw UsageEvents for only a few days, so Savvy keeps its own
+     * per-app daily totals (35 days, on the phone). A day recomputed from fewer surviving
+     * events never lowers a stored figure.
+     */
+    @Synchronized
+    fun recordHistory(context: Context, totals: Map<LocalDate, Map<String, Long>>) {
+        val prefs = context.getSharedPreferences("savvy_usage", Context.MODE_PRIVATE)
+        val all = JSONObject(prefs.getString("days", "{}")!!)
+        totals.forEach { (date, perApp) ->
+            val day = all.optJSONObject(date.toString()) ?: JSONObject()
+            perApp.forEach { (pkg, sec) -> if (sec > day.optLong(pkg)) day.put(pkg, sec) }
+            all.put(date.toString(), day)
+        }
+        val oldest = LocalDate.now().minusDays(35)
+        all.keys().asSequence().toList().filter { LocalDate.parse(it).isBefore(oldest) }.forEach(all::remove)
+        prefs.edit().putString("days", all.toString()).apply()
+    }
+
+    /** Stored daily totals for the last [days] days (including today), oldest first. */
+    fun history(context: Context, days: Int): Map<LocalDate, Map<String, Long>> {
+        val all = JSONObject(context.getSharedPreferences("savvy_usage", Context.MODE_PRIVATE).getString("days", "{}")!!)
+        val today = LocalDate.now()
+        return (days - 1 downTo 0).map { today.minusDays(it.toLong()) }.associateWith { d ->
+            all.optJSONObject(d.toString())?.let { o -> o.keys().asSequence().associateWith { o.getLong(it) } } ?: emptyMap()
+        }.filterValues { it.isNotEmpty() }
+    }
+
     fun toJson(context: Context, perApp: Map<String, Long>): JSONArray {
         val pm = context.packageManager
         val out = JSONArray()

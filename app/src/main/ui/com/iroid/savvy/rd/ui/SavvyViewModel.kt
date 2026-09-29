@@ -10,7 +10,6 @@ import androidx.lifecycle.viewModelScope
 import com.iroid.savvy.core.Commitment
 import com.iroid.savvy.core.ControlMode
 import com.iroid.savvy.core.Mode
-import com.iroid.savvy.core.TimeIntegrity
 import com.iroid.savvy.core.UnlockPolicy
 import com.iroid.savvy.rd.SavvyActions
 import com.iroid.savvy.rd.data.UsageCollector
@@ -34,10 +33,16 @@ class UiPrefs(context: Context) {
         set(v) = p.edit().putString("policy", v.name).apply()
     var appearance: Appearance get() = Appearance.valueOf(p.getString("appearance", Appearance.AUTO.name)!!)
         set(v) = p.edit().putString("appearance", v.name).apply()
+    /** The OEM keep-running screen was opened (Savvy cannot read that setting back). */
+    var oemStepOpened: Boolean get() = p.getBoolean("oemStep", false); set(v) = p.edit().putBoolean("oemStep", v).apply()
+    /** Parent phone: last rules sent per child, to prefill the rules screen (no GET endpoint for them). */
+    fun lastRules(childId: Long): JSONObject? = p.getString("rules_$childId", null)?.let(::JSONObject)
+    fun saveRules(childId: Long, rules: JSONObject) = p.edit().putString("rules_$childId", rules.toString()).apply()
 }
 
 data class SessionSetup(val mode: Mode, val minutes: Int, val policy: UnlockPolicy)
 
+/** status: pending, active, completed, or ended (its restriction ended without the task being marked done). */
 data class TaskItem(val id: String, val title: String, val minutes: Int, val status: String)
 
 /** Everything the screens read, refreshed from CommitmentRepository every second while visible. */
@@ -50,12 +55,19 @@ data class Snapshot(
     val devCardUrl: String? = null,
     val selected: Set<String> = emptySet(),
     val parentBlocked: Set<String> = emptySet(),
+    /** The user's own always-blocked apps (blocked with or without a focus session). */
+    val selfBlocked: Set<String> = emptySet(),
     val commitment: Commitment? = null,
     val remainingMs: Long = 0,
     val pausedForMs: Long = 0,
     val tasks: List<TaskItem> = emptyList(),
     val offlineQueue: Int = 0,
     val emergencyUsedLocal: Int = 0,
+    /** Child phone under parent rules: role, account and app list are locked. */
+    val managedByParent: Boolean = false,
+    val hasLeavePin: Boolean = false,
+    /** Backend cooling-off: epoch ms when the requested emergency exit can be confirmed. */
+    val emergencyAvailableAtMs: Long? = null,
 ) {
     val active get() = commitment != null && remainingMs > 0
     val paused get() = active && pausedForMs > 0
@@ -63,6 +75,7 @@ data class Snapshot(
 
 data class Usage(val todaySec: Long, val averageSec: Long, val days: Int, val todayApps: List<Pair<String, Long>>, val weekDaily: List<Pair<java.time.LocalDate, Long>>)
 data class Insights(val streakDays: Int, val focusTodaySec: Int, val focusTotalSec: Int)
+data class EmergencyUsage(val used: Int, val limit: Int, val windowDays: Int) { val left get() = (limit - used).coerceAtLeast(0) }
 
 class SavvyViewModel(app: Application) : AndroidViewModel(app) {
     private val ctx get() = getApplication<Application>()
@@ -75,6 +88,7 @@ class SavvyViewModel(app: Application) : AndroidViewModel(app) {
     var usage by mutableStateOf<Usage?>(null); private set
     var insights by mutableStateOf<Insights?>(null); private set
     var insightsError by mutableStateOf<String?>(null); private set
+    var emergencyUsage by mutableStateOf<EmergencyUsage?>(null); private set
     var busy by mutableStateOf<String?>(null); private set
     var appearance by mutableStateOf(prefs.appearance); private set
     var session by mutableStateOf(SessionSetup(prefs.mode, prefs.minutes, prefs.policy)); private set
@@ -85,6 +99,7 @@ class SavvyViewModel(app: Application) : AndroidViewModel(app) {
     init { refresh() }
 
     fun refresh() {
+        repo.reconcileTasks()
         val c = repo.commitment
         val now = repo.now()
         val tasks = repo.tasksJson.let { a -> (0 until a.length()).map { i -> a.getJSONObject(i).toTask() } }
@@ -97,8 +112,9 @@ class SavvyViewModel(app: Application) : AndroidViewModel(app) {
             devCardUrl = repo.devCardUrl,
             selected = repo.selectedPackages,
             parentBlocked = repo.parentBlockedPackages,
+            selfBlocked = repo.selfBlockedPackages,
             commitment = c,
-            remainingMs = c?.let { TimeIntegrity.remainingMs(it, now) } ?: 0,
+            remainingMs = c?.let { repo.remainingMs(it, now) } ?: 0,
             pausedForMs = c?.let { cm ->
                 val until = cm.pausedUntilElapsedMs
                 if (until != null && cm.pauseBootCount == now.bootCount) (until - now.elapsedRealtimeMs).coerceAtLeast(0) else 0
@@ -106,6 +122,12 @@ class SavvyViewModel(app: Application) : AndroidViewModel(app) {
             tasks = tasks,
             offlineQueue = repo.offlineQueue().length(),
             emergencyUsedLocal = repo.localEmergencyExits.count { System.currentTimeMillis() - it < 7 * 86_400_000L },
+            managedByParent = actions.managedByParent,
+            hasLeavePin = repo.parentLeavePinHash != null,
+            emergencyAvailableAtMs = repo.emergencyPending?.let { p ->
+                val (id, at) = p.split('|', limit = 2).let { it[0] to it.getOrNull(1) }
+                if (id == c?.serverId?.toString()) runCatching { java.time.Instant.parse(at).toEpochMilli() }.getOrNull() else null
+            },
         )
     }
 
@@ -118,10 +140,15 @@ class SavvyViewModel(app: Application) : AndroidViewModel(app) {
 
     /** App opened: same as the old MainActivity.onResume (re-arm enforcement, server restore). */
     fun onAppResumed() {
-        if (repo.commitment != null || repo.parentBlockedPackages.isNotEmpty()) UsageMonitorService.start(ctx)
+        if (repo.commitment != null || repo.hasAlwaysOnBlocks) UsageMonitorService.start(ctx)
+        if (repo.deviceToken != null) com.iroid.savvy.rd.service.SyncJobService.schedule(ctx)
         refresh(); refreshSlow()
         if (repo.deviceToken != null) viewModelScope.launch {
-            withContext(Dispatchers.IO) { runCatching { actions.restore() } }
+            withContext(Dispatchers.IO) {
+                runCatching { actions.restore() }
+                // Child phone: pull the parent's latest rules on every open, not only every 15 min.
+                if (repo.role == "child") runCatching { actions.housekeeping() }
+            }
             refresh()
         }
     }
@@ -137,9 +164,20 @@ class SavvyViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
+    fun loadEmergencyUsage() {
+        if (repo.deviceToken == null) return
+        viewModelScope.launch {
+            emergencyUsage = withContext(Dispatchers.IO) {
+                runCatching { actions.emergencyUsage().let { (u, l, w) -> EmergencyUsage(u, l, w) } }.getOrNull()
+            } ?: emergencyUsage
+        }
+    }
+
     private fun readUsage(): Usage? {
         if (tamper?.usageAccess == false) return null
-        val totals = UsageCollector.dailyTotals(ctx, days = 7)
+        // Live events for the last days, merged into Savvy's own 35-day store (A-USAGE-2).
+        UsageCollector.recordHistory(ctx, UsageCollector.dailyTotals(ctx, days = 7))
+        val totals = UsageCollector.history(ctx, days = 7)
         if (totals.isEmpty()) return null
         val today = java.time.LocalDate.now()
         val todayMap = totals[today] ?: emptyMap()
@@ -169,6 +207,7 @@ class SavvyViewModel(app: Application) : AndroidViewModel(app) {
     fun changeAppearance(a: Appearance) { prefs.appearance = a; appearance = a }
 
     fun setRole(role: String) {
+        if (actions.managedByParent) { message = "Your parent manages this phone. Leave parent mode in Family first."; return }
         repo.role = role
         when (role) {
             "self" -> repo.controlMode = ControlMode.SELF
@@ -177,7 +216,13 @@ class SavvyViewModel(app: Application) : AndroidViewModel(app) {
         refresh()
     }
 
-    fun setSelected(pkgs: Set<String>) { repo.selectedPackages = pkgs; refresh() }
+    fun setSelected(pkgs: Set<String>) {
+        if (actions.managedByParent) return
+        repo.selectedPackages = pkgs; refresh()
+    }
+
+    /** Unblocking goes through the card screen (BlockActivity.MODE_UNBLOCK_APP), never through here. */
+    fun blockAlways(pkg: String) = run("Blocking") { blockAlways(pkg) }
 
     fun saveSession(s: SessionSetup) {
         prefs.mode = s.mode; prefs.minutes = s.minutes; prefs.policy = s.policy
@@ -199,8 +244,8 @@ class SavvyViewModel(app: Application) : AndroidViewModel(app) {
         refresh()
     }
 
+    /** The task turns "active" inside SavvyActions.start, only once the restriction is really on. */
     fun startTask(t: TaskItem) {
-        actions.setTaskStatus(t.id, "active"); refresh()
         run("Starting") { start(Mode.TASK, t.minutes, UnlockPolicy.CARD_REQUIRED, taskRef = t.id) }
     }
 

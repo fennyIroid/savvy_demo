@@ -39,34 +39,43 @@ class BlockingEngine(private val context: Context, private val repo: CommitmentR
         .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
         .putExtra(BlockActivity.EXTRA_BLOCKED, pkg)
         .putExtra(BlockActivity.EXTRA_TAMPER, tamper)
+        .putExtra(BlockActivity.EXTRA_RETURN_TO_BLOCKED, true)
 
     /**
-     * @param launch false when the caller delivers the block screen itself (Accessibility
-     *   path: it must go Home first, then open the block screen; see SavvyAccessibilityService).
+     * @param launch false when the caller delivers the block itself (Accessibility path, see
+     *   SavvyAccessibilityService).
      * @param eventTimeMs uptime/elapsed time of the event, used to log reaction latency.
      * @return true when the engine blocked something (caller may also go HOME).
      */
     fun onForeground(pkg: String, cls: String?, source: Source, eventTimeMs: Long?, launch: Boolean = true): Decision {
         val now = repo.now()
-        val serverNow = repo.serverOffsetMs?.let { now.wallClockMs + it }
-        val decision = RestrictionPolicy.decide(pkg, cls, repo.commitment, now, launchers, serverNow, repo.parentBlockedPackages,
-            parentControlled = repo.role == "child" && repo.controlMode == com.iroid.savvy.core.ControlMode.PARENT)
+        val c = repo.commitment
+        // Server time only if read in this boot (monotonic), never "wall clock + old offset".
+        val decision = RestrictionPolicy.decide(pkg, cls, c, now, launchers, repo.trustedServerNow(now), repo.parentBlockedPackages,
+            selfBlocked = repo.selfBlockedPackages,
+            parentControlled = repo.role == "child" && repo.controlMode == com.iroid.savvy.core.ControlMode.PARENT,
+            checkpoint = c?.let(repo::checkpointFor), bootWallMs = repo.bootWallMs(now))
         when (decision) {
             is Decision.BlockApp, is Decision.BlockTamperScreen -> {
                 val latency = eventTimeMs?.let { android.os.SystemClock.uptimeMillis() - it }
                 SavvyLog.event("Engine", "$source block $pkg/$cls latency=${latency ?: "?"}ms")
-                if (launch && shouldLaunch(pkg)) context.startActivity(blockIntent(pkg, decision is Decision.BlockTamperScreen))
+                if (launch) deliver(pkg, decision is Decision.BlockTamperScreen)
             }
             Decision.CommitmentExpired -> {
                 SavvyLog.event("Engine", "commitment expired, releasing")
-                repo.commitment = null
-                if (repo.parentBlockedPackages.isEmpty()) UsageMonitorService.stop(context)
-                // Parent always-on rules still apply to this same app switch.
+                com.iroid.savvy.rd.UnlockCoordinator(context).releaseLocally("expired")
+                // Always-on rules (parent's and the user's own) still apply to this same app switch.
                 return onForeground(pkg, cls, source, eventTimeMs, launch)
             }
-            Decision.Allow -> Unit
+            Decision.Allow -> BlockOverlay.onAllowed(pkg)
         }
         return decision
+    }
+
+    /** The layer over the blocked app when a window for it is available, else the block screen activity. */
+    private fun deliver(pkg: String, tamper: Boolean) {
+        if (BlockOverlay.show(context, pkg, tamper)) return
+        if (shouldLaunch(pkg)) context.startActivity(blockIntent(pkg, tamper))
     }
 
     companion object { const val DEBOUNCE_MS = 1500L }

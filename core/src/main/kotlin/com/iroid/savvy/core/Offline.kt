@@ -48,6 +48,26 @@ object OfflinePolicy {
         return CardDecision.Release
     }
 
+    /**
+     * Unblocking one of the user's "always blocked" apps. There is no commitment for the
+     * backend to release, so the card is checked on the device: it must be the card bound to
+     * this account. Signed cards are also verified, a SUN card needs the live proof
+     * ([presenceVerified], checked by the backend during the tap), static cards are refused.
+     */
+    fun alwaysBlockedUnblock(raw: String, domain: String, cardPublicKeyRaw: ByteArray, boundCardCode: String?,
+                             presenceVerified: Boolean = false): CardDecision {
+        val payload = CardPayload.parse(raw, domain) ?: return CardDecision.Reject("not_a_savvy_card")
+        if (boundCardCode == null) return CardDecision.Reject("no_card_linked")
+        if (payload.cardCode != boundCardCode) return CardDecision.Reject("not_your_card")
+        return when (payload) {
+            is CardPayload.Signed -> if (CardPayload.verifyOffline(payload, cardPublicKeyRaw, boundCardCode)) CardDecision.Release
+                else CardDecision.Reject("offline_card_check_failed")
+            is CardPayload.Sun -> if (presenceVerified) CardDecision.Release else CardDecision.Reject("sun_card_needs_internet")
+            // Unsigned: anyone could type the URL into a QR code (same rule as an offline focus unlock).
+            is CardPayload.Static -> CardDecision.Reject("offline_card_check_failed")
+        }
+    }
+
     fun taskCompletion(c: Commitment, taskId: String): CardDecision = when {
         c.mode != Mode.TASK || c.taskRef != taskId -> CardDecision.Reject("not_this_task")
         c.unlockPolicy == UnlockPolicy.FREE -> CardDecision.Release

@@ -3,11 +3,13 @@ package com.iroid.savvy.rd.data
 import android.content.Context
 import android.os.SystemClock
 import android.provider.Settings
+import com.iroid.savvy.core.Checkpoint
 import com.iroid.savvy.core.Commitment
 import com.iroid.savvy.core.ControlMode
 import com.iroid.savvy.core.Mode
 import com.iroid.savvy.core.OfflineEvent
 import com.iroid.savvy.core.TimeAnchor
+import com.iroid.savvy.core.TimeIntegrity
 import com.iroid.savvy.core.UnlockPolicy
 import org.json.JSONArray
 import org.json.JSONObject
@@ -18,13 +20,72 @@ import org.json.JSONObject
  * Production: EncryptedSharedPreferences / Keystore for the device token.
  */
 class CommitmentRepository(private val context: Context) {
-    private val prefs = context.getSharedPreferences("savvy_rd", Context.MODE_PRIVATE)
+    // Lazy: the app process can start before the first unlock (direct-boot BootReceiver), when
+    // credential-encrypted SharedPreferences throw. Only [recordBootWall] runs in that state.
+    private val prefs by lazy { context.getSharedPreferences("savvy_rd", Context.MODE_PRIVATE) }
+    /** Device-protected storage: readable before the first unlock after boot. */
+    private val bootPrefs by lazy {
+        context.createDeviceProtectedStorageContext().getSharedPreferences("savvy_boot", Context.MODE_PRIVATE)
+    }
 
     fun now(): TimeAnchor = TimeAnchor(
         wallClockMs = System.currentTimeMillis(),
         elapsedRealtimeMs = SystemClock.elapsedRealtime(),
-        bootCount = Settings.Global.getInt(context.contentResolver, Settings.Global.BOOT_COUNT, -1),
+        bootCount = bootCount(),
     )
+
+    fun bootCount() = Settings.Global.getInt(context.contentResolver, Settings.Global.BOOT_COUNT, -1)
+
+    // ---- Time integrity (see core TimeIntegrity) ----------------------------------------
+
+    /**
+     * Raw wall clock at the start of this boot. Recorded at LOCKED_BOOT_COMPLETED, before the
+     * user can unlock and change the clock. [overwrite] false: a later BOOT_COMPLETED keeps it.
+     */
+    fun recordBootWall(overwrite: Boolean) {
+        val boot = bootCount()
+        if (!overwrite && bootPrefs.getInt("bootCount", -2) == boot) return
+        bootPrefs.edit().putInt("bootCount", boot)
+            .putLong("bootWall", System.currentTimeMillis() - SystemClock.elapsedRealtime()).commit()
+    }
+
+    fun bootWallMs(now: TimeAnchor = now()): Long? =
+        if (bootPrefs.getInt("bootCount", -2) == now.bootCount) bootPrefs.getLong("bootWall", 0) else null
+
+    /** Last checkpoint of the CURRENT commitment (ignored if it belongs to an older one). */
+    fun checkpointFor(c: Commitment): Checkpoint? {
+        if (prefs.getString("cpLocalId", null) != c.localId) return null
+        return Checkpoint(prefs.getInt("cpBoot", 0), prefs.getLong("cpRt", 0), prefs.getLong("cpWall", 0), prefs.getLong("cpCredited", 0))
+    }
+
+    /** Called every minute by the FGS and on ACTION_TIME_CHANGED. */
+    @Synchronized
+    fun saveCheckpoint(reason: String) {
+        val c = commitment ?: return
+        val now = now()
+        val cp = TimeIntegrity.checkpoint(c, now, checkpointFor(c), bootWallMs(now))
+        prefs.edit().putString("cpLocalId", c.localId).putInt("cpBoot", cp.bootCount).putLong("cpRt", cp.elapsedRealtimeMs)
+            .putLong("cpWall", cp.wallClockMs).putLong("cpCredited", cp.creditedMs).commit()
+        if (reason != "tick") SavvyLog.event("Time", "checkpoint $reason credited=${cp.creditedMs / 60000}min")
+    }
+
+    /** Server clock read in this boot, advanced by elapsedRealtime: immune to wall-clock changes. */
+    fun recordServerTime(serverMs: Long) {
+        val now = now()
+        serverOffsetMs = serverMs - now.wallClockMs
+        prefs.edit().putLong("srvMs", serverMs).putLong("srvRt", now.elapsedRealtimeMs).putInt("srvBoot", now.bootCount).apply()
+    }
+
+    fun trustedServerNow(now: TimeAnchor = now()): Long? {
+        if (!prefs.contains("srvMs") || prefs.getInt("srvBoot", -2) != now.bootCount) return null
+        val rt = prefs.getLong("srvRt", 0)
+        if (now.elapsedRealtimeMs < rt) return null
+        return prefs.getLong("srvMs", 0) + (now.elapsedRealtimeMs - rt)
+    }
+
+    /** The one remaining-time calculation used by the engine, the FGS and the screens. */
+    fun remainingMs(c: Commitment, now: TimeAnchor = now()): Long =
+        TimeIntegrity.remainingMs(c, now, trustedServerNow(now), checkpointFor(c), bootWallMs(now))
 
     var selectedPackages: Set<String>
         get() = prefs.getStringSet("selected", emptySet())!!.toSet()
@@ -40,6 +101,27 @@ class CommitmentRepository(private val context: Context) {
         get() = prefs.getStringSet("parentBlocked", emptySet())!!.toSet()
         set(v) = prefs.edit().putStringSet("parentBlocked", v).apply()
 
+    /** The user's own "always blocked" apps: blocked even without a focus session, unblocked with the card. */
+    var selfBlockedPackages: Set<String>
+        get() = prefs.getStringSet("selfBlocked", emptySet())!!.toSet()
+        set(v) = prefs.edit().putStringSet("selfBlocked", v).apply()
+
+    /** Something is blocked even without a focus session, so enforcement must keep running. */
+    val hasAlwaysOnBlocks: Boolean get() = parentBlockedPackages.isNotEmpty() || selfBlockedPackages.isNotEmpty()
+
+    /**
+     * [pkg] is blocked right now only because the user put it on their always-blocked list
+     * (not by the parent, not by the running, unpaused focus session). The card then unblocks
+     * the app instead of ending the session.
+     */
+    fun blockedOnlyBySelf(pkg: String): Boolean {
+        if (pkg !in selfBlockedPackages || pkg in parentBlockedPackages) return false
+        val c = commitment ?: return true
+        if (pkg !in c.blockedPackages) return true
+        val now = now()
+        return c.pausedUntilElapsedMs != null && c.pauseBootCount == now.bootCount && now.elapsedRealtimeMs < c.pausedUntilElapsedMs!!
+    }
+
     var localEmergencyExits: List<Long>
         get() = prefs.getString("localEmergency", "")!!.split(',').mapNotNull { it.toLongOrNull() }
         set(v) = prefs.edit().putString("localEmergency", v.joinToString(",")).apply()
@@ -48,6 +130,37 @@ class CommitmentRepository(private val context: Context) {
     var tasksJson: JSONArray
         get() = JSONArray(prefs.getString("tasks", "[]"))
         set(v) = prefs.edit().putString("tasks", v.toString()).apply()
+
+    /**
+     * A task left "active" when its restriction ended some other way (card unlock, emergency
+     * exit, expiry) becomes "ended": not done, no longer blocking. Device run 1 open item.
+     */
+    @Synchronized
+    fun reconcileTasks() {
+        val active = commitment?.taskRef
+        val a = tasksJson
+        var changed = false
+        for (i in 0 until a.length()) {
+            val t = a.getJSONObject(i)
+            if (t.getString("status") == "active" && t.getString("id") != active) { t.put("status", "ended"); changed = true }
+        }
+        if (changed) { tasksJson = a; SavvyLog.event("Tasks", "restriction ended, task(s) marked ended") }
+    }
+
+    /** This device token was linked to a parent with a link code (a fresh registration is unlinked). */
+    var parentLinked: Boolean
+        get() = prefs.getBoolean("parentLinked", false)
+        set(v) = prefs.edit().putBoolean("parentLinked", v).apply()
+
+    /** Parent mode: hash of the PIN that lets this child phone leave parent mode (core ParentPin). */
+    var parentLeavePinHash: String?
+        get() = prefs.getString("leavePin", null)
+        set(v) = prefs.edit().putString("leavePin", v).apply()
+
+    /** Emergency exit waiting for the backend cooling-off period: "serverId|available_at". */
+    var emergencyPending: String?
+        get() = prefs.getString("emergencyPending", null)
+        set(v) = prefs.edit().putString("emergencyPending", v).apply()
 
     @Synchronized
     fun enqueue(e: OfflineEvent) {

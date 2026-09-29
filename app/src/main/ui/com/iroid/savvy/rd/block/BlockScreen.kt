@@ -40,7 +40,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.iroid.savvy.core.TimeIntegrity
 import com.iroid.savvy.core.UnlockPolicy
 import com.iroid.savvy.rd.savvy
 import com.iroid.savvy.rd.ui.Friendly
@@ -87,6 +86,9 @@ private fun BlockContent(s: BlockUiState, a: BlockActivity) {
     var tick by remember { mutableLongStateOf(0L) }
     LaunchedEffect(Unit) { while (true) { delay(1000); tick++ } }
     val unlockMode = s.mode == BlockActivity.MODE_UNLOCK
+    // Blocked only by the user's always-blocked list: no session countdown or emergency exit here.
+    // Read with [tick] so it follows a session starting, ending or pausing while this screen is open.
+    val alwaysBlocked = tick >= 0 && unlockMode && !s.tamper && s.blockedPackage?.let(repo::blockedOnlyBySelf) == true
 
     val look = when (s.phase) {
         BlockUiState.Phase.SUCCESS -> CardLook.SUCCESS
@@ -97,15 +99,15 @@ private fun BlockContent(s: BlockUiState, a: BlockActivity) {
 
     CurvedSheetFrame(bottomBar = {
         Row(Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 14.dp), horizontalArrangement = Arrangement.SpaceBetween) {
-            if (unlockMode && commitment != null && !s.tamper) BottomLink("Emergency exit") { confirmEmergency = true } else Spacer(Modifier.width(1.dp))
+            if (unlockMode && commitment != null && !s.tamper && !alwaysBlocked) BottomLink("Emergency exit") { confirmEmergency = true } else Spacer(Modifier.width(1.dp))
             BottomLink(if (unlockMode) "Go home" else "Cancel", strong = true) { a.goHome() }
         }
     }) {
         Column(Modifier.fillMaxSize().statusBarsPadding().padding(horizontal = 24.dp), horizontalAlignment = Alignment.CenterHorizontally) {
             Spacer(Modifier.height(28.dp))
             // What is blocked and for how long.
-            if (unlockMode && commitment != null && !s.tamper) {
-                val left = tick.let { TimeIntegrity.remainingMs(commitment, repo.now()) }
+            if (unlockMode && commitment != null && !s.tamper && !alwaysBlocked) {
+                val left = tick.let { repo.remainingMs(commitment) }
                 TopPill {
                     Text(Friendly.mode(commitment.mode), style = SavvyType.label, color = c.ink)
                     Text("  ·  ${Friendly.clock(left)} left", style = SavvyType.label, color = c.inkSoft)
@@ -117,6 +119,16 @@ private fun BlockContent(s: BlockUiState, a: BlockActivity) {
                     title = "This setting is locked", body = "Your parent's Savvy rules protect this screen.")
                 s.mode == BlockActivity.MODE_REGISTER -> Header(title = "Link your Savvy card", body = "Hold your card to the back of your phone.")
                 s.mode == BlockActivity.MODE_TASK -> Header(title = "Finish your task", body = "Hold your Savvy card to the back of your phone to mark it done.")
+                s.mode == BlockActivity.MODE_UNBLOCK_APP -> {
+                    val pkg = s.blockedPackage
+                    Header(
+                        icon = if (pkg != null) ({ AppIcon(pkg, size = 56.dp) }) else null,
+                        title = "Unblock ${pkg?.let { appLabel(context, it) } ?: "this app"}",
+                        body = "Hold your Savvy card to the back of your phone to take it off your always blocked list.",
+                    )
+                }
+                s.mode == BlockActivity.MODE_WRITE -> Header(title = "Write test card",
+                    body = "Hold a blank NFC tag (NTAG213, 215 or 216) to the back of your phone. It gets your test card link.")
                 else -> {
                     val pkg = s.blockedPackage
                     Header(
@@ -124,6 +136,7 @@ private fun BlockContent(s: BlockUiState, a: BlockActivity) {
                         title = "${pkg?.let { appLabel(context, it) } ?: "This app"} is " +
                             if (s.phase == BlockUiState.Phase.SUCCESS) "unlocked" else "paused",
                         body = when {
+                            alwaysBlocked -> "You keep this app always blocked. Hold your Savvy card to the back of your phone to unblock it."
                             commitment == null && repo.parentBlockedPackages.isNotEmpty() -> "Your parent has blocked this app."
                             commitment?.unlockPolicy == UnlockPolicy.LOCKED -> "This session is locked until the timer runs out."
                             commitment?.unlockPolicy == UnlockPolicy.FREE -> "You chose to take a break from it. End the session in Savvy if you need it."
@@ -139,13 +152,15 @@ private fun BlockContent(s: BlockUiState, a: BlockActivity) {
             AnimatedContent(s.phase to s.message, label = "status") { (phase, msg) ->
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     val text = when (phase) {
-                        BlockUiState.Phase.CHECKING -> "Checking your card…"
+                        BlockUiState.Phase.CHECKING -> if (s.mode == BlockActivity.MODE_WRITE) "Writing…" else "Checking your card…"
                         BlockUiState.Phase.SUCCESS -> when (s.mode) {
                             BlockActivity.MODE_REGISTER -> "Card linked"
                             BlockActivity.MODE_TASK -> "Task done"
+                            BlockActivity.MODE_WRITE -> "Tag written. It now works as your test card."
+                            BlockActivity.MODE_UNBLOCK_APP -> "Unblocked"
                             else -> if (msg?.contains("Paused") == true) "Unlocked for a short break" else "Unlocked"
                         }
-                        BlockUiState.Phase.FAILED -> Friendly.text(msg ?: "")
+                        BlockUiState.Phase.FAILED -> if (s.mode == BlockActivity.MODE_WRITE) (msg ?: "").removePrefix("error: ") else Friendly.text(msg ?: "")
                         BlockUiState.Phase.WAITING -> when (s.nfc) {
                             "ready" -> "Ready. Hold your card near the camera."
                             "nfc_disabled" -> "NFC is off. Turn it on, or scan the card's QR code."
@@ -163,15 +178,15 @@ private fun BlockContent(s: BlockUiState, a: BlockActivity) {
                 PillButton("Turn on NFC", { a.openNfcSettings() }, style = PillStyle.SOFT, height = 52.dp)
                 Spacer(Modifier.height(10.dp))
             }
-            PillButton("Scan QR instead", { a.scanQr() }, style = PillStyle.OUTLINE, icon = Icons.Rounded.QrCodeScanner, height = 60.dp,
-                enabled = s.phase != BlockUiState.Phase.CHECKING)
+            if (s.mode != BlockActivity.MODE_WRITE) PillButton("Scan QR instead", { a.scanQr() }, style = PillStyle.OUTLINE,
+                icon = Icons.Rounded.QrCodeScanner, height = 60.dp, enabled = s.phase != BlockUiState.Phase.CHECKING)
             Spacer(Modifier.height(24.dp))
         }
     }
 
     if (confirmEmergency) ConfirmDialog(
         title = "Use an emergency exit?",
-        body = "This ends the session now and uses one of your 2 emergency exits for this week." +
+        body = "This ends the session now and uses one of your emergency exits for this week. Every use is recorded." +
             if (commitment?.unlockPolicy == UnlockPolicy.LOCKED) " It works even on a locked session." else "",
         confirm = "End session", dismiss = "Keep going", destructive = true,
         onConfirm = { confirmEmergency = false; a.emergency() },

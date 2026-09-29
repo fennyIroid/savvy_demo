@@ -44,6 +44,8 @@ import androidx.compose.material.icons.outlined.TouchApp
 import androidx.compose.material.icons.outlined.Usb
 import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material.icons.rounded.Contactless
+import androidx.compose.material.icons.rounded.Nfc
+import androidx.compose.material.icons.outlined.PhonelinkSetup
 import androidx.compose.material.icons.rounded.Science
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -109,6 +111,10 @@ fun CardScreen(vm: SavvyViewModel, onBack: () -> Unit) {
         }, icon = Icons.Rounded.Contactless)
         if (BuildConfig.DEBUG) PillButton("Create a test card", onClick = { vm.run("Test card") { devCard() } },
             style = PillStyle.SOFT, icon = Icons.Rounded.Science, busy = vm.busy == "Test card")
+        val testUrl = s.devCardUrl
+        if (BuildConfig.DEBUG && testUrl != null) PillButton("Write test card to an NFC tag", onClick = {
+            context.openCardScreen(BlockActivity.MODE_WRITE, url = testUrl)
+        }, style = PillStyle.SOFT, icon = Icons.Rounded.Nfc)
     }) {
         Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
             SavvyCardHero(if (s.boundCard != null) CardLook.ACTIVE else CardLook.IDLE, width = 230.dp)
@@ -134,7 +140,7 @@ fun CardScreen(vm: SavvyViewModel, onBack: () -> Unit) {
                 Spacer(Modifier.height(12.dp))
                 SelectionContainer { Text(url, style = SavvyType.caption, color = c.inkSoft, textAlign = TextAlign.Center) }
                 Spacer(Modifier.height(8.dp))
-                Text("Scan this from another phone's card screen, or write it to an NFC tag.", style = SavvyType.caption, color = c.inkFaint,
+                Text("Scan this from another phone's card screen, or write it to a blank NTAG213/215/216 tag with the button below.", style = SavvyType.caption, color = c.inkFaint,
                     textAlign = TextAlign.Center)
             }
         }
@@ -179,6 +185,16 @@ fun PermissionList(vm: SavvyViewModel, compact: Boolean = false) {
         RowDivider()
         PermissionRow(Icons.Outlined.BatteryChargingFull, "Run in background", "Battery: unrestricted, so sessions aren't stopped", t?.ignoringBatteryOptimizations) {
             context.startActivity(Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS))
+        }
+        val oem = remember { com.iroid.savvy.rd.data.OemBackground.step() }
+        if (oem != null) {
+            var opened by remember { mutableStateOf(vm.prefs.oemStepOpened) }
+            RowDivider()
+            // Brand screens are not readable back, so "on" here means the user opened it.
+            PermissionRow(Icons.Outlined.PhonelinkSetup, "${oem.brand}: ${oem.title}", oem.instructions, opened) {
+                com.iroid.savvy.rd.data.OemBackground.open(context, oem)
+                vm.prefs.oemStepOpened = true; opened = true
+            }
         }
         RowDivider()
         PermissionRow(Icons.Outlined.Notifications, "Notifications", "Shows when a session is on", notificationsOn) {
@@ -240,15 +256,21 @@ fun AccountScreen(vm: SavvyViewModel, onBack: () -> Unit) {
     val s = vm.snapshot
     var email by remember { mutableStateOf(vm.prefs.email.ifBlank { "tester@savvy.test" }) }
     ModalPage("Account", onBack = onBack, bottom = {
-        PillButton(if (s.registered) "Register again" else "Create account", busy = vm.busy == "Register", onClick = {
+        PillButton(if (s.registered) "Register again" else "Create account", busy = vm.busy == "Register", enabled = !s.managedByParent, onClick = {
             vm.prefs.email = email.trim()
             vm.run("Register") { register(email.trim()) }
         })
     }) {
         EmailField(email) { email = it }
         SectionLabel("Who uses this phone?")
-        RoleOptions(s.role) { vm.setRole(it) }
-        Callout("Changing who uses this phone takes effect after you register again.")
+        if (s.managedByParent) {
+            // Brief section 25: a child must not switch to "Just me" and drop the parent guard.
+            Callout("Your parent manages this phone, so the account and role are locked. To leave parent mode, ask your parent for their PIN and use Settings › Family.",
+                icon = Icons.Outlined.ChildCare)
+        } else {
+            RoleOptions(s.role) { vm.setRole(it) }
+            Callout("Changing who uses this phone takes effect after you register again.")
+        }
         if (s.registered) {
             GroupCard {
                 SettingRow("Device", value = "#${s.deviceId}", chevron = false)
@@ -301,18 +323,31 @@ fun AppearanceScreen(vm: SavvyViewModel, onBack: () -> Unit) {
 fun EmergencyScreen(vm: SavvyViewModel, onBack: () -> Unit) {
     val c = savvyColors
     val s = vm.snapshot
+    val u = vm.emergencyUsage
     var confirm by remember { mutableStateOf(false) }
+    LaunchedEffect(Unit) { vm.loadEmergencyUsage() }
+    // Backend cooling-off: the request is recorded; calling again after the wait confirms it.
+    val pendingAt = s.emergencyAvailableAtMs
+    val waiting = pendingAt != null && System.currentTimeMillis() < pendingAt
     ModalPage("Emergency exit", onBack = onBack, bottom = {
-        PillButton("Use emergency exit", onClick = { confirm = true }, style = PillStyle.DANGER, enabled = s.active,
+        PillButton(
+            when {
+                waiting -> "Available at ${Friendly.time(pendingAt!!)}"
+                pendingAt != null -> "Confirm emergency exit"
+                else -> "Use emergency exit"
+            },
+            onClick = { if (pendingAt != null) vm.run("Emergency", onDone = { vm.loadEmergencyUsage(); if (vm.snapshot.commitment == null) onBack() }) { emergency("app") } else confirm = true },
+            style = PillStyle.DANGER, enabled = s.active && !waiting && (u == null || u.left > 0 || pendingAt != null),
             busy = vm.busy == "Emergency")
     }) {
         Text("For real emergencies only", style = SavvyType.title, color = c.ink)
         Text(
-            "The emergency exit ends any session early, even a locked one. You get 2 a week, so it stays special.",
+            "The emergency exit ends any session early, even a locked one. The weekly allowance keeps it special, and every use is recorded.",
             style = SavvyType.body, color = c.inkSoft,
         )
+        if (pendingAt != null) Callout(if (waiting) "Requested. For a real emergency, wait until ${Friendly.time(pendingAt)} and confirm." else "Your wait is over. Confirm to end the session.")
         GroupCard {
-            SettingRow("Allowance", value = "2 per 7 days", chevron = false)
+            SettingRow("Allowance", value = u?.let { "${it.left} of ${it.limit} left · ${it.windowDays} days" } ?: "2 per 7 days", chevron = false)
             RowDivider()
             SettingRow("Used offline this week", value = "${s.emergencyUsedLocal}", chevron = false)
             RowDivider()
@@ -324,7 +359,7 @@ fun EmergencyScreen(vm: SavvyViewModel, onBack: () -> Unit) {
         title = "End this session now?",
         body = "This uses one of your emergency exits for this week.",
         confirm = "End session", dismiss = "Keep going", destructive = true,
-        onConfirm = { confirm = false; vm.run("Emergency", onDone = { if (vm.snapshot.commitment == null) onBack() }) { emergency("app") } },
+        onConfirm = { confirm = false; vm.run("Emergency", onDone = { vm.loadEmergencyUsage(); if (vm.snapshot.commitment == null) onBack() }) { emergency("app") } },
         onDismiss = { confirm = false },
     )
 }
@@ -352,8 +387,10 @@ fun DiagnosticsScreen(vm: SavvyViewModel, onBack: () -> Unit) {
                 show("Status") {
                     val repo = context.savvy.repo
                     val cm = repo.commitment
+                    val now = repo.now()
                     "${housekeeping()}\n${TamperMonitor.read(context)}\ncommitment=${cm?.let { "${it.mode} ${it.unlockPolicy} " +
-                        "remaining=${TimeIntegrity.remainingMs(it, repo.now()) / 60000}min verdict=${TimeIntegrity.check(it.anchor, repo.now())}" }}" +
+                        "remaining=${repo.remainingMs(it, now) / 60000}min verdict=${TimeIntegrity.check(it.anchor, now)}\n" +
+                        "checkpoint=${repo.checkpointFor(it)} bootWall=${repo.bootWallMs(now)} serverNow(trusted)=${repo.trustedServerNow(now)}" }}" +
                         "\nparent always-on=${repo.parentBlockedPackages.size} offline queue=${repo.offlineQueue().length()}"
                 }
             })
@@ -367,6 +404,17 @@ fun DiagnosticsScreen(vm: SavvyViewModel, onBack: () -> Unit) {
             SettingRow("Screen time today (text)", onClick = { show("Screen") { screenTimeToday() } })
             RowDivider()
             SettingRow("Focus time and streak (text)", onClick = { show("Insights") { insights() } })
+        }
+        GroupCard {
+            // Approach F, R&D only: inert unless provisioned with adb (see DeviceOwnerController).
+            val isDo = com.iroid.savvy.rd.admin.DeviceOwnerController.isDeviceOwner(context)
+            SettingRow("Device Owner (R&D)", value = if (isDo) "On" else "Off",
+                onClick = { output = com.iroid.savvy.rd.admin.DeviceOwnerController.describe(context) })
+            if (isDo) {
+                RowDivider()
+                SettingRow("Remove Device Owner", titleColor = c.danger,
+                    onClick = { output = com.iroid.savvy.rd.admin.DeviceOwnerController.removeDeviceOwner(context) })
+            }
         }
         GroupCard {
             SettingRow("Open card screen", onClick = { context.openCardScreen() })

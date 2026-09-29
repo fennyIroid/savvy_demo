@@ -66,7 +66,7 @@ fun TasksTab(vm: SavvyViewModel, nav: NavHostController) {
     val c = savvyColors
     val context = LocalContext.current
     val s = vm.snapshot
-    val tasks = s.tasks.sortedBy { when (it.status) { "active" -> 0; "pending" -> 1; else -> 2 } }
+    val tasks = s.tasks.sortedBy { when (it.status) { "active" -> 0; "ended" -> 1; "pending" -> 2; else -> 3 } }
 
     Column(Modifier.fillMaxSize().statusBarsPadding()) {
         Row(Modifier.fillMaxWidth().padding(start = 24.dp, end = 20.dp, top = 28.dp, bottom = 4.dp), verticalAlignment = Alignment.CenterVertically) {
@@ -103,6 +103,7 @@ fun TasksTab(vm: SavvyViewModel, nav: NavHostController) {
                             context.openCardScreen(BlockActivity.MODE_TASK, t.id)
                         } else vm.run("Finishing") { completeTask(t.id) }
                     },
+                    onMarkDone = { vm.run("Finishing") { completeTask(t.id) } },
                     onDelete = { vm.deleteTask(t.id) },
                     otherActive = s.active && s.commitment?.taskRef != t.id,
                 )
@@ -112,10 +113,12 @@ fun TasksTab(vm: SavvyViewModel, nav: NavHostController) {
 }
 
 @Composable
-private fun TaskCard(t: TaskItem, busy: Boolean, onStart: () -> Unit, onDone: () -> Unit, onDelete: () -> Unit, otherActive: Boolean) {
+private fun TaskCard(t: TaskItem, busy: Boolean, onStart: () -> Unit, onDone: () -> Unit, onMarkDone: () -> Unit, onDelete: () -> Unit, otherActive: Boolean) {
     val c = savvyColors
     val done = t.status == "completed"
     val active = t.status == "active"
+    // The restriction ended another way (time up, card unlock, emergency): not blocking, not done.
+    val ended = t.status == "ended"
     Column(
         Modifier.fillMaxWidth().clip(RoundedCornerShape(28.dp)).background(if (active) c.icySoft else c.card).padding(20.dp),
     ) {
@@ -129,7 +132,12 @@ private fun TaskCard(t: TaskItem, busy: Boolean, onStart: () -> Unit, onDone: ()
                 Text(t.title, style = SavvyType.bodyMedium, color = if (done) c.inkSoft else c.ink,
                     textDecoration = if (done) TextDecoration.LineThrough else null)
                 Text(
-                    when (t.status) { "active" -> "In progress · ${Friendly.duration(t.minutes)}"; "completed" -> "Done"; else -> "${Friendly.duration(t.minutes)} · card to finish" },
+                    when (t.status) {
+                        "active" -> "In progress · ${taskLength(t.minutes)}"
+                        "completed" -> "Done"
+                        "ended" -> "Apps unlocked · not marked done"
+                        else -> "${taskLength(t.minutes)} · card to finish"
+                    },
                     style = SavvyType.caption, color = c.inkSoft,
                 )
             }
@@ -140,13 +148,24 @@ private fun TaskCard(t: TaskItem, busy: Boolean, onStart: () -> Unit, onDone: ()
         if (!done) {
             Spacer(Modifier.height(14.dp))
             if (active) PillButton("I'm done", onDone, style = PillStyle.SOLID, icon = Icons.Rounded.Contactless, height = 50.dp, enabled = !busy)
-            else PillButton(if (otherActive) "Another session is running" else "Start task", onStart, style = PillStyle.SOFT,
+            else if (ended) {
+                // No restriction is running any more, so marking it done needs no card.
+                PillButton("Mark done", onMarkDone, style = PillStyle.SOLID, icon = Icons.Rounded.Check, height = 50.dp, enabled = !busy)
+                Spacer(Modifier.height(8.dp))
+                PillButton(if (otherActive) "Another session is running" else "Start again", onStart, style = PillStyle.SOFT,
+                    height = 46.dp, enabled = !busy && !otherActive)
+            } else PillButton(if (otherActive) "Another session is running" else "Start task", onStart, style = PillStyle.SOFT,
                 height = 50.dp, enabled = !busy && !otherActive)
         }
     }
 }
 
-private val taskPresets = listOf(15, 25, 45, 60, 90, 120)
+private val taskPresets = listOf(15, 25, 45, 60, 90, 120, UNTIL_DONE)
+
+/** "Until done": blocked until the task is marked done, capped at 24 h (OPEN_ITEMS C6). */
+private const val UNTIL_DONE = 24 * 60
+
+private fun taskLength(minutes: Int) = if (minutes == UNTIL_DONE) "until done" else Friendly.duration(minutes)
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -170,10 +189,11 @@ fun AddTaskScreen(vm: SavvyViewModel, onDone: () -> Unit) {
                     cursorBrush = SolidColor(c.ink), modifier = Modifier.fillMaxWidth())
             }
         }
-        SectionLabel("Time box", trailing = Friendly.duration(minutes))
+        SectionLabel("Time box", trailing = taskLength(minutes))
         FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            taskPresets.forEach { m -> Chip(Friendly.duration(m), minutes == m, onClick = { minutes = m }) }
+            taskPresets.forEach { m -> Chip(if (m == UNTIL_DONE) "Until done" else Friendly.duration(m), minutes == m, onClick = { minutes = m }) }
         }
+        if (minutes == UNTIL_DONE) Callout("Apps stay blocked until you finish the task, for at most 24 hours.")
         Spacer(Modifier.height(4.dp))
         Callout("When you start this task your blocked apps close. To finish it, tap \"I'm done\" and hold your Savvy card to your phone.",
             icon = Icons.Rounded.Contactless)

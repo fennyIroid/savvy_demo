@@ -118,7 +118,7 @@ fun HomeTab(vm: SavvyViewModel, nav: NavHostController, onUnlock: () -> Unit) {
                 } else {
                     Text(Friendly.mode(vm.session.mode), style = SavvyType.headline, color = c.ink)
                     Spacer(Modifier.height(6.dp))
-                    val n = s.selected.size
+                    val n = (s.selected + s.selfBlocked).size
                     Text(
                         if (n == 0) "No apps chosen yet" else "Blocks $n app${if (n == 1) "" else "s"} for ${Friendly.duration(vm.session.minutes)}",
                         style = SavvyType.body, color = c.inkSoft,
@@ -137,6 +137,23 @@ fun HomeTab(vm: SavvyViewModel, nav: NavHostController, onUnlock: () -> Unit) {
         if (s.parentBlocked.isNotEmpty()) {
             Spacer(Modifier.height(10.dp))
             Text("Your parent keeps ${s.parentBlocked.size} apps blocked", style = SavvyType.caption, color = c.inkSoft, textAlign = TextAlign.Center)
+        }
+        // Secondary entry to the user's own always-blocked apps (outside focus sessions).
+        if (!s.managedByParent) {
+            Spacer(Modifier.height(10.dp))
+            val n = s.selfBlocked.size
+            Row(
+                Modifier.clip(RoundedCornerShape(12.dp)).clickable { nav.navigate(Routes.ALWAYS_BLOCKED) }.padding(horizontal = 10.dp, vertical = 6.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Icon(Icons.Rounded.Lock, null, tint = c.inkSoft, modifier = Modifier.size(14.dp))
+                Spacer(Modifier.width(6.dp))
+                Text(
+                    if (n == 0) "Block an app anytime" else "$n app${if (n == 1) "" else "s"} always blocked",
+                    style = SavvyType.caption, color = c.inkSoft,
+                )
+                Icon(Icons.AutoMirrored.Rounded.KeyboardArrowRight, null, tint = c.inkSoft, modifier = Modifier.size(16.dp))
+            }
         }
         Spacer(Modifier.weight(1f))
 

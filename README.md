@@ -35,11 +35,22 @@ debug and release certificate SHA-256 fingerprints.
 | C Block screen | `block/BlockActivity` | Savvy screen over the blocked app, NFC reader mode while visible, QR, go Home |
 | D Foreground service | `service/UsageMonitorService` | Persistent "focus on" notification, restarted by `BootReceiver` |
 | E Device admin | `admin/SavvyDeviceAdminReceiver` | Parent mode only; no policies used |
-| F Device Owner | Not implemented | Researched: needs factory-reset provisioning; unsuitable for Play consumer app (see ANDROID_FEASIBILITY.md) |
+| F Device Owner | `admin/DeviceOwnerController` | **R&D alternative only.** Inert unless provisioned with `adb shell dpm set-device-owner`. Suspends blocked apps, blocks uninstall and safe mode during a session. Unsuitable for a Play consumer app (factory-reset provisioning) |
 
 Both detection paths feed `service/BlockingEngine`, which uses `core/RestrictionPolicy`,
 so they can be compared on the same device. Tamper state is reported by
 `service/TamperMonitor` in the heartbeat.
+
+Also in the logic layer (see `docs/BRIEF_COMPLIANCE.md` for the brief-by-brief check):
+
+| Class | Purpose |
+| --- | --- |
+| `service/BootReceiver` (+ `TimeChangeReceiver`) | Direct-boot record of the boot wall clock and a checkpoint on every clock change, so "reboot, go offline, move the clock forward" no longer ends a commitment (core `TimeIntegrity`) |
+| `service/SyncJobService` | 15-minute JobScheduler housekeeping: child rules arrive without the FGS, heartbeat continues after an OEM kill, enforcement re-armed |
+| `service/Alerts` | Notification when the accessibility service is turned off during a session (user, force stop, OEM killer) |
+| `data/OemBackground` | Samsung / Xiaomi / Oppo / Vivo / OnePlus / Huawei keep-running screen, shown in Permissions |
+| `nfc/NfcTagWriter` | Debug: write the test card URL (+ Android Application Record) to a blank NTAG21x tag |
+| `core/ParentPin` | Parent PIN (hash in the rules) that a child phone needs to leave parent mode |
 
 ## UI
 

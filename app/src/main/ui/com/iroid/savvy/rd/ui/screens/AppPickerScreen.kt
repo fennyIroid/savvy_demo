@@ -68,10 +68,18 @@ fun AppPickerScreen(vm: SavvyViewModel, onDone: () -> Unit) {
                 .sortedBy { it.label.lowercase() }
         }
     }
+    val managed = vm.snapshot.managedByParent
+    // Always blocked apps are blocked in every session too; show them ticked, changed only from their own list.
+    val always = vm.snapshot.selfBlocked
     AppChecklist(
         title = "Blocked apps", apps = apps, selected = selected,
-        note = if (vm.snapshot.active) "Changes apply from your next session." else null,
-        onToggle = { pkg -> selected = if (pkg in selected) selected - pkg else selected + pkg; vm.setSelected(selected) },
+        locked = always, tags = always.associateWith { "Always blocked" },
+        note = when {
+            managed -> "Your parent chooses these apps. You can look, but not change them."
+            vm.snapshot.active -> "Changes apply from your next session."
+            else -> null
+        },
+        onToggle = { pkg -> if (pkg in always) vm.message = "This app is always blocked. Unblock it from Always blocked on Home." else if (!managed) { selected = if (pkg in selected) selected - pkg else selected + pkg; vm.setSelected(selected) } },
         bottomLabel = "Done", onBottom = onDone, onBack = onDone,
     )
 }
@@ -90,14 +98,19 @@ fun AppChecklist(
     bottomBusy: Boolean = false,
     showIcons: Boolean = true,
     header: (@Composable () -> Unit)? = null,
+    /** Shown ticked but owned by another list; tapping still calls [onToggle] so the caller can explain. */
+    locked: Set<String> = emptySet(),
+    /** Short status shown instead of the package name, e.g. "Always blocked". */
+    tags: Map<String, String> = emptyMap(),
 ) {
     val c = savvyColors
     var query by remember { mutableStateOf("") }
     ModalPage(title, onBack = onBack, scroll = false, bottom = {
-        PillButton(if (selected.isEmpty()) bottomLabel else "$bottomLabel · ${selected.size} selected", onBottom, busy = bottomBusy)
+        val count = (selected + locked).size
+        PillButton(if (count == 0) bottomLabel else "$bottomLabel · $count selected", onBottom, busy = bottomBusy)
     }) {
         val shown = apps.orEmpty().filter { query.isBlank() || it.label.contains(query, true) || it.pkg.contains(query, true) }
-        val (on, off) = shown.partition { it.pkg in selected }
+        val (on, off) = shown.partition { it.pkg in selected || it.pkg in locked }
         // Lazy: a phone can have hundreds of launchable apps.
         LazyColumn(Modifier.fillMaxWidth().weight(1f), verticalArrangement = Arrangement.spacedBy(0.dp)) {
             item(key = "header") {
@@ -121,17 +134,17 @@ fun AppChecklist(
             }
             if (on.isNotEmpty()) {
                 item(key = "selHeader") { SectionLabel("Selected", Modifier.padding(top = 12.dp, bottom = 8.dp)) }
-                appRows(on, selected, onToggle, showIcons, "s")
+                appRows(on, selected + locked, onToggle, showIcons, "s", tags)
             }
             if (off.isNotEmpty()) {
                 item(key = "allHeader") { SectionLabel(if (on.isEmpty()) "All apps" else "Other apps", Modifier.padding(top = 12.dp, bottom = 8.dp), trailing = "${off.size}") }
-                appRows(off, selected, onToggle, showIcons, "o")
+                appRows(off, selected + locked, onToggle, showIcons, "o", tags)
             }
         }
     }
 }
 
-private fun LazyListScope.appRows(list: List<AppEntry>, selected: Set<String>, onToggle: (String) -> Unit, showIcons: Boolean, prefix: String) {
+private fun LazyListScope.appRows(list: List<AppEntry>, selected: Set<String>, onToggle: (String) -> Unit, showIcons: Boolean, prefix: String, tags: Map<String, String>) {
     itemsIndexed(list, key = { _, a -> prefix + a.pkg }) { i, app ->
         val c = savvyColors
         val on = app.pkg in selected
@@ -146,7 +159,8 @@ private fun LazyListScope.appRows(list: List<AppEntry>, selected: Set<String>, o
             if (showIcons) { AppIcon(app.pkg, size = 38.dp); Spacer(Modifier.width(14.dp)) }
             Column(Modifier.weight(1f)) {
                 Text(app.label, style = SavvyType.bodyMedium, color = c.ink)
-                Text(app.pkg, style = SavvyType.caption, color = c.inkFaint, maxLines = 1)
+                val tag = tags[app.pkg]
+                Text(tag ?: app.pkg, style = SavvyType.caption, color = if (tag != null) c.inkSoft else c.inkFaint, maxLines = 1)
             }
             Box(
                 Modifier.size(26.dp).clip(CircleShape).background(if (on) c.primary else c.card)

@@ -10,6 +10,14 @@ package com.iroid.savvy.core
  */
 data class TimeAnchor(val wallClockMs: Long, val elapsedRealtimeMs: Long, val bootCount: Int)
 
+/**
+ * Trusted progress of a commitment, saved while it runs (every minute and on every
+ * wall-clock change). [creditedMs] is commitment time already proven by the monotonic
+ * clock; [wallClockMs] is the raw (possibly user-changed) wall clock at that moment, so
+ * it can be compared with the raw wall clock recorded at the next boot.
+ */
+data class Checkpoint(val bootCount: Int, val elapsedRealtimeMs: Long, val wallClockMs: Long, val creditedMs: Long)
+
 enum class Mode { STUDY, WORK, SLEEP, CUSTOM, TASK }
 
 /** Mirrors backend unlock_policy. */

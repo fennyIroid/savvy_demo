@@ -1,0 +1,20 @@
+# Gradle / build outputs
+.gradle/
+build/
+.kotlin/
+*.apk
+*.aab
+
+# Machine-specific config (sdk.dir, savvy.backendUrl). Each developer creates their own;
+# see README "Build".
+local.properties
+
+# IDE
+.idea/
+*.iml
+captures/
+.externalNativeBuild/
+.cxx/
+
+# OS
+.DS_Store

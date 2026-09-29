@@ -42,14 +42,14 @@
             </intent-filter>
         </activity>
 
-        <!-- Block screen. Also receives card taps:
-             App Link (https card URL) from the NFC tag dispatch or the Camera app. -->
+        <!-- Card screen. Also receives card taps:
+             App Link (https card URL) from the NFC tag dispatch or the Camera app.
+             Runs in Savvy's own task (no separate taskAffinity): its own task showed up as a
+             second Savvy in Recents when opened from the block layer over a blocked app. -->
         <activity
             android:name=".block.BlockActivity"
             android:exported="true"
-            android:excludeFromRecents="true"
-            android:launchMode="singleTask"
-            android:taskAffinity="com.iroid.savvy.rd.block">
+            android:launchMode="singleTask">
             <intent-filter android:autoVerify="true">
                 <action android:name="android.nfc.action.NDEF_DISCOVERED" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -63,6 +63,11 @@
             </intent-filter>
         </activity>
 
+        <!-- ZXing's scanner activity ships locked to sensorLandscape; force portrait. -->
+        <activity
+            android:name="com.journeyapps.barcodescanner.CaptureActivity"
+            android:screenOrientation="portrait"
+            tools:replace="android:screenOrientation" />
 
         <!-- Approach B: AccessibilityService (primary). isAccessibilityTool=false in config. -->
         <service
@@ -85,12 +90,28 @@
                 android:value="Keeps a user-started focus session active and blocks the apps the user chose until the session ends." />
         </service>
 
-        <receiver android:name=".service.BootReceiver" android:exported="false">
+        <!-- directBootAware: LOCKED_BOOT_COMPLETED records the boot wall clock before the first
+             unlock (offline reboot + clock-change protection, core TimeIntegrity). -->
+        <receiver android:name=".service.BootReceiver" android:exported="false" android:directBootAware="true">
             <intent-filter>
+                <action android:name="android.intent.action.LOCKED_BOOT_COMPLETED" />
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
             </intent-filter>
         </receiver>
+
+        <!-- Clock changed: checkpoint the running commitment with the monotonic clock. -->
+        <receiver android:name=".service.TimeChangeReceiver" android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.TIME_SET" />
+            </intent-filter>
+        </receiver>
+
+        <!-- Periodic housekeeping and child rule sync independent of the focus FGS. -->
+        <service
+            android:name=".service.SyncJobService"
+            android:exported="false"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
 
         <!-- Approach E: device admin. PARENT mode only (see STORE_POLICY_RISKS.md). -->
         <receiver

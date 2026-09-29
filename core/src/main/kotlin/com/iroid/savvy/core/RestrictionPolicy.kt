@@ -60,20 +60,28 @@ object RestrictionPolicy {
         /** Parent "always-on" rule (child device): blocked even without a focus commitment. */
         alwaysBlocked: Set<String> = emptySet(),
         /**
+         * The user's own "always blocked" apps: blocked with or without a focus session, like
+         * [alwaysBlocked], but never turns on the parent tamper guard.
+         */
+        selfBlocked: Set<String> = emptySet(),
+        /**
          * Child device under parent rules. The tamper guard must hold whenever parent rules
          * are active, not only during a focus commitment: a Pixel 4 test (28 Sep 2026) showed
          * the uninstall and Accessibility screens open freely under an always-on rule.
          */
         parentControlled: Boolean = false,
+        /** Offline reboot protection, see [TimeIntegrity.remainingMs]. */
+        checkpoint: Checkpoint? = null,
+        bootWallMs: Long? = null,
     ): Decision {
-        val always = foregroundPackage in alwaysBlocked &&
+        val always = (foregroundPackage in alwaysBlocked || foregroundPackage in selfBlocked) &&
             foregroundPackage !in ALWAYS_ALLOWED && foregroundPackage !in launcherPackages
         if (parentControlled && alwaysBlocked.isNotEmpty() && isTamperScreen(foregroundPackage, foregroundClass)) {
             return Decision.BlockTamperScreen(foregroundPackage, foregroundClass)
         }
         if (commitment == null) return if (always) Decision.BlockApp(foregroundPackage) else Decision.Allow
 
-        if (TimeIntegrity.remainingMs(commitment, now, serverNowMs) <= 0) return Decision.CommitmentExpired
+        if (TimeIntegrity.remainingMs(commitment, now, serverNowMs, checkpoint, bootWallMs) <= 0) return Decision.CommitmentExpired
         // Note: after expiry the caller clears the commitment and calls decide() again,
         // so parent always-on rules still apply on the next event.
 

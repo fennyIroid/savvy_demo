@@ -38,9 +38,14 @@ object TamperMonitor {
         }
     }
 
-    fun read(context: Context): Status {
+    /** Cheap check, polled by the FGS to alert when the service is switched off. */
+    fun accessibilityEnabled(context: Context): Boolean {
         val a11yId = ComponentName(context, SavvyAccessibilityService::class.java).flattenToString()
         val enabled = Settings.Secure.getString(context.contentResolver, Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES) ?: ""
+        return enabled.split(':').any { it.equals(a11yId, ignoreCase = true) }
+    }
+
+    fun read(context: Context): Status {
         val appOps = context.getSystemService(AppOpsManager::class.java)
         // unsafeCheckOpNoThrow (API 29) is itself marked deprecated in the API 36 SDK; both work.
         @Suppress("DEPRECATION")
@@ -54,7 +59,7 @@ object TamperMonitor {
         val dpm = context.getSystemService(DevicePolicyManager::class.java)
         val nfc = NfcAdapter.getDefaultAdapter(context)
         return Status(
-            accessibility = enabled.split(':').any { it.equals(a11yId, ignoreCase = true) },
+            accessibility = accessibilityEnabled(context),
             usageAccess = usage,
             overlay = Settings.canDrawOverlays(context),
             deviceAdmin = dpm.isAdminActive(ComponentName(context, SavvyDeviceAdminReceiver::class.java)),

@@ -35,9 +35,44 @@ class TimeIntegrityTest {
         assertEquals(4 * HOUR, TimeIntegrity.remainingMs(c, now, serverNowMs = serverNow))
     }
 
-    @Test fun afterRebootOfflineFallsBackToWallClockDocumentedGap() {
+    @Test fun afterRebootOfflineWithoutBootRecordFallsBackToWallClock() {
         val now = TimeAnchor(start.wallClockMs + 9 * HOUR, elapsedRealtimeMs = 10 * MIN, bootCount = 13)
-        assertEquals(0, TimeIntegrity.remainingMs(sixHours, now)) // the one known gap: reboot + offline + clock change
+        // No LOCKED_BOOT_COMPLETED record (receiver never ran): the old gap remains.
+        assertEquals(0, TimeIntegrity.remainingMs(sixHours, now))
+    }
+
+    @Test fun rebootThenClockForwardOfflineNoLongerEndsCommitment() {
+        // 1 h in, reboot takes 5 min; boot wall clock recorded before unlock. Then the user moves the clock +7 h.
+        val bootWall = start.wallClockMs + HOUR + 5 * MIN
+        val now = TimeAnchor(bootWall + 7 * HOUR + 10 * MIN, elapsedRealtimeMs = 10 * MIN, bootCount = 13)
+        val cp = TimeIntegrity.checkpoint(sixHours, start.copy(wallClockMs = start.wallClockMs + HOUR, elapsedRealtimeMs = start.elapsedRealtimeMs + HOUR))
+        assertEquals(HOUR, cp.creditedMs)
+        // credited 1 h + gap 5 min + 10 min since boot = 1 h 15 min elapsed.
+        assertEquals(4 * HOUR + 45 * MIN, TimeIntegrity.remainingMs(sixHours, now, checkpoint = cp, bootWallMs = bootWall))
+    }
+
+    @Test fun powerOffTimeStillCounts() {
+        // Honest case: phone off for 3 h, no clock change. Off time is part of the commitment.
+        val cp = TimeIntegrity.checkpoint(sixHours, start.copy(wallClockMs = start.wallClockMs + HOUR, elapsedRealtimeMs = start.elapsedRealtimeMs + HOUR))
+        val bootWall = start.wallClockMs + 4 * HOUR
+        val now = TimeAnchor(bootWall + 30 * MIN, elapsedRealtimeMs = 30 * MIN, bootCount = 13)
+        assertEquals(90 * MIN, TimeIntegrity.remainingMs(sixHours, now, checkpoint = cp, bootWallMs = bootWall))
+    }
+
+    @Test fun clockChangeBeforeRebootIsNotCountedWhenCheckpointedOnTimeChange() {
+        // 1 h in the user moves the clock +8 h (ACTION_TIME_CHANGED -> checkpoint), then reboots at once.
+        val changed = start.copy(wallClockMs = start.wallClockMs + 9 * HOUR, elapsedRealtimeMs = start.elapsedRealtimeMs + HOUR)
+        val cp = TimeIntegrity.checkpoint(sixHours, changed)
+        assertEquals(HOUR, cp.creditedMs) // monotonic, the +8 h is ignored
+        val bootWall = changed.wallClockMs + MIN // the RTC keeps the changed clock
+        val now = TimeAnchor(bootWall + 2 * MIN, elapsedRealtimeMs = 2 * MIN, bootCount = 13)
+        assertEquals(6 * HOUR - HOUR - 3 * MIN, TimeIntegrity.remainingMs(sixHours, now, checkpoint = cp, bootWallMs = bootWall))
+    }
+
+    @Test fun checkpointInCurrentBootContinuesMonotonically() {
+        val cp = Checkpoint(bootCount = 13, elapsedRealtimeMs = 20 * MIN, wallClockMs = 0, creditedMs = 2 * HOUR)
+        val now = TimeAnchor(start.wallClockMs + 30 * HOUR, elapsedRealtimeMs = 50 * MIN, bootCount = 13) // wall clock nonsense
+        assertEquals(6 * HOUR - 2 * HOUR - 30 * MIN, TimeIntegrity.remainingMs(sixHours, now, checkpoint = cp))
     }
 
     private fun commitment(durationMs: Long) = Commitment(

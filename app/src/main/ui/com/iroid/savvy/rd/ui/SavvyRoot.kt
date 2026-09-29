@@ -57,6 +57,7 @@ import com.iroid.savvy.rd.ui.screens.EmergencyScreen
 import com.iroid.savvy.rd.ui.screens.FamilyScreen
 import com.iroid.savvy.rd.ui.screens.HomeTab
 import com.iroid.savvy.rd.ui.screens.OnboardingScreen
+import com.iroid.savvy.rd.ui.screens.AlwaysBlockedScreen
 import com.iroid.savvy.rd.ui.screens.PermissionsScreen
 import com.iroid.savvy.rd.ui.screens.SessionScreen
 import com.iroid.savvy.rd.ui.screens.SettingsTab
@@ -80,16 +81,23 @@ object Routes {
     const val APPEARANCE = "appearance"
     const val DIAGNOSTICS = "diagnostics"
     const val EMERGENCY = "emergency"
+    const val ALWAYS_BLOCKED = "alwaysBlocked"
 }
 
 /** Opens the Savvy card screen (NFC reader mode + QR) in one of its modes. */
-fun Context.openCardScreen(mode: String = BlockActivity.MODE_UNLOCK, taskId: String? = null) {
+fun Context.openCardScreen(mode: String = BlockActivity.MODE_UNLOCK, taskId: String? = null, url: String? = null, blockedPackage: String? = null) {
     startActivity(Intent(this, BlockActivity::class.java).putExtra(BlockActivity.EXTRA_MODE, mode)
-        .apply { if (taskId != null) putExtra(BlockActivity.EXTRA_TASK_ID, taskId) })
+        .apply { if (blockedPackage != null) putExtra(BlockActivity.EXTRA_BLOCKED, blockedPackage) }
+        .apply { if (taskId != null) putExtra(BlockActivity.EXTRA_TASK_ID, taskId) }
+        .apply { if (url != null) putExtra(BlockActivity.EXTRA_URL, url) })
 }
 
+/**
+ * @param openRoute a screen to open once, from a notification (service/Alerts EXTRA_OPEN);
+ *   [onRouteOpened] clears it so rotation does not reopen it.
+ */
 @Composable
-fun SavvyRoot(vm: SavvyViewModel = viewModel()) {
+fun SavvyRoot(vm: SavvyViewModel = viewModel(), openRoute: String? = null, onRouteOpened: () -> Unit = {}) {
     SavvyTheme(vm.appearance) {
         val nav = rememberNavController()
         val snackbar = remember { SnackbarHostState() }
@@ -103,6 +111,10 @@ fun SavvyRoot(vm: SavvyViewModel = viewModel()) {
         }
 
         val start = remember { if (vm.prefs.onboarded || vm.snapshot.registered) Routes.TABS else Routes.ONBOARDING }
+        LaunchedEffect(openRoute) {
+            if (openRoute != null && start == Routes.TABS) nav.navigate(openRoute) { launchSingleTop = true }
+            if (openRoute != null) onRouteOpened()
+        }
         Box(Modifier.fillMaxSize().background(savvyColors.canvas)) {
             NavHost(
                 nav, start,
@@ -131,6 +143,7 @@ fun SavvyRoot(vm: SavvyViewModel = viewModel()) {
                 composable(Routes.APPEARANCE) { AppearanceScreen(vm) { nav.popBackStack() } }
                 composable(Routes.DIAGNOSTICS) { DiagnosticsScreen(vm) { nav.popBackStack() } }
                 composable(Routes.EMERGENCY) { EmergencyScreen(vm) { nav.popBackStack() } }
+                composable(Routes.ALWAYS_BLOCKED) { AlwaysBlockedScreen(vm, onLinkCard = { nav.navigate(Routes.CARD) }) { nav.popBackStack() } }
             }
             SnackbarHost(snackbar, Modifier.align(Alignment.TopCenter).statusBarsPadding().padding(top = 8.dp)) { data ->
                 val c = savvyColors
